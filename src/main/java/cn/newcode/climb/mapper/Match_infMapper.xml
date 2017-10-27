@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.newcode.climb.mapper.Match_infMapper" >
+  <resultMap id="BaseResultMap" type="cn.newcode.climb.po.Match_inf" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="mid" property="mid" jdbcType="INTEGER" />
+    <result column="route" property="route" jdbcType="INTEGER" />
+    <result column="venue" property="venue" jdbcType="INTEGER" />
+    <result column="startTime" property="starttime" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, mid, route, venue, startTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from match_inf
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from match_inf
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.newcode.climb.po.Match_inf" >
+    insert into match_inf (id, mid, route, 
+      venue, startTime)
+    values (#{id,jdbcType=INTEGER}, #{mid,jdbcType=INTEGER}, #{route,jdbcType=INTEGER}, 
+      #{venue,jdbcType=INTEGER}, #{starttime,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.newcode.climb.po.Match_inf" >
+    insert into match_inf
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mid != null" >
+        mid,
+      </if>
+      <if test="route != null" >
+        route,
+      </if>
+      <if test="venue != null" >
+        venue,
+      </if>
+      <if test="starttime != null" >
+        startTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="mid != null" >
+        #{mid,jdbcType=INTEGER},
+      </if>
+      <if test="route != null" >
+        #{route,jdbcType=INTEGER},
+      </if>
+      <if test="venue != null" >
+        #{venue,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.Match_inf" >
+    update match_inf
+    <set >
+      <if test="mid != null" >
+        mid = #{mid,jdbcType=INTEGER},
+      </if>
+      <if test="route != null" >
+        route = #{route,jdbcType=INTEGER},
+      </if>
+      <if test="venue != null" >
+        venue = #{venue,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        startTime = #{starttime,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.Match_inf" >
+    update match_inf
+    set mid = #{mid,jdbcType=INTEGER},
+      route = #{route,jdbcType=INTEGER},
+      venue = #{venue,jdbcType=INTEGER},
+      startTime = #{starttime,jdbcType=DATE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectMatchInf" parameterType="java.lang.Integer" resultType="cn.newcode.climb.po.Match_inf">
+    SELECT
+    route,venue
+    FROM
+    match_inf
+    WHERE
+    `mid` = #{mid}
+  </select>
+</mapper>

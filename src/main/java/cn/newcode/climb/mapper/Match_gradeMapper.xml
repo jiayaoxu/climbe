@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.newcode.climb.mapper.Match_gradeMapper" >
+  <resultMap id="BaseResultMap" type="cn.newcode.climb.po.Match_grade" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="mid" property="mid" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, mid, uid, grade
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from match_grade
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectGrade" parameterType="java.lang.Integer" resultType="cn.newcode.climb.po.grade" >
+    SELECT match_grade.grade,match_grade.uid,user.username,user_inf.nickname,match.name matchName
+    FROM  match_grade,USER,user_inf,`match`
+    WHERE match_grade.uid = user.id
+    AND  user.id = user_inf.uid
+    AND  match_grade.mid = match.id
+    AND  match_grade.mid = #{mid}
+    ORDER BY match_grade.grade
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from match_grade
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.newcode.climb.po.Match_grade" >
+    insert into match_grade (id, mid, uid, 
+      grade)
+    values (#{id,jdbcType=INTEGER}, #{mid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, 
+      #{grade})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.newcode.climb.po.Match_grade" >
+    insert into match_grade
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mid != null" >
+        mid,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="grade != null" >
+        grade,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="mid != null" >
+        #{mid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        #{grade},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.Match_grade" >
+    update match_grade
+    <set >
+      <if test="mid != null" >
+        mid = #{mid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        grade = #{grade},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.Match_grade" >
+    update match_grade
+    set mid = #{mid,jdbcType=INTEGER},
+      uid = #{uid,jdbcType=INTEGER},
+      grade = #{grade}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectGradeCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+    COUNT(*)
+    FROM
+    match_grade
+    WHERE
+    mid = #{mid}
+  </select>
+  <update id="uploadGrade" parameterType="cn.newcode.climb.po.Match_grade" >
+    update match_grade
+    <set >
+      <if test="mid != null" >
+        mid = #{mid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        grade = #{grade},
+      </if>
+      <if test="sgrade != null" >
+        sgrade = #{sgrade},
+      </if>
+      <if test="trade != null" >
+        tgrade = #{tgrade},
+      </if>
+      <if test="fgrade != null" >
+        fgrade = #{fgrade},
+      </if>
+    </set>
+    where mid = #{mid}
+    AND uid = #{uid}
+  </update>
+  
+  <select id="selectIn" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+    COUNT(*)
+    FROM
+    match_grade
+    WHERE
+    `mid` = #{mid}
+    AND
+    sgrade IS NOT NULL
+  </select>
+</mapper>

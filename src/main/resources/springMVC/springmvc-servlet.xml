@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/task
+   		http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+
+    <!-- 处理器，处理器映射器，处理器适配器，视图解析器,注解扫描 -->
+    <!-- 扫描controller -->
+    <context:component-scan base-package="cn.newcode.climb.controller"></context:component-scan>
+
+    <!-- 注解映射器 注入校验器 ,使用此映射器不用配置json conversion-service="conversionService"
+        validator="validator" -->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg index="0" value="UTF-8"/>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- 静态资源解析 包括 ：js、css、img、.. -->
+    <!-- <mvc:resources location="/**" mapping="/**" /> -->
+    <!-- 页面框架资源 -->
+    <!-- <mvc:resources location="/assets/" mapping="/assets/**" /> -->
+    <!-- <mvc:resources location="/UEditer/" mapping="/UEditer/**" /> -->
+
+    <!-- 只要实现HandlerExceptionResolver就是全局异常处理器 -->
+    <!--<bean class="cn.shine.ssm.exception.CustomExceptionResolver"></bean>-->
+
+    <!-- 自定义参数绑定 -->
+    <!-- <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters"> <list> <bean class="cn.shine.arpark.conveter.CustomerDateConverter"
+        /> </list> </property> </bean> -->
+
+
+    <!-- 多部件类型解析器 -->
+    <!-- <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        设置上传文件的最大尺寸为5m
+        <property name="maxUploadSize">
+            <value>5242880</value>
+        </property>
+    </bean> -->
+
+
+    <!--拦截器 -->
+    <!-- <mvc:interceptors> <mvc:interceptor> <mvc:mapping path="/admin/**"
+        /> <bean class="cn.shine.arpark.publicArray.interceptor.LoginInterceptor"></bean>
+        </mvc:interceptor> <mvc:interceptor> <mvc:mapping path="/admin/admin/**"
+        /> <bean class="cn.shine.arpark.publicArray.interceptor.authorityInterceptor"></bean>
+        </mvc:interceptor> </mvc:interceptors> -->
+
+    <!-- 开启aop，对类代理 -->
+    <aop:config proxy-target-class="true"></aop:config>
+    <!-- 开启shiro注解支持 -->
+    <!--<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" /> </bean>-->
+
+    <bean id="jspView"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 配置jsp前缀 -->
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <!-- 配置jsp后缀 -->
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!-- redis -->
+    <!-- 引入同文件夹下的redis属性配置文件 -->
+    <!--<import resource="classpath:redis/redis.config.xml"/>-->
+
+</beans>

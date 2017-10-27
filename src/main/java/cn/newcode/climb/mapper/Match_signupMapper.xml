@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.newcode.climb.mapper.Match_signupMapper" >
+  <resultMap id="BaseResultMap" type="cn.newcode.climb.po.Match_signup" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="mid" property="mid" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="isMatchd" property="ismatchd" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, mid, uid, isMatchd
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from match_signup
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectMatched"  parameterType="java.lang.Integer" resultType="java.lang.Integer" >
+    SELECT
+    COUNT(*)
+    FROM
+    match_signup
+    WHERE `mid` = #{mid}
+    AND  isMatchd = TRUE
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from match_signup
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.newcode.climb.po.Match_signup" >
+    insert into match_signup (id, mid, uid, 
+      isMatchd)
+    values (#{id,jdbcType=INTEGER}, #{mid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, 
+      #{ismatchd,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.newcode.climb.po.Match_signup" >
+    insert into match_signup
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mid != null" >
+        `mid`,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="ismatchd != null" >
+        isMatchd,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="mid != null" >
+        #{mid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="ismatchd != null" >
+        #{ismatchd,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.Match_signup" >
+    update match_signup
+    <set >
+      <if test="mid != null" >
+        mid = #{mid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="ismatchd != null" >
+        isMatchd = #{ismatchd,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.Match_signup" >
+    update match_signup
+    set mid = #{mid,jdbcType=INTEGER},
+      uid = #{uid,jdbcType=INTEGER},
+      isMatchd = #{ismatchd,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateSignUp" parameterType="cn.newcode.climb.po.Match_signup"  >
+    update `match_signup`
+    set
+    ismatchd = #{ismatchd,jdbcType=BIT}
+    where uid = #{uid,jdbcType=INTEGER}
+    AND  `mid` = #{mid}
+  </update>
+</mapper>
