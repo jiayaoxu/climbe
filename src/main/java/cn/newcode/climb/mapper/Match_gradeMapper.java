@@ -1,7 +1,10 @@
 package cn.newcode.climb.mapper;
 
+import cn.newcode.climb.matchUtil.GetInMatch;
 import cn.newcode.climb.po.Match_grade;
 import cn.newcode.climb.po.grade;
+import cn.newcode.climb.po.rank;
+import cn.newcode.climb.vo.Grade;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,4 +35,10 @@ public interface Match_gradeMapper {
     Integer uploadGrade(Match_grade record);
 
     Integer selectIn(Integer mid);
+
+    Grade selectRank(Match_grade matchGrade);
+
+    Integer selectUserByRanking(rank r);
+
+    List<Integer> selectRankList(GetInMatch getInMatch);
 }
