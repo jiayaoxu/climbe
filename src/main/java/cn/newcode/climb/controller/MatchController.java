@@ -10,6 +10,7 @@ import cn.newcode.climb.vo.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -189,7 +190,7 @@ public class MatchController {
     }
 
     /**
-     * 获取名次
+     * 海选获取名次
      * @param response
      * @param matchGrade
      * @return Grade
@@ -209,6 +210,50 @@ public class MatchController {
         }
 
         return objectMapper.writeValueAsString(grade);
+    }
+
+    /**
+     * 淘汰赛提交成绩
+     * @param response
+     * @param matchGrade
+     * @return
+     * @throws JsonProcessingException
+     */
+    @RequestMapping(value = "/uploadGrade",method = RequestMethod.POST)
+    public @ResponseBody String uploadGradeS(HttpServletResponse response,Match_grade matchGrade) throws JsonProcessingException {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        statusMessage = new Status();
+        try {
+            matchService.uploadGradeS(matchGrade);
+            statusMessage.setSuccess("Success");
+        } catch (Exception e) {
+            statusMessage.setError("SystemError");
+            e.printStackTrace();
+        }
+        return objectMapper.writeValueAsString(statusMessage);
+    }
+
+    /**
+     * 查询自己是否进入下一场比赛
+     * @param response
+     * @param matchGrade
+     * @param degree
+     * @return
+     * @throws JsonProcessingException
+     */
+    @RequestMapping(value = "/getGradeRise",method = RequestMethod.POST)
+    public @ResponseBody String getGradeRise(HttpServletResponse response,Match_grade matchGrade,Integer degree) throws JsonProcessingException {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        statusMessage = new Status();
+        try {
+            Boolean flag = matchService.getGradeRise(matchGrade,degree);
+            statusMessage.setSuccess("flag");
+        } catch (Exception e) {
+            statusMessage.setError("SystemError");
+            e.printStackTrace();
+        }
+
+        return objectMapper.writeValueAsString(statusMessage);
     }
 
 }
