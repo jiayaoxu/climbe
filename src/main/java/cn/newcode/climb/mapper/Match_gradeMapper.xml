@@ -17,7 +17,7 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectGrade" parameterType="java.lang.Integer" resultType="cn.newcode.climb.po.grade" >
-    SELECT match_grade.grade,match_grade.uid,user.username,user_inf.nickname,match.name matchName
+    SELECT match_grade.grade,match_grade.uid,user.username,user.id,user_inf.nickname,match.name matchName
     FROM  match_grade,USER,user_inf,`match`
     WHERE match_grade.uid = user.id
     AND  user.id = user_inf.uid
@@ -131,5 +131,59 @@
     `mid` = #{mid}
     AND
     sgrade IS NOT NULL
+  </select>
+  <select id="selectRank" parameterType="cn.newcode.climb.po.Match_grade" resultType="cn.newcode.climb.vo.Grade">
+    SELECT
+    u.rank ranking,u.uid equal
+    FROM
+     (SELECT
+      id,`mid`,uid,(@ranknum:=@ranknum+1)
+      AS
+      rank
+      FROM
+      match_grade,
+      (SELECT
+       (@ranknum :=0) ) b
+        ORDER BY
+        grade )u
+        WHERE u.uid = #{uid}
+        AND u.mid = #{mid}
+
+  </select>
+  <select id="selectUserByRanking" parameterType="cn.newcode.climb.po.rank" resultType="java.lang.Integer">
+    SELECT
+    u.uid
+    FROM
+    (SELECT
+    id,`mid`,uid,
+    (@ranknum:=@ranknum+1)
+    AS
+    rank
+    FROM
+    match_grade,
+    (SELECT
+    (@ranknum :=0) ) b
+    ORDER BY
+    grade )u
+    WHERE u.rank = #{rank}
+    AND u.mid = #{mid}
+  </select>
+  <!--查询晋级的id 与 排名-->
+  <select id="selectRankList" parameterType="cn.newcode.climb.matchUtil.GetInMatch" resultType="java.lang.Integer">
+    SELECT
+  u.uid
+FROM
+  (SELECT
+     id,`mid`,uid,
+     (@ranknum:=@ranknum+1)
+       AS
+       rank
+   FROM
+     match_grade,
+     (SELECT
+        (@ranknum :=0) ) b
+   ORDER BY
+     grade )u
+    LIMIT 0,#{total}
   </select>
 </mapper>
