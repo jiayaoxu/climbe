@@ -36,6 +36,7 @@ public class ServerListener implements ServletContextListener{
                 Thread serverThread = new Thread(new socketThread(s));
                 serverThread.start();
             } catch (Exception e){
+                System.out.println("---------------------player is Unline-------------------");
                 e.printStackTrace();
             }
         }
