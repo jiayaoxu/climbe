@@ -77,4 +77,9 @@ public class UserManager {
    public Map<Integer, List<Integer>> getRoomList() {
       return roomMap;
    }
+
+   //销毁房间
+   public void removeRoom(Integer rid){
+      roomMap.remove(rid);
+   }
 }
