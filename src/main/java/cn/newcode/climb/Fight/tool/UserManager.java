@@ -31,54 +31,88 @@ public class UserManager {
 
    private UserManager(){}
 
-   //实例化
+    /**
+     * 实例化
+     * @return
+     */
    public static UserManager getInstance(){
       return Instance.userManager;
    }
 
-   //添加上线玩家
+    /**
+     * 添加上线玩家
+     * @param uid
+     * @param socket
+     */
    public void addPlayer(Integer uid,Socket socket){
       userMap.put(uid,socket);
    }
 
-   //玩家下线
+    /**
+     * 玩家下线
+     * @param uid
+     */
    public void removePlayer(Integer uid){
       userMap.remove(uid);
    }
 
-   //获取玩家信息
+    /**
+     * 获取玩家信息
+     * @param uid
+     * @return
+     */
    public Socket getPlayer(Integer uid){
       return userMap.get(uid);
    }
 
-   //获取用户列表
+    /**
+     * 获取用户列表
+     * @return
+     */
    public Map<Integer, Socket> getUserMap() {
       return userMap;
    }
 
-   //创建房间
+    /**
+     * 创建房间s
+     * @param uid
+     */
    public void createRoom(Integer uid){
       List<Integer> roomPlayers = new ArrayList<Integer>();
       roomPlayers.add(uid);
       roomMap.put(uid,roomPlayers);
    }
 
-   //玩家加入房间
+    /**
+     * 玩家加入房间
+     * @param rid
+     * @param players
+     */
    public void playerJoinRoom(Integer rid,List<Integer> players){
       roomMap.put(rid,players);
    }
 
-   //获取用户房间信息
+    /**
+     * 获取用户房间信息
+     * @param rid
+     * @return
+     */
    public List<Integer> getRoomMap(Integer rid){
       return roomMap.get(rid);
    }
 
-   //获取所有房间
+    /**
+     * 获取所有房间
+     * @return
+     */
    public Map<Integer, List<Integer>> getRoomList() {
       return roomMap;
    }
 
-   //销毁房间
+    /**
+     * 销毁房间
+     * @param rid
+     */
    public void removeRoom(Integer rid){
       roomMap.remove(rid);
    }
