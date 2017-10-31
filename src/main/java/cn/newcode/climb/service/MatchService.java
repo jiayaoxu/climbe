@@ -70,7 +70,7 @@ public interface MatchService {
     Match_inf requiredStart(Match_signup signup) throws Exception;
 
     /**
-     * 获取选手成绩
+     * 海选获取选手成绩
      * @param matchGrade
      * @return
      * @throws Exception
@@ -84,5 +84,21 @@ public interface MatchService {
      * @throws Exception
      */
     Integer uploadGradeS(Match_grade matchGrade) throws Exception;
+
+    /**
+     * 添加晋级人员
+     * @param mid
+     * @param total
+     * @throws Exception
+     */
+    void ruleMethod(Integer mid,Integer total) throws Exception;
+
+    /**
+     * 晋级赛查询成绩
+     * @param matchGrade
+     * @throws Exception
+     * @return Boolean
+     */
+    Boolean getGradeRise(Match_grade matchGrade,Integer degree) throws Exception;
 
 }
