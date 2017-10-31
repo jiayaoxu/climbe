@@ -4,6 +4,7 @@ import cn.newcode.climb.mapper.MatchMapper;
 import cn.newcode.climb.mapper.Match_gradeMapper;
 import cn.newcode.climb.mapper.Match_infMapper;
 import cn.newcode.climb.mapper.Match_signupMapper;
+import cn.newcode.climb.matchUtil.GetInMatch;
 import cn.newcode.climb.matchUtil.GradeManager;
 import cn.newcode.climb.matchUtil.timer;
 import cn.newcode.climb.po.*;
@@ -132,6 +133,12 @@ public class MatchServiceImpl implements MatchService {
 
     /**
      * 获取选手成绩
+     * 首先获取总参加的人数 通过报名并开始比赛的表中查询总人数
+     * 通过与提交人数比较,等到全部提交完成之后,通过uid和mid获取自己的排名
+     * 通过自己的排名和总参加的人数,判断自己是否晋级，并获取总晋级的人数
+     * 通过总晋级的人数和自己的排名,获取对手的排名
+     * 通过对手的排名,获取对手的id
+     * 传给client 自己排名,自己是否晋级,自己的对手的id
      * @param matchGrade
      * @return
      * @throws Exception
@@ -140,57 +147,31 @@ public class MatchServiceImpl implements MatchService {
     public Grade getGrade(Match_grade matchGrade) throws Exception {
         Integer mid = matchGrade.getMid();
         Integer totalPlayer = match_signupMapper.selectMatched(mid);
+        int i = 0;
         while(!totalPlayer.equals(match_gradeMapper.selectGradeCount(mid))){
             Thread.sleep(500);
-        }
-        //返回名次
-        Integer uid = matchGrade.getUid();
-        List<grade> grades = match_gradeMapper.selectGrade(matchGrade.getMid());
-        int ranking = 0;
-        for(grade g : grades){
-            ranking ++;
-            Integer gUid = g.getUid();
-            if(gUid.equals(uid)){
+            i++;
+            //等待20秒后,不能再继续等待,说明有人掉线,忽略掉此人
+            if(i>=40){
                 break;
             }
         }
 
-        //海选结束,选拔进入半决赛
-        Grade grade = new Grade();
-        grade.setRanking(ranking);
+        Grade grade = match_gradeMapper.selectRank(matchGrade);
+        hasIn hs = hadNext(totalPlayer,grade.getRanking());
+        //是否进入下一场赛事
+        grade.setHasNext(hs.getIN());
+        //查询对手id
+        rank r = new rank();
+        r.setMid(matchGrade.getMid());
+        r.setRank(hs.getTotal()-grade.getRanking()+1);
+        Integer uid = match_gradeMapper.selectUserByRanking(r);
+        //添加对手
+        grade.setEqual(uid);
 
-        if(totalPlayer>16){
-            if(ranking<=16){
-                grade.setHasNext(true);
-            }else{
-                grade.setHasNext(false);
-            }
-            //grade.setForwardIn(16);
-        }else if(totalPlayer>8){
-            if(ranking<=8){
-                grade.setHasNext(true);
-            }else{
-                grade.setHasNext(false);
-            }
-            //grade.setForwardIn(8);
-        }else if(totalPlayer>4){
-            if(ranking<=4){
-                grade.setHasNext(true);
-            }else {
-                grade.setHasNext(false);
-            }
-            //grade.setForwardIn(4);
-        }else if(totalPlayer>2){
-            if(ranking<=2){
-                grade.setHasNext(true);
-            }else {
-                grade.setHasNext(false);
-            }
-            //grade.setForwardIn(2);
-        }else {
-            grade.setHasNext(false);
-        }
 
+        //内存中添加进入复赛的人选
+        ruleMethod(mid,hs.getTotal());
         return grade;
     }
 
@@ -205,5 +186,131 @@ public class MatchServiceImpl implements MatchService {
         return match_gradeMapper.uploadGrade(matchGrade);
     }
 
+    /**
+     * 晋级赛查询成绩,提交uid,mid
+     * 通过mid获取赛事晋级成员
+     * 通过uid获取自己的上一次排名
+     * 通过获取的排名获取对手uid
+     * 通过对手uid获取这一次对手成绩
+     * 对比这一次的成绩
+     * @param matchGrade
+     * @throws Exception
+     */
+    @Override
+    public Boolean getGradeRise(Match_grade matchGrade) throws Exception {
+        //判断自己是否还有资格
+        Boolean OwnFlag = false;
+        Integer uid = matchGrade.getUid();
+        Integer mid = matchGrade.getMid();
+        GradeManager gradeManager = GradeManager.getInstance();
+        List<Integer> rank = gradeManager.getMatchList(mid);
+        Integer MatchUid = null;
+        int i = 0;
+        for(i =0;i<rank.size();i++){
+            if(uid.equals(rank.get(i))){
+                //List中能找到自己,说明有资格
+                OwnFlag = true;
+                MatchUid = rank.get(rank.size()-i+2);
+            }
+        }
+        //如果没找到自己,说明自己已经被PK,没有下一场参赛资格
+        if(!OwnFlag){
+            return false;
+        }
+        //找不到对手uid,说明对手被除名
+        if(MatchUid==null){
+            return true;
+        }
+        //获取自己的成绩
+        Integer OwnGrade = gradeManager.completeGrade(mid,uid);
+        //获取对手的成绩
+        Integer MatchGrade = null;
+        //设置系统耐心值
+        int wait = 0;
+        //判断收拾是否提交成绩
+        while(MatchGrade == null){
+            Thread.sleep(500);
+            MatchGrade = gradeManager.completeGrade(mid,MatchUid);
+            //如果对手超过20秒不提交信息,默认比赛成绩无效,本人胜出
+            if(wait>40){
+                return true;
+            }
+        }
+        //如果自己的成绩大于对手的成绩(时间),说明自己输了,比赛结束,反之说明自己赢了
+        if(OwnGrade>MatchGrade){
+            //自己输了,将自己除名
+            rank.remove(i+1);
+            //重新设回内存
+            gradeManager.addMathcRanking(mid,rank);
+            return false;
+        }else{
+            //对手输了,对手除名
+            rank.remove(rank.size()-i+2);
+            gradeManager.addMathcRanking(mid,rank);
+            return true;
+        }
+    }
 
+    /**
+     * 海选筛选
+     * @param totalPlayer
+     * @param ranking
+     * @return
+     */
+    private hasIn hadNext(Integer totalPlayer,Integer ranking){
+        Boolean flag = false;
+        Integer total = 0;
+        if(totalPlayer>16){
+            if(ranking<=16){
+                flag = true;
+            }else{
+                flag = false;
+            }
+            total = 16;
+        }else if(totalPlayer>8){
+            if(ranking<=8){
+                flag = true;
+            }else{
+                flag = false;
+            }
+            total = 8;
+        }else if(totalPlayer>4){
+            if(ranking<=4){
+                flag = true;
+            }else {
+                flag = false;
+            }
+            total = 4;
+        }else if(totalPlayer>2){
+            if(ranking<=2){
+                flag = true;
+            }else {
+                flag = false;
+            }
+            total = 2;
+        }else {
+            flag = false;
+        }
+
+        hasIn hs = new hasIn();
+        hs.setIN(flag);
+        hs.setTotal(total);
+        return hs;
+    }
+
+    /**
+     * 添加晋级人员
+     * @param mid
+     * @param total
+     * @throws Exception
+     */
+    @Override
+    public void ruleMethod(Integer mid,Integer total) throws Exception {
+        GradeManager gradeManager = GradeManager.getInstance();
+        GetInMatch get = new GetInMatch();
+        get.setMid(mid);
+        get.setTotal(total);
+        List<Integer> grades = match_gradeMapper.selectRankList(get);
+        gradeManager.addMathcRanking(mid,grades);
+    }
 }
