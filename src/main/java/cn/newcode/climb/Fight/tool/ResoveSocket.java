@@ -19,6 +19,8 @@ public class ResoveSocket {
 
     private Integer uid;
 
+    private Integer rid;
+
     /**
      * 解析socket中的信息
      * @param socket
@@ -45,15 +47,15 @@ public class ResoveSocket {
         }else if(head.equals("JoinRoom")){
             //获取房间id
             Room room = obj.readValue(body,Room.class);
+            //记录房间id
+            rid = room.getRid();
             //获取房间中的人员信息
-            List<Integer> players = userManager.getRoomMap(room.getRid());
+            List<Integer> players = userManager.getRoomMap(rid);
             //添加本成员
             players.add(uid);
             //成员信息重新加入系统
             userManager.playerJoinRoom(room.getRid(),players);
         }else if(head.equals("fight")){
-            //对战模块 获取rid
-            Integer rid = obj.readValue(body,Room.class).getRid();
             //通过rid获取对手Socket
             List<Integer> RoomList =  userManager.getRoomMap(rid);
             //遍历对手
@@ -65,7 +67,6 @@ public class ResoveSocket {
                     out.writeUTF("fight@"+body);
                 }
             }
-
         }else if(head.equals("roomList")){
             //查找所有房间
             Map<Integer,List<Integer>> mapList = userManager.getRoomList();
@@ -80,6 +81,23 @@ public class ResoveSocket {
         }else if(head.equals("Closed")){
             //下线,清除用户
             userManager.removePlayer(uid);
+        }else if(head.equals("ExitRoom")){
+            //退出房间,首先获取玩家指定房间
+            List<Integer> room = userManager.getRoomMap(rid);
+            //遍历删除玩家元素
+            Iterator<Integer> it = room.iterator();
+            while(it.hasNext()){
+                Integer player = it.next();
+                if(player.equals(uid)){
+                    it.remove();
+                }
+            }
+            //删除完之后重新设回房间Map,如果list长度为0,直接销毁房间
+            if(room.size()==0){
+                userManager.removeRoom(rid);
+            }else {
+                userManager.playerJoinRoom(rid,room);
+            }
         }
     }
 
