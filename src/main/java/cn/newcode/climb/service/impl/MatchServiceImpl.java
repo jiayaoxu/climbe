@@ -93,7 +93,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     /**
-     * 获取成绩排行榜
+     * 海选获取成绩排行榜
      * @param mid
      * @return
      * @throws Exception
@@ -105,7 +105,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     /**
-     * 用户报名比赛
+     * 海选用户报名比赛
      * @param recode
      * @return
      * @throws Exception
@@ -183,6 +183,10 @@ public class MatchServiceImpl implements MatchService {
      */
     @Override
     public Integer uploadGradeS(Match_grade matchGrade) throws Exception {
+        GradeManager gradeManager = GradeManager.getInstance();
+        //插入内存
+        gradeManager.setPlayerGrade(matchGrade.getMid(),matchGrade);
+        //插入数据库
         return match_gradeMapper.uploadGrade(matchGrade);
     }
 
@@ -197,7 +201,7 @@ public class MatchServiceImpl implements MatchService {
      * @throws Exception
      */
     @Override
-    public Boolean getGradeRise(Match_grade matchGrade) throws Exception {
+    public Boolean getGradeRise(Match_grade matchGrade,Integer degree) throws Exception {
         //判断自己是否还有资格
         Boolean OwnFlag = false;
         Integer uid = matchGrade.getUid();
@@ -221,21 +225,42 @@ public class MatchServiceImpl implements MatchService {
         if(MatchUid==null){
             return true;
         }
-        //获取自己的成绩
-        Integer OwnGrade = gradeManager.completeGrade(mid,uid);
-        //获取对手的成绩
+
+        //获取成绩
+        Match_grade OwnMg = null;
+        Match_grade MatchMg = null;
+        Integer OwnGrade = null;
         Integer MatchGrade = null;
+        //获取自己的成绩
+        OwnMg = gradeManager.completeGrade(mid,uid);
+        //获取对手的成绩
         //设置系统耐心值
         int wait = 0;
         //判断收拾是否提交成绩
-        while(MatchGrade == null){
+        while(MatchMg == null){
             Thread.sleep(500);
-            MatchGrade = gradeManager.completeGrade(mid,MatchUid);
+            MatchMg = gradeManager.completeGrade(mid,MatchUid);
             //如果对手超过20秒不提交信息,默认比赛成绩无效,本人胜出
+            wait++;
             if(wait>40){
                 return true;
             }
         }
+        //判断第几次比赛
+        if(degree==2){
+            OwnGrade = OwnMg.getTgrade();
+            MatchGrade = MatchMg.getTgrade();
+        }else if(degree==3){
+            OwnGrade = OwnMg.getTgrade();
+            MatchGrade = MatchMg.getTgrade();
+        }else if(degree==4){
+            OwnGrade = OwnMg.getFgrade();
+            MatchGrade = MatchMg.getFgrade();
+        }else if(degree==5){
+            OwnGrade = OwnMg.getFigrade();
+            MatchGrade = MatchMg.getFigrade();
+        }
+
         //如果自己的成绩大于对手的成绩(时间),说明自己输了,比赛结束,反之说明自己赢了
         if(OwnGrade>MatchGrade){
             //自己输了,将自己除名
