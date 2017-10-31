@@ -117,6 +117,9 @@
       <if test="fgrade != null" >
         fgrade = #{fgrade},
       </if>
+      <if test="figrade != null" >
+        figrade = #{figrade},
+      </if>
     </set>
     where mid = #{mid}
     AND uid = #{uid}
