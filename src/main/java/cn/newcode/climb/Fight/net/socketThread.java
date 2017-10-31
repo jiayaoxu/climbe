@@ -5,9 +5,11 @@ import cn.newcode.climb.Fight.tool.UserManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * @Description: 处理每个用户的socket
@@ -25,17 +27,17 @@ public class socketThread implements Runnable{
 
     @Override
     public void run() {
+        ResoveSocket resove = new ResoveSocket();
         boolean connected = true;
         System.out.println("新玩家上线了");
         try{
-            String in;
             DataInputStream input = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             while(connected){
-                ResoveSocket.resove(socket,input.readUTF());
+                resove.resove(socket,input.readUTF());
             }
         }catch (IOException e){
             e.printStackTrace();
         }
     }
-
 }
