@@ -9,10 +9,8 @@ import java.io.Serializable;
  * @Version: 1.0
  */
 public class grade implements Serializable {
-    private String matchName;
-    private String nickname;
-    private String username;
-    private Integer grade;
+    private Integer uid;
+    private Integer rank;
 
     public Integer getUid() {
         return uid;
@@ -22,37 +20,11 @@ public class grade implements Serializable {
         this.uid = uid;
     }
 
-    private Integer uid;
-
-    public String getMatchName() {
-        return matchName;
+    public Integer getRank() {
+        return rank;
     }
 
-    public void setMatchName(String matchName) {
-        this.matchName = matchName;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Integer getGrade() {
-         return  grade;
-    }
-
-    public void setGrade(Integer grade) {
-        this.grade = grade;
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }
