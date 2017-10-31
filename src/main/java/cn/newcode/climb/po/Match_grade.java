@@ -17,6 +17,16 @@ public class Match_grade implements Serializable {
 
     private Integer fgrade;
 
+    private Integer figrade;
+
+    public Integer getFigrade() {
+        return figrade;
+    }
+
+    public void setFigrade(Integer figrade) {
+        this.figrade = figrade;
+    }
+
     public Integer getSgrade() {
         return sgrade;
     }
