@@ -2,6 +2,9 @@ package cn.newcode.climb.po;
 
 import java.io.Serializable;
 
+/**
+ * 用户信息实体类
+ */
 public class User implements Serializable {
     private Integer id;
 
