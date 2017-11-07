@@ -23,8 +23,4 @@
         <servlet-name>springmvc</servlet-name>
         <url-pattern>*.action</url-pattern>
     </servlet-mapping>
-    <!--配置监听socket-->
-    <listener>
-        <listener-class>cn.newcode.climb.Fight.ServerListener</listener-class>
-    </listener>
 </web-app>
