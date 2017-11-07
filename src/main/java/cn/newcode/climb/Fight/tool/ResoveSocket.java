@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -32,7 +33,10 @@ public class ResoveSocket {
         UserManager userManager = UserManager.getInstance();
         String [] message = s.split("@");
         String head = message[0];
-        String body = message[1];
+        String body = "";
+        if(message.length>=2){
+            body = message[1];
+        }
         if(head.equals("onlion")){
             //用户上线
             User user = obj.readValue(body,User.class);
@@ -51,10 +55,17 @@ public class ResoveSocket {
             rid = room.getRid();
             //获取房间中的人员信息
             List<Integer> players = userManager.getRoomMap(rid);
-            //添加本成员
-            players.add(uid);
-            //成员信息重新加入系统
-            userManager.playerJoinRoom(room.getRid(),players);
+            //判断房间中人数,多余两人返回false
+            if(players.size()>=2){
+                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                String flag = "false";
+                out.write(flag.getBytes());
+            }else{
+                //添加本成员
+                players.add(uid);
+                //成员信息重新加入系统
+                userManager.playerJoinRoom(room.getRid(),players);
+            }
         }else if(head.equals("fight")){
             //通过rid获取对手Socket
             List<Integer> RoomList =  userManager.getRoomMap(rid);
@@ -64,7 +75,10 @@ public class ResoveSocket {
                 if(!p.equals(uid)){
                     Socket player = userManager.getPlayer(p);
                     DataOutputStream out = new DataOutputStream(player.getOutputStream());
-                    out.writeUTF("fight@"+body);
+                    String str = "fight@"+body;
+                    byte [] b = str.getBytes();
+                    out.write(b);
+                    //out.writeUTF("fight@"+body);
                 }
             }
         }else if(head.equals("roomList")){
@@ -75,9 +89,15 @@ public class ResoveSocket {
             DataOutputStream out = new DataOutputStream(client.getOutputStream());
             //创建头信息
             String roomList = "RoomList@";
-            Set<Integer> roomSet = mapList.keySet();
+            List<Room> room = new ArrayList<Room>();
+            for(Map.Entry<Integer,List<Integer>> entry: mapList.entrySet()){
+                Room r = new Room();
+                r.setRid(entry.getKey());
+                room.add(r);
+            }
             //返回信息
-            out.writeUTF(roomList+obj.writeValueAsString(mapList));
+            String str = roomList+obj.writeValueAsString(room);
+            out.write(str.getBytes());
         }else if(head.equals("Closed")){
             //下线,清除用户
             userManager.removePlayer(uid);
@@ -98,7 +118,32 @@ public class ResoveSocket {
             }else {
                 userManager.playerJoinRoom(rid,room);
             }
+        }else if(head.equals("unlion")){
+            //用户下线
+            userManager.removePlayer(uid);
+            socket.close();
+        }else if(head.equals("GameOver")){
+            //比赛完成,游戏结束,成绩存入数据库
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //当前时间
+            String date = dateFormat.format(new Date());
+        }else if(head.equals("Invite")){
+            User user  = obj.readValue(body,User.class);
+            //获取好友的套接字
+            Socket friendSocket = userManager.getPlayer(user.getId());
+            //如果获取不到socket,说明用户不在线
+            if(friendSocket==null){
+                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                String inviteMessage = "unlion";
+                out.write(inviteMessage.getBytes());
+            } else {
+                //如果好友在线,向好友发送邀请信息
+                DataOutputStream out = new DataOutputStream(friendSocket.getOutputStream());
+                Room room = new Room();
+                room.setRid(rid);
+                String inviteMessage = "invite@"+obj.writeValueAsString(user)+"@"+obj.writeValueAsString(room);
+                out.write(inviteMessage.getBytes());
+            }
         }
     }
-
 }
