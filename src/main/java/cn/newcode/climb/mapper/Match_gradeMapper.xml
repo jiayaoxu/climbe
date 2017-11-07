@@ -111,7 +111,7 @@
       <if test="sgrade != null" >
         sgrade = #{sgrade},
       </if>
-      <if test="trade != null" >
+      <if test="tgrade != null" >
         tgrade = #{tgrade},
       </if>
       <if test="fgrade != null" >
