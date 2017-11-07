@@ -147,6 +147,7 @@ public class MatchServiceImpl implements MatchService {
     public Grade getGrade(Match_grade matchGrade) throws Exception {
         Integer mid = matchGrade.getMid();
         Integer totalPlayer = match_signupMapper.selectMatched(mid);
+        //设置系统耐心值
         int i = 0;
         while(!totalPlayer.equals(match_gradeMapper.selectGradeCount(mid))){
             Thread.sleep(500);
@@ -214,7 +215,8 @@ public class MatchServiceImpl implements MatchService {
             if(uid.equals(rank.get(i))){
                 //List中能找到自己,说明有资格
                 OwnFlag = true;
-                MatchUid = rank.get(rank.size()-i+2);
+                MatchUid = rank.get(rank.size()-i-1);
+                break;
             }
         }
         //如果没找到自己,说明自己已经被PK,没有下一场参赛资格
@@ -248,8 +250,8 @@ public class MatchServiceImpl implements MatchService {
         }
         //判断第几次比赛
         if(degree==2){
-            OwnGrade = OwnMg.getTgrade();
-            MatchGrade = MatchMg.getTgrade();
+            OwnGrade = OwnMg.getSgrade();
+            MatchGrade = MatchMg.getSgrade();
         }else if(degree==3){
             OwnGrade = OwnMg.getTgrade();
             MatchGrade = MatchMg.getTgrade();
@@ -264,13 +266,13 @@ public class MatchServiceImpl implements MatchService {
         //如果自己的成绩大于对手的成绩(时间),说明自己输了,比赛结束,反之说明自己赢了
         if(OwnGrade>MatchGrade){
             //自己输了,将自己除名
-            rank.remove(i+1);
+            rank.remove(i);
             //重新设回内存
             gradeManager.addMathcRanking(mid,rank);
             return false;
         }else{
             //对手输了,对手除名
-            rank.remove(rank.size()-i+2);
+            rank.remove(rank.size()-i-1);
             gradeManager.addMathcRanking(mid,rank);
             return true;
         }
