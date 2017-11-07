@@ -1,5 +1,6 @@
 package cn.newcode.climb.controller;
 
+import cn.newcode.climb.Fight.SocketServlet;
 import cn.newcode.climb.po.Match;
 import cn.newcode.climb.po.Match_grade;
 import cn.newcode.climb.po.Match_inf;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
@@ -154,7 +156,7 @@ public class MatchController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/requiedMatch",method = RequestMethod.GET)
+    @RequestMapping(value = "/requiedMatch",method = RequestMethod.POST)
     public @ResponseBody String requiedMatch(HttpServletResponse response,Match_signup signup) throws JsonProcessingException {
         response.setHeader("Access-Control-Allow-Origin","*");
         //查询是否报名,并将status置为true
@@ -247,8 +249,28 @@ public class MatchController {
         statusMessage = new Status();
         try {
             Boolean flag = matchService.getGradeRise(matchGrade,degree);
-            statusMessage.setSuccess("flag");
+            statusMessage.setSuccess(flag+"");
         } catch (Exception e) {
+            statusMessage.setError("SystemError");
+            e.printStackTrace();
+        }
+
+        return objectMapper.writeValueAsString(statusMessage);
+    }
+
+    /**
+     * 启动对战模块端口
+     * @param response
+     */
+    @RequestMapping(value = "/startFight")
+    public @ResponseBody  String startFight(HttpServletResponse response) throws JsonProcessingException {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        SocketServlet socketServlet = new SocketServlet();
+        statusMessage = new Status();
+        try {
+            socketServlet.init();
+            statusMessage.setSuccess("Success");
+        } catch (ServletException e) {
             statusMessage.setError("SystemError");
             e.printStackTrace();
         }
