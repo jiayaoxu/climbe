@@ -10,6 +10,15 @@ public class Status {
     private String Success;
     private String Error;
 
+    public Status(){
+
+    }
+
+    public Status(String success,String error){
+        this.Success = success;
+        this.Error = error;
+    }
+
     public String getSuccess() {
         return Success;
     }
