@@ -27,7 +27,7 @@ import java.util.List;
  * @Version: 1.0
  */
 @Service("matchService")
-@CacheConfig(cacheNames = "match")
+//@CacheConfig(cacheNames = "match")
 public class MatchServiceImpl implements MatchService {
 
     @Autowired
@@ -43,7 +43,7 @@ public class MatchServiceImpl implements MatchService {
     private Match_infMapper match_infMapper;
 
     @Override
-    @Cacheable
+    //@Cacheable
     public List<Match> selectMatchs(Boolean status) throws Exception {
         return matchMapper.selectMatchs(status);
     }
@@ -55,7 +55,7 @@ public class MatchServiceImpl implements MatchService {
      * @throws Exception
      */
     @Override
-    @CachePut
+    //@CachePut
     public int insertSelective(Match match, Match_inf match_inf) throws Exception {
         matchMapper.insertSelective(match);
 
@@ -73,7 +73,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    @CachePut
+    //@CachePut
     public int updateByPrimaryKeySelective(Match match) throws Exception {
         return matchMapper.updateByPrimaryKeySelective(match);
     }
@@ -85,7 +85,7 @@ public class MatchServiceImpl implements MatchService {
      * @throws Exception
      */
     @Override
-    @CachePut
+    //@CachePut
     public Integer insertSelective(Match_grade matchGrade) throws Exception {
         //成绩插入数据库
         match_gradeMapper.insertSelective(matchGrade);
@@ -99,7 +99,7 @@ public class MatchServiceImpl implements MatchService {
      * @throws Exception
      */
     @Override
-    @Cacheable
+    //@Cacheable
     public List<grade> seletcMatchList(Integer mid) throws Exception {
         return match_gradeMapper.selectGrade(mid);
     }
@@ -111,7 +111,7 @@ public class MatchServiceImpl implements MatchService {
      * @throws Exception
      */
     @Override
-    @CachePut
+    //@CachePut
     public Integer signUpMatch(Match_signup recode) throws Exception {
         recode.setIsmatchd(false);
         return match_signupMapper.insertSelective(recode);
@@ -124,7 +124,7 @@ public class MatchServiceImpl implements MatchService {
      * @throws Exception
      */
     @Override
-    @CachePut
+    //@CachePut
     public Match_inf requiredStart(Match_signup signup) throws Exception {
         signup.setIsmatchd(true);
         match_signupMapper.updateSignUp(signup);
