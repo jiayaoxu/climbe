@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.newcode.climb.mapper.RockPointMapper" >
+  <resultMap id="BaseResultMap" type="cn.newcode.climb.po.RockPoint" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="wid" property="wid" jdbcType="INTEGER" />
+    <result column="roid" property="roid" jdbcType="INTEGER" />
+    <result column="px" property="px" jdbcType="DOUBLE" />
+    <result column="py" property="py" jdbcType="DOUBLE" />
+    <result column="pz" property="pz" jdbcType="DOUBLE" />
+    <result column="ax" property="ax" jdbcType="DOUBLE" />
+    <result column="ay" property="ay" jdbcType="DOUBLE" />
+    <result column="az" property="az" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, wid, roid, px, py, pz, ax, ay, az
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from rockPoint
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectPoints" resultType="cn.newcode.climb.po.RockPoint" parameterType="java.lang.Integer" >
+    select
+    *
+    from rockPoint
+    where wid = #{wid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rockPoint
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.newcode.climb.po.RockPoint" >
+    insert into rockPoint (id, wid, roid, 
+      px, py, pz, ax, 
+      ay, az)
+    values (#{id,jdbcType=INTEGER}, #{wid,jdbcType=INTEGER}, #{roid,jdbcType=INTEGER}, 
+      #{px,jdbcType=DOUBLE}, #{py,jdbcType=DOUBLE}, #{pz,jdbcType=DOUBLE}, #{ax,jdbcType=DOUBLE}, 
+      #{ay,jdbcType=DOUBLE}, #{az,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.newcode.climb.po.RockPoint" >
+    insert into `rockPoint`
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="wid != null" >
+        `wid`,
+      </if>
+      <if test="roid != null" >
+        `roid`,
+      </if>
+      <if test="px != null" >
+        `px`,
+      </if>
+      <if test="py != null" >
+        `py`,
+      </if>
+      <if test="pz != null" >
+        `pz`,
+      </if>
+      <if test="ax != null" >
+        `ax`,
+      </if>
+      <if test="ay != null" >
+        `ay`,
+      </if>
+      <if test="az != null" >
+        `az`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="wid != null" >
+        #{wid,jdbcType=INTEGER},
+      </if>
+      <if test="roid != null" >
+        #{roid,jdbcType=INTEGER},
+      </if>
+      <if test="px != null" >
+        #{px,jdbcType=DOUBLE},
+      </if>
+      <if test="py != null" >
+        #{py,jdbcType=DOUBLE},
+      </if>
+      <if test="pz != null" >
+        #{pz,jdbcType=DOUBLE},
+      </if>
+      <if test="ax != null" >
+        #{ax,jdbcType=DOUBLE},
+      </if>
+      <if test="ay != null" >
+        #{ay,jdbcType=DOUBLE},
+      </if>
+      <if test="az != null" >
+        #{az,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.RockPoint" >
+    update rockPoint
+    <set >
+      <if test="wid != null" >
+        wid = #{wid,jdbcType=INTEGER},
+      </if>
+      <if test="roid != null" >
+        roid = #{roid,jdbcType=INTEGER},
+      </if>
+      <if test="px != null" >
+        px = #{px,jdbcType=DOUBLE},
+      </if>
+      <if test="py != null" >
+        py = #{py,jdbcType=DOUBLE},
+      </if>
+      <if test="pz != null" >
+        pz = #{pz,jdbcType=DOUBLE},
+      </if>
+      <if test="ax != null" >
+        ax = #{ax,jdbcType=DOUBLE},
+      </if>
+      <if test="ay != null" >
+        ay = #{ay,jdbcType=DOUBLE},
+      </if>
+      <if test="az != null" >
+        az = #{az,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.RockPoint" >
+    update rockPoint
+    set wid = #{wid,jdbcType=INTEGER},
+      roid = #{roid,jdbcType=INTEGER},
+      px = #{px,jdbcType=DOUBLE},
+      py = #{py,jdbcType=DOUBLE},
+      pz = #{pz,jdbcType=DOUBLE},
+      ax = #{ax,jdbcType=DOUBLE},
+      ay = #{ay,jdbcType=DOUBLE},
+      az = #{az,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
