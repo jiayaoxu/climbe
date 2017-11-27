@@ -62,10 +62,23 @@ public class ResoveSocket {
             //如果房间用户大于等于两人,向客户端返回false
             if(players.size()>=2){
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                String flag = "false";
+                String flag = "false@";
                 out.write(flag.getBytes());
             }else{
                 //房间添加用户
+                //获取房主id
+                Integer roomHolder = players.get(0);
+                //获取房主socket
+                Socket roomHolderSocket = userManager.getPlayer(roomHolder);
+                //提示房主有人加入
+                DataOutputStream out = new DataOutputStream(roomHolderSocket.getOutputStream());
+                String joinMessage = "join@" + uid;
+                out.write(joinMessage.getBytes());
+
+                DataOutputStream outwiriter = new DataOutputStream(socket.getOutputStream());
+                outwiriter.write(joinMessage.getBytes());
+
+                //房间添加玩家
                 players.add(uid);
                 //房间信息重新设回
                 userManager.playerJoinRoom(room.getRid(),players);
@@ -125,17 +138,18 @@ public class ResoveSocket {
             //进行下线操作
             userManager.removePlayer(uid);
             socket.close();
+            //throw new RuntimeException();
         }else if(head.equals("GameOver")){
             //游戏结束,提交对战数据
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String date = dateFormat.format(new Date());
+            /*SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String date = dateFormat.format(new Date());*/
         }else if(head.equals("Invite")){
             User user  = obj.readValue(body,User.class);
             //获取好友的socket
             Socket friendSocket = userManager.getPlayer(user.getId());
             if(friendSocket==null){
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                String inviteMessage = "unlion";
+                String inviteMessage = "unlion@";
                 out.write(inviteMessage.getBytes());
             } else {
                 DataOutputStream out = new DataOutputStream(friendSocket.getOutputStream());
@@ -143,6 +157,89 @@ public class ResoveSocket {
                 room.setRid(rid);
                 String inviteMessage = "invite@"+obj.writeValueAsString(user)+"@"+obj.writeValueAsString(room);
                 out.write(inviteMessage.getBytes());
+            }
+        }else if(head.equals("JoinWatchRoom")){
+            //观战房间加入,观战房间最多三十个人
+            //获取房间id
+            Room room = obj.readValue(body,Room.class);
+            rid = room.getRid();
+            //查找房间中的用户
+            List<Integer> players = userManager.getWatchRoomMap(rid);
+            //如果房间用户大于等于两人,向客户端返回false
+            if(players.size()>=30){
+                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                String flag = "false@";
+                out.write(flag.getBytes());
+            }else{
+                //房间添加用户
+                //获取房主id
+                Integer roomHolder = players.get(0);
+                //获取房主socket
+                Socket roomHolderSocket = userManager.getPlayer(roomHolder);
+                //提示房主有人加入
+                DataOutputStream out = new DataOutputStream(roomHolderSocket.getOutputStream());
+                String joinMessage = "WatchRoom@" + uid;
+                out.write(joinMessage.getBytes());
+
+                DataOutputStream outwiriter = new DataOutputStream(socket.getOutputStream());
+                outwiriter.write(joinMessage.getBytes());
+
+                //房间添加玩家
+                players.add(uid);
+                //房间信息重新设回
+                userManager.WatchplayerJoinRoom(room.getRid(),players);
+            }
+        }else if(head.equals("CreateWatchRoom")){
+            rid = uid;
+            //通过用户id创建房间
+            userManager.createWatchRoom(uid);
+        }else if(head.equals("ExitWatchRoom")){
+            //列出房间信息
+            List<Integer> room = userManager.getWatchRoomMap(rid);
+            //创建遍历对象
+            Iterator<Integer> it = room.iterator();
+            while(it.hasNext()){
+                Integer player = it.next();
+                if(player.equals(uid)){
+                    it.remove();
+                }
+            }
+            if(room.size()==0){
+                userManager.removeWatchRoom(rid);
+            }else {
+                userManager.WatchplayerJoinRoom(rid,room);
+            }
+        }else if(head.equals("WatchroomList")) {
+            //查询房间列表
+            Map<Integer, List<Integer>> mapList = userManager.getWatchRoomList();
+            //获取用户socket
+            Socket client = userManager.getPlayer(uid);
+            DataOutputStream out = new DataOutputStream(client.getOutputStream());
+            //返回信息数据头
+            String roomList = "WatchRoomList@";
+            List<Room> room = new ArrayList<Room>();
+            for (Map.Entry<Integer, List<Integer>> entry : mapList.entrySet()) {
+                Room r = new Room();
+                r.setRid(entry.getKey());
+                room.add(r);
+            }
+            //返回数据
+            String str = roomList + obj.writeValueAsString(room);
+            out.write(str.getBytes());
+        }else if(head.equals("WatchFight")){
+            //查询本房间
+            List<Integer> RoomList =  userManager.getWatchRoomMap(rid);
+            //遍历用户
+            for(Integer p : RoomList){
+                //将自己的位置信息发送给对手
+                if(!p.equals(uid)){
+                    Socket player = userManager.getPlayer(p);
+                    DataOutputStream out = new DataOutputStream(player.getOutputStream());
+                    String str = "Watchfight@"+body;
+                    byte [] b = str.getBytes();
+                    out.write(b);
+                    //out.writeUTF("fight@"+body);
+                }
             }
         }
     }
