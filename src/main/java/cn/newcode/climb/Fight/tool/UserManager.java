@@ -25,6 +25,11 @@ public class UserManager {
     */
    private Map<Integer,List<Integer>> roomMap = new HashMap<Integer, List<Integer>>();
 
+    /**
+     * 观战房间
+     */
+   private Map<Integer,List<Integer>> watchRoomMap = new HashMap<Integer, List<Integer>>();
+
    private static class Instance{
       private static final UserManager userManager = new UserManager();
    }
@@ -74,7 +79,7 @@ public class UserManager {
    }
 
     /**
-     * 创建房间s
+     * 创建房间
      * @param uid
      */
    public void createRoom(Integer uid){
@@ -84,13 +89,41 @@ public class UserManager {
    }
 
     /**
+     * 创建观战房间
+     * @param
+     */
+    public void createWatchRoom(Integer uid){
+        List<Integer> roomPlayers = new ArrayList<Integer>();
+        roomPlayers.add(uid);
+        watchRoomMap.put(uid,roomPlayers);
+    }
+
+    /**
+     * 观战玩家加入房间
+     * @param rid
+     * @param players
+     */
+   public void WatchplayerJoinRoom(Integer rid,List<Integer> players){
+      watchRoomMap.put(rid,players);
+   }
+
+    /**
      * 玩家加入房间
      * @param rid
      * @param players
      */
-   public void playerJoinRoom(Integer rid,List<Integer> players){
-      roomMap.put(rid,players);
-   }
+    public void playerJoinRoom(Integer rid,List<Integer> players){
+        roomMap.put(rid,players);
+    }
+
+    /**
+     * 获取观战用户房间信息
+     * @param rid
+     * @return
+     */
+    public List<Integer> getWatchRoomMap(Integer rid){
+        return watchRoomMap.get(rid);
+    }
 
     /**
      * 获取用户房间信息
@@ -100,6 +133,14 @@ public class UserManager {
    public List<Integer> getRoomMap(Integer rid){
       return roomMap.get(rid);
    }
+
+    /**
+     * 获取所有观战房间
+     * @return
+     */
+    public Map<Integer, List<Integer>> getWatchRoomList() {
+        return watchRoomMap;
+    }
 
     /**
      * 获取所有房间
@@ -116,4 +157,12 @@ public class UserManager {
    public void removeRoom(Integer rid){
       roomMap.remove(rid);
    }
+
+    /**
+     * 销毁观战房间
+     * @param rid
+     */
+    public void removeWatchRoom(Integer rid){
+        watchRoomMap.remove(rid);
+    }
 }
