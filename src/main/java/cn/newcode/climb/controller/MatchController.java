@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -263,19 +264,19 @@ public class MatchController {
      * @param response
      */
     @RequestMapping(value = "/startFight")
-    public @ResponseBody  String startFight(HttpServletResponse response) throws JsonProcessingException {
+    public void startFight(HttpServletResponse response) throws Exception {
         response.setHeader("Access-Control-Allow-Origin","*");
         SocketServlet socketServlet = new SocketServlet();
         statusMessage = new Status();
+        PrintWriter writer = response.getWriter();
         try {
+            statusMessage.setSuccess("Staring Fighting....");
+            writer.write(objectMapper.writeValueAsString(statusMessage));
             socketServlet.init();
-            statusMessage.setSuccess("Success");
-        } catch (ServletException e) {
+        } catch (Exception e) {
             statusMessage.setError("SystemError");
+            writer.write(objectMapper.writeValueAsString(statusMessage));
             e.printStackTrace();
         }
-
-        return objectMapper.writeValueAsString(statusMessage);
     }
-
 }
