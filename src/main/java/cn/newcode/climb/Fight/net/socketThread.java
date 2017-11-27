@@ -2,13 +2,16 @@ package cn.newcode.climb.Fight.net;
 
 import cn.newcode.climb.Fight.tool.MLogger;
 import cn.newcode.climb.Fight.tool.ResoveSocket;
+import cn.newcode.climb.Fight.tool.UserCacheManager;
 import cn.newcode.climb.Fight.tool.UserManager;
 import cn.newcode.climb.po.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 public class socketThread implements Runnable {
 
@@ -23,42 +26,102 @@ public class socketThread implements Runnable {
         ResoveSocket resove = new ResoveSocket();
         boolean connected = true;
         Integer uid = null;
-        MLogger.info("新玩家上线了");
+        MLogger.info("new Player onlion....");
         DataInputStream input = null;
-        while (connected) {
+        while (connected){
             try {
+                //获取数据长度
                 input = new DataInputStream(socket.getInputStream());
+                byte [] head = new byte[4];
+                input.read(head);
+                Integer Length = Integer.parseInt(new String(head));
                 // 接受传来的数据,转为字符串
-                byte[] b = new byte[socket.getSendBufferSize()];
-                int len = input.read(b);// 此处需要获取读取字节的实际长度
-                String s = new String(b, 0, len);// 根据实际长度获取
+                byte[] b = new byte[Length];
+                input.read(b);// 接收数据
+                //抛出异常,注销房间，下线
+                String s = new String(b, 0,Length);// 根据实际长度获取
                 if (s.equals("") || s == null || !s.contains("@")) {
+                    //截获空包
                     continue;
                 } else if (s.split("@")[0].equals("onlion")) {
+                    //截获上线包，存储uid
                     ObjectMapper obj = new ObjectMapper();
                     User user = obj.readValue(s.split("@")[1], User.class);
                     uid = user.getId();
                 }
-                //MLogger.info(s);
-                // write("aa:"+s+":aa\r\n");
                 // 转完后的字符串交给处理类进行处理
                 //通过结束标志符号分割包
                 String [] message = s.split("&");
                 for(String str : message){
-                    MLogger.info("resove"+str);
+                    MLogger.info("resove:"+str);
                     resove.resove(socket, str);
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 connected = false;
-                MLogger.info("玩家已下线");
-                // 系统移除该用户
+                MLogger.info("player unlioning....");
+                MLogger.error(e);
+                //获取用户管理类实例
+                UserManager userManager = UserManager.getInstance();
+                //玩家下线
+                userManager.removePlayer(uid);
+                //普通房间处理
+                //判断玩家是否创建房间,如果有,销毁房间,通知房间里的所有玩家roomDestroied@
+                List<Integer> room =  userManager.getRoomMap(uid);
+                //通知玩家
+                if(room!=null) {
+                    //遍历房间用户
+                    for (Integer userId : room) {
+                        Socket socket = userManager.getPlayer(userId);
+                        DataOutputStream out = null;
+                        try {
+                            out = new DataOutputStream(socket.getOutputStream());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                        String message = "roomDestroied@";
+                        try {
+                            out.write(message.getBytes());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    //移除房间
+                    userManager.removeRoom(uid);
+
+
+                    //观战房间处理
+                    //判断玩家是否创建房间,如果有,销毁房间,通知房间里的所有玩家roomDestroied@
+                    List<Integer> Watchroom = userManager.getRoomMap(uid);
+                    //通知玩家
+                    if (Watchroom != null) {
+                        //遍历房间用户
+                        for (Integer userId : Watchroom) {
+                            Socket socket = userManager.getPlayer(userId);
+                            DataOutputStream out = null;
+                            try {
+                                out = new DataOutputStream(socket.getOutputStream());
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                            String message = "WatchroomDestroied@";
+                            try {
+                                out.write(message.getBytes());
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        //移除房间
+                        userManager.removeWatchRoom(uid);
+                    }
+                }
+
+                //玩家连接关闭
                 try {
                     socket.close();
-                    UserManager.getInstance().removePlayer(uid);
                 } catch (IOException e1) {
-                    MLogger.error(e1);
+                    e1.printStackTrace();
                 }
-                MLogger.error(e);
+                break;
             }
         }
     }
