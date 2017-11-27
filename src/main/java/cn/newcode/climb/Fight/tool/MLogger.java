@@ -14,5 +14,6 @@ public class MLogger {
 	}
 	public static void error(Throwable e) {
 		log.error("", e);
+
 	}
 }
