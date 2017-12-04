@@ -25,11 +25,24 @@ public class UserManager {
     */
    private Map<Integer,List<Integer>> roomMap = new HashMap<Integer, List<Integer>>();
 
+    public String getRoomPassword(Integer rid) {
+        return roomPassword.get(rid);
+    }
+
+    /**
+     * 房间密码
+     * 房间号,密码
+     */
+   private Map<Integer,String> roomPassword = new HashMap<Integer, String>();
+
     /**
      * 观战房间
      */
    private Map<Integer,List<Integer>> watchRoomMap = new HashMap<Integer, List<Integer>>();
 
+    /**
+     * 进行实例化的内部类
+     */
    private static class Instance{
       private static final UserManager userManager = new UserManager();
    }
@@ -80,22 +93,25 @@ public class UserManager {
 
     /**
      * 创建房间
+     * 需要提供密码
      * @param uid
      */
-   public void createRoom(Integer uid){
+   public void createRoom(Integer uid,String password){
       List<Integer> roomPlayers = new ArrayList<Integer>();
       roomPlayers.add(uid);
       roomMap.put(uid,roomPlayers);
+      roomPassword.put(uid,password);
    }
 
     /**
      * 创建观战房间
      * @param
      */
-    public void createWatchRoom(Integer uid){
+    public void createWatchRoom(Integer uid,String password){
         List<Integer> roomPlayers = new ArrayList<Integer>();
         roomPlayers.add(uid);
         watchRoomMap.put(uid,roomPlayers);
+        roomPassword.put(uid,password);
     }
 
     /**
@@ -152,10 +168,12 @@ public class UserManager {
 
     /**
      * 销毁房间
+     * 移除房间，移除密码
      * @param rid
      */
    public void removeRoom(Integer rid){
       roomMap.remove(rid);
+      roomPassword.remove(rid);
    }
 
     /**
@@ -164,5 +182,6 @@ public class UserManager {
      */
     public void removeWatchRoom(Integer rid){
         watchRoomMap.remove(rid);
+        roomPassword.remove(rid);
     }
 }

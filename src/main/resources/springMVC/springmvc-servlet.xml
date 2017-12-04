@@ -35,7 +35,7 @@
     <!-- <mvc:resources location="/**" mapping="/**" /> -->
     <!-- 页面框架资源 -->
     <!-- <mvc:resources location="/assets/" mapping="/assets/**" /> -->
-    <!-- <mvc:resources location="/UEditer/" mapping="/UEditer/**" /> -->
+     <mvc:resources location="/static/" mapping="/static/**" />
 
     <!-- 只要实现HandlerExceptionResolver就是全局异常处理器 -->
     <!--<bean class="cn.shine.ssm.exception.CustomExceptionResolver"></bean>-->

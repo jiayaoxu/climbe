@@ -18,10 +18,6 @@ public class UserCacheManager {
         jedis = new RedisUtil().getJedis();
     }
 
-    /**
-     * 添加玩家
-     */
-    public void addPlayer(){
 
-    }
+
 }

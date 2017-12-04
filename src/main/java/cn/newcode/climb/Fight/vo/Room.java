@@ -9,6 +9,16 @@ package cn.newcode.climb.Fight.vo;
 public class Room {
     private Integer rid;
 
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Integer getRid() {
         return rid;
     }

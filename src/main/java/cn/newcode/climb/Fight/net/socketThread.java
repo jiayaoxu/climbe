@@ -7,6 +7,7 @@ import cn.newcode.climb.Fight.tool.UserManager;
 import cn.newcode.climb.po.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -17,13 +18,23 @@ public class socketThread implements Runnable {
 
     private Socket socket;
 
+    private Integer max = 0;
+
     public socketThread(Socket socket) throws IOException {
         this.socket = socket;
     }
 
     @Override
     public void run() {
-        ResoveSocket resove = new ResoveSocket();
+
+        ResoveSocket resove = null;
+
+        try{
+            resove = new ResoveSocket(socket);
+        } catch (Exception e){
+            MLogger.error(e);
+        }
+
         boolean connected = true;
         Integer uid = null;
         MLogger.info("new Player onlion....");
@@ -32,14 +43,23 @@ public class socketThread implements Runnable {
             try {
                 //获取数据长度
                 input = new DataInputStream(socket.getInputStream());
+                /*
                 byte [] head = new byte[4];
                 input.read(head);
-                Integer Length = Integer.parseInt(new String(head));
+                int Length = byteToInt2(head);
+                //System.out.println(byteArrayToInt(head));
                 // 接受传来的数据,转为字符串
-                byte[] b = new byte[Length];
+                MLogger.info("数据头长度"+Length);
+                if(Length>max) max = Length;
+                System.out.println(max);
+                if(Length<1){
+                    continue;
+                }*/
+                byte[] b = new byte[1024];
                 input.read(b);// 接收数据
                 //抛出异常,注销房间，下线
-                String s = new String(b, 0,Length);// 根据实际长度获取
+                String s = new String(b, 0,1024);// 根据实际长度获取
+                //截获特殊包
                 if (s.equals("") || s == null || !s.contains("@")) {
                     //截获空包
                     continue;
@@ -49,16 +69,18 @@ public class socketThread implements Runnable {
                     User user = obj.readValue(s.split("@")[1], User.class);
                     uid = user.getId();
                 }
+
                 // 转完后的字符串交给处理类进行处理
                 //通过结束标志符号分割包
                 String [] message = s.split("&");
                 for(String str : message){
                     MLogger.info("resove:"+str);
-                    resove.resove(socket, str);
+                    resove.resove(str);
                 }
+
             } catch (Exception e) {
                 connected = false;
-                MLogger.info("player unlioning....");
+                MLogger.info("player unlioning...." + uid);
                 MLogger.error(e);
                 //获取用户管理类实例
                 UserManager userManager = UserManager.getInstance();
@@ -69,52 +91,44 @@ public class socketThread implements Runnable {
                 List<Integer> room =  userManager.getRoomMap(uid);
                 //通知玩家
                 if(room!=null) {
-                    //遍历房间用户
-                    for (Integer userId : room) {
-                        Socket socket = userManager.getPlayer(userId);
-                        DataOutputStream out = null;
                         try {
-                            out = new DataOutputStream(socket.getOutputStream());
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                        String message = "roomDestroied@";
-                        try {
-                            out.write(message.getBytes());
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                            //遍历房间用户
+                            for (Integer userId : room) {
+                                Socket socket = userManager.getPlayer(userId);
+                                DataOutputStream out = null;
+                                out = new DataOutputStream(socket.getOutputStream());
+                                String message = "roomDestroied@";
+                                out.write(message.getBytes());
+                            }
+                        } catch (Exception ee) {
+                            MLogger.error(ee);
+                        } finally {
+                            //移除房间
+                            userManager.removeRoom(uid);
                         }
                     }
-                    //移除房间
-                    userManager.removeRoom(uid);
-
 
                     //观战房间处理
                     //判断玩家是否创建房间,如果有,销毁房间,通知房间里的所有玩家roomDestroied@
                     List<Integer> Watchroom = userManager.getRoomMap(uid);
                     //通知玩家
                     if (Watchroom != null) {
-                        //遍历房间用户
-                        for (Integer userId : Watchroom) {
-                            Socket socket = userManager.getPlayer(userId);
-                            DataOutputStream out = null;
-                            try {
+                        try{
+                            //遍历房间用户
+                            for (Integer userId : Watchroom) {
+                                Socket socket = userManager.getPlayer(userId);
+                                DataOutputStream out = null;
                                 out = new DataOutputStream(socket.getOutputStream());
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
-                            }
-                            String message = "WatchroomDestroied@";
-                            try {
+                                String message = "WatchroomDestroied@";
                                 out.write(message.getBytes());
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
                             }
+                        } catch (Exception eee){
+                            MLogger.error(eee);
+                        } finally {
+                            //移除房间
+                            userManager.removeWatchRoom(uid);
                         }
-                        //移除房间
-                        userManager.removeWatchRoom(uid);
                     }
-                }
-
                 //玩家连接关闭
                 try {
                     socket.close();
@@ -125,4 +139,28 @@ public class socketThread implements Runnable {
             }
         }
     }
+/*    public static int byteToInt(byte[] src, int offset) {
+        int value;
+        value = (int) ((src[offset] & 0xFF)
+                | ((src[offset+1] & 0xFF)<<8)
+                | ((src[offset+2] & 0xFF)<<16)
+                | ((src[offset+3] & 0xFF)<<24));
+        return value;
+    }
+
+    public static int byteToInt2(byte [] src){
+        int value = 0;
+        int count = 0;
+        for(int i : src){
+             if(i>256){
+                 count++;
+             }
+        }
+        return 256*count + src[count];
+    }
+
+    public static byte [] intTobyte(int i){
+        byte [] b = new byte[4];
+        return null;
+    }*/
 }
