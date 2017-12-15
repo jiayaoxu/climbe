@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.newcode.climb.mapper.Rank_recordMapper" >
+  <resultMap id="BaseResultMap" type="cn.newcode.climb.po.Rank_record" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="integral" property="integral" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uid, integral
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rank_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rank_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.newcode.climb.po.Rank_record" >
+    insert into rank_record (id, uid, integral
+      )
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{integral,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.newcode.climb.po.Rank_record" >
+    insert into rank_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="integral != null" >
+        integral,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="integral != null" >
+        #{integral,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.Rank_record" >
+    update rank_record
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="integral != null" >
+        integral = #{integral,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.Rank_record" >
+    update rank_record
+    set uid = #{uid,jdbcType=INTEGER},
+      integral = #{integral,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="addIntegral" parameterType="java.lang.Integer">
+    INSERT INTO
+    rank_record (uid,`integral`)
+    VALUES
+    (#{uid},1)
+    ON DUPLICATE KEY UPDATE `integral`=`integral`+1;
+  </select>
+  <select id="seletcRecordRank" resultType="cn.newcode.climb.vo.Rank_recordVo">
+     SELECT username,integral
+     FROM rank_record,`user`
+     WHERE user.id = rank_record.`uid`
+     ORDER BY integral DESC LIMIT #{startPos},#{pageSize}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM rank_record
+  </select>
+</mapper>

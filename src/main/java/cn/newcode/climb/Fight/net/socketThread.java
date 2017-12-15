@@ -1,13 +1,11 @@
 package cn.newcode.climb.Fight.net;
 
-import cn.newcode.climb.Fight.tool.MLogger;
+import cn.newcode.climb.LogUtil.MLogger;
 import cn.newcode.climb.Fight.tool.ResoveSocket;
-import cn.newcode.climb.Fight.tool.UserCacheManager;
 import cn.newcode.climb.Fight.tool.UserManager;
 import cn.newcode.climb.po.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -17,8 +15,6 @@ import java.util.List;
 public class socketThread implements Runnable {
 
     private Socket socket;
-
-    private Integer max = 0;
 
     public socketThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -43,18 +39,7 @@ public class socketThread implements Runnable {
             try {
                 //获取数据长度
                 input = new DataInputStream(socket.getInputStream());
-                /*
-                byte [] head = new byte[4];
-                input.read(head);
-                int Length = byteToInt2(head);
-                //System.out.println(byteArrayToInt(head));
-                // 接受传来的数据,转为字符串
-                MLogger.info("数据头长度"+Length);
-                if(Length>max) max = Length;
-                System.out.println(max);
-                if(Length<1){
-                    continue;
-                }*/
+                //创建用于接收数据的byte数组
                 byte[] b = new byte[1024];
                 input.read(b);// 接收数据
                 //抛出异常,注销房间，下线

@@ -8,7 +8,7 @@ package cn.newcode.climb.vo;
  */
 public class Status {
     private String Success;
-    private String Error;
+    private String Error ;
 
     public Status(){
 

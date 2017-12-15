@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="climbe:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="climbe-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="climbe:war exploded" />
+    </root>
+  </artifact>
+</component>

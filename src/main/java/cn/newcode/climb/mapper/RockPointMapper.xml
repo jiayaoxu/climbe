@@ -69,6 +69,9 @@
       <if test="az != null" >
         `az`,
       </if>
+      <if test="args != null">
+        `args`,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -97,6 +100,9 @@
       </if>
       <if test="az != null" >
         #{az,jdbcType=DOUBLE},
+      </if>
+      <if test="args != null" >
+        #{args},
       </if>
     </trim>
   </insert>
@@ -139,7 +145,12 @@
       pz = #{pz,jdbcType=DOUBLE},
       ax = #{ax,jdbcType=DOUBLE},
       ay = #{ay,jdbcType=DOUBLE},
-      az = #{az,jdbcType=DOUBLE}
+      az = #{az,jdbcType=DOUBLE},
+      args = #{args}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <delete id="deletePoints" parameterType="java.lang.Integer">
+    DELETE FROM rockPoint
+    WHERE wid = #{wid}
+  </delete>
 </mapper>

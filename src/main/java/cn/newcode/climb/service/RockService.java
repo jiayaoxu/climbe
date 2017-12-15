@@ -58,4 +58,12 @@ public interface RockService {
      * @throws Exception
      */
     List<Rock> selectRocks() throws Exception;
+
+    /**
+     * 通过id查询岩壁的具体信息
+     * @param wid
+     * @return
+     * @throws Exception
+     */
+    RockWall seletcRockWallById(Integer wid) throws Exception;
 }

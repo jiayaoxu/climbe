@@ -52,6 +52,8 @@ public class RockServiceImpl implements RockService {
 
     @Override
     public Integer addPoint(List<RockPoint> points) throws Exception {
+        rockPointMapper.deletePoints(points.get(0).getWid());
+        //在添加之前删除以前的所有岩点
         for(RockPoint p : points){
             rockPointMapper.insertSelective(p);
         }
@@ -66,5 +68,10 @@ public class RockServiceImpl implements RockService {
     @Override
     public List<Rock> selectRocks() throws Exception {
         return rockMapper.selectRocks();
+    }
+
+    @Override
+    public RockWall seletcRockWallById(Integer wid) throws Exception {
+        return rockWallMapper.selectByPrimaryKey(wid);
     }
 }

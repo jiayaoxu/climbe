@@ -1,4 +1,4 @@
-package cn.newcode.climb.Fight.tool;
+package cn.newcode.climb.LogUtil;
 
 
 import org.apache.log4j.LogManager;

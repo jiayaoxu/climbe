@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
@@ -153,6 +154,26 @@ public class RockController {
         }
 
         return objectMapper.writeValueAsString(rocks);
+    }
+
+    /**
+     * 通过wid查询岩壁详细信息
+     * @param response
+     * @param wid
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/selectWallInf",method = RequestMethod.POST)
+    public @ResponseBody String selectWallInf(HttpServletResponse response,Integer wid) throws Exception{
+        response.setHeader("Access-Control-Allow_Origin","*");
+        RockWall rockWall = null;
+        try{
+            rockWall = rockService.seletcRockWallById(wid);
+        } catch (Exception e){
+            e.printStackTrace();
+            return objectMapper.writeValueAsString(new Status("","SystemError"));
+        }
+        return objectMapper.writeValueAsString(rockWall);
     }
 
 }

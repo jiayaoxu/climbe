@@ -8,9 +8,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import cn.newcode.climb.Fight.vo.Room;
+import cn.newcode.climb.po.Rank_teacher;
 import cn.newcode.climb.po.User;
+import cn.newcode.climb.service.RankService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @Description: 解析socket中的信息
@@ -39,6 +42,9 @@ public class ResoveSocket {
      * 输出流
      */
     private DataOutputStream out;
+
+    @Autowired
+    private RankService rankService;
 
     /**
      * 初始化  接收socket 输入流
@@ -296,6 +302,14 @@ public class ResoveSocket {
                     //out.writeUTF("fight@"+body);
                 }
             }
+        }else if(head.equals("addPoint")){
+            //Integer teacher = body!=null?Integer.parseInt(body):null;
+            String str = "addPoint@teacherIsEmpty";
+            if(rid!=null){
+                rankService.addPoint(rid);
+                str = "addPoint@success";
+            }
+            out.write(addCache(str));
         }
     }
 

@@ -79,7 +79,6 @@
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"></property>
     </bean>
-
     <!-- 通知 -->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
@@ -99,4 +98,41 @@
         <aop:advisor advice-ref="txAdvice"
                      pointcut="execution(* cn.newcode.climb.service.impl.*.*(..))" />
     </aop:config>
+
+    <!-- 定时任务start -->
+
+    <!-- 线程执行器配置，用于任务注册 -->
+    <bean id="executor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10" />
+        <property name="maxPoolSize" value="100" />
+        <property name="queueCapacity" value="500" />
+    </bean>
+
+    <!-- 业务对象 -->
+    <bean id="testJobTask" class="cn.newcode.climb.timerUtil.IntegradTimer" />
+
+    <!-- 调度业务 -->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="testJobTask" />
+        <property name="targetMethod" value="executed" />
+    </bean>
+
+    <!-- 增加调用的触发器，触发时间 -->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail" />
+        <property name="cronExpression" value="0 0 0 * * ?" />
+    </bean>
+
+    <!-- 设置调度 -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="cronTrigger" />
+            </list>
+        </property>
+        <property name="taskExecutor" ref="executor" />
+    </bean>
+
+    <!-- 定时任务end -->
 </beans>

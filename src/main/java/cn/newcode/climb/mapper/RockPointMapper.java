@@ -25,4 +25,10 @@ public interface RockPointMapper {
      * @return
      */
     List<RockPoint> selectPoints(Integer wid);
+
+    /**
+     * 删除指定岩壁下的所有岩点
+     * @param wid
+     */
+    void deletePoints(Integer wid);
 }

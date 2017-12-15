@@ -9,6 +9,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  *@author:shine
  *@Description:用户信息实现类
@@ -32,6 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private User_classMapper user_classMapper;
+
+    @Autowired
+    private Rank_ageMapper rank_ageMapper;
 
 
     @Override
@@ -89,6 +94,13 @@ public class UserServiceImpl implements UserService {
         userClass.setUid(uid);
         userClass.setOrder(1);
         user_classMapper.insertSelective(userClass);
+
+        //插入创建用户时间
+        //Date now = new Date();
+        Rank_age rank_age = new Rank_age();
+        rank_age.setUid(uid);
+        rank_age.setYear(new Date().getTime());
+        rank_ageMapper.insertSelective(rank_age);
     }
 
 }

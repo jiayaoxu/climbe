@@ -19,6 +19,16 @@ public class RockPoint {
 
     private Double az;
 
+    private String args;
+
+    public String getArgs() {
+        return args;
+    }
+
+    public void setArgs(String args) {
+        this.args = args;
+    }
+
     public Integer getId() {
         return id;
     }

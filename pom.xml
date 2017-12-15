@@ -43,6 +43,7 @@
     <jackson.version>2.4.3</jackson.version>
     <redis.version>2.8.1</redis.version>
     <spring-redis.version>1.7.2.RELEASE</spring-redis.version>
+    <quartz.version>2.2.1</quartz.version>
   </properties>
   <dependencies>
     <!-- junit -->
@@ -66,6 +67,11 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
       <version>${spring.version}</version>
     </dependency>
     <dependency>
@@ -294,6 +300,15 @@
       <artifactId>protobuf-java</artifactId>
       <version>2.5.0</version>
     </dependency>
+
+    <!--定时插件quartz-->
+    <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <version>${quartz.version}</version>
+    </dependency>
+
+
   </dependencies>
   <build>
     <plugins>
