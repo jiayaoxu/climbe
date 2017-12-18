@@ -73,9 +73,16 @@ public class MatchServiceImpl implements MatchService {
         return 1;
     }
 
+    /**
+     * 管理员关掉比赛，分析排名，存储玩家奖牌
+     * @param match
+     * @return
+     * @throws Exception
+     */
     @Override
     //@CachePut
     public int updateByPrimaryKeySelective(Match match) throws Exception {
+
         return matchMapper.updateByPrimaryKeySelective(match);
     }
 

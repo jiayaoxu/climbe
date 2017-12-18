@@ -6,7 +6,7 @@ package cn.newcode.climb.page;
  */
 public class pageBean {
     private int pageNow = 1; // 当前页
-    private int pageSize = 10; // 每页记录显示的数量
+    private int pageSize = 5; // 每页记录显示的数量
     private int totalCount; // 总的记录条数
     private int totalPageCount; // 总的页数
 

@@ -3,10 +3,8 @@ package cn.newcode.climb.matchUtil;
 import cn.newcode.climb.po.Match_grade;
 import cn.newcode.climb.po.grade;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * @Description: 暂时存储成绩
