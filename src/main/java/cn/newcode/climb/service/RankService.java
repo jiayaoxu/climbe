@@ -1,11 +1,9 @@
 package cn.newcode.climb.service;
 
+import cn.newcode.climb.po.Rank_medal;
 import cn.newcode.climb.po.Rank_wall;
 import cn.newcode.climb.po.User;
-import cn.newcode.climb.vo.Rank_ageVo;
-import cn.newcode.climb.vo.Rank_recordVo;
-import cn.newcode.climb.vo.Rank_teacherVo;
-import cn.newcode.climb.vo.Rank_wallVo;
+import cn.newcode.climb.vo.*;
 
 import java.util.List;
 
@@ -99,4 +97,24 @@ public interface RankService {
      * @return
      */
     Integer selectRecordCount();
+
+    /**
+     * 奖牌榜
+     */
+
+    /**
+     * 分页查询奖牌榜
+     * @param startPos
+     * @param pageSize
+     * @param rank_medal
+     * @return
+     */
+    List<Rank_medalVo> rankMedalList(Integer startPos, Integer pageSize, Rank_medal rank_medal);
+
+    /**
+     * 查询某奖牌的总人数
+     * @param medal
+     * @return
+     */
+    Integer selectMedalCount(String medal);
 }

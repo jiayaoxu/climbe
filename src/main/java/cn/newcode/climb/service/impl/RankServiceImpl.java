@@ -1,12 +1,10 @@
 package cn.newcode.climb.service.impl;
 
 import cn.newcode.climb.mapper.*;
+import cn.newcode.climb.po.Rank_medal;
 import cn.newcode.climb.po.Rank_wall;
 import cn.newcode.climb.service.RankService;
-import cn.newcode.climb.vo.Rank_ageVo;
-import cn.newcode.climb.vo.Rank_recordVo;
-import cn.newcode.climb.vo.Rank_teacherVo;
-import cn.newcode.climb.vo.Rank_wallVo;
+import cn.newcode.climb.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -97,5 +95,15 @@ public class RankServiceImpl implements RankService {
     @Override
     public Integer selectRecordCount() {
         return rank_recordMapper.selectCount();
+    }
+
+    @Override
+    public List<Rank_medalVo> rankMedalList(Integer startPos, Integer pageSize, Rank_medal rank_medal) {
+        return rank_medalMapper.seletcRank(startPos, pageSize, rank_medal);
+    }
+
+    @Override
+    public Integer selectMedalCount(String medal) {
+        return rank_medalMapper.selectCount(medal);
     }
 }

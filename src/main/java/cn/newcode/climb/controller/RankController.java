@@ -1,6 +1,7 @@
 package cn.newcode.climb.controller;
 
 import cn.newcode.climb.page.pageBean;
+import cn.newcode.climb.po.Rank_medal;
 import cn.newcode.climb.po.Rank_wall;
 import cn.newcode.climb.service.RankService;
 import cn.newcode.climb.vo.*;
@@ -153,6 +154,41 @@ public class RankController {
         }
 
         return records;
+    }
+
+    /**
+     * 分页查询奖牌榜
+     * @param pageNow
+     * @param medal
+     * @return
+     */
+    @RequestMapping("/selectRankMedal")
+    public @ResponseBody List<Rank_medalVo> selectRankMedal(Integer pageNow,String medal){
+        List<Rank_medalVo> medals = null;
+        int now = 1;
+
+        if(pageNow!=null){
+            now = pageNow;
+        }
+
+        Integer t = 0;
+
+        Integer total = (t = rankService.selectMedalCount(medal))!=0?t:0;
+        pageBean page = new pageBean(now,total);
+        try{
+            Rank_medal rank_medal = new Rank_medal();
+            if(medal.equals("gold_medal")){
+                rank_medal.setGoldMedal(1);
+            }else if(medal.equals("silver_medal")){
+                rank_medal.setSilverMedal(1);
+            }else if(medal.equals("bronze_medal")){
+                rank_medal.setBronzeMedal(1);
+            }
+            medals = rankService.rankMedalList(page.getStartPos(),page.getPageSize(),rank_medal);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return medals;
     }
 
 }

@@ -90,4 +90,33 @@
       bronze_medal = #{bronzeMedal,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="seletcRank" parameterType="cn.newcode.climb.po.Rank_medal" resultType="cn.newcode.climb.vo.Rank_medalVo">
+      SELECT user.username,
+      <if test="Rank_medal.goldMedal!=null">
+        rank_medal.gold_medal AS  `medal`
+      </if>
+      <if test="Rank_medal.silverMedal!=null">
+        rank_medal.silver_medal AS `medal`
+      </if>
+      <if test="Rank_medal.bronzeMedal!=null">
+        rank_medal.bronze_medal AS  `medal`
+      </if>
+    FROM `user`,rank_medal
+    WHERE user.id = rank_medal.uid
+    ORDER BY
+    <if test="Rank_medal.goldMedal!=null">
+      rank_medal.gold_medal
+    </if>
+    <if test="Rank_medal.silverMedal!=null">
+      rank_medal.silver_medal
+    </if>
+    <if test="Rank_medal.bronzeMedal!=null">
+      rank_medal.bronze_medal
+    </if>
+    DESC
+    LIMIT #{startPos},#{pageSize}
+  </select>
+  <select id="selectCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(#{medal}) FROM rank_medal
+  </select>
 </mapper>
