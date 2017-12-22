@@ -1,9 +1,6 @@
 package cn.newcode.climb.controller;
 
-import cn.newcode.climb.po.Rock;
-import cn.newcode.climb.po.RockHall;
-import cn.newcode.climb.po.RockPoint;
-import cn.newcode.climb.po.RockWall;
+import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.RockService;
 import cn.newcode.climb.vo.Status;
 import cn.newcode.climb.vo.rock;
@@ -23,6 +20,9 @@ import java.util.List;
  * @author: shine
  * @CreateDate: 2017/11/18 23:28
  * @Version: 1.0
+ * 墙壁->查询所有墙壁 √
+ * 岩壁->发送岩壁id查询此岩壁下所有岩线
+ * 岩线->查询所有岩点
  */
 @Controller
 @RequestMapping("/rock")
@@ -54,18 +54,18 @@ public class RockController {
     }
 
     /**
-     * 列出岩馆下的所有岩壁
+     * 列出岩馆下的所有岩线
      * @param response
-     * @param hid
+     * @param rsid
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/listWalls")
-    public @ResponseBody String listWalls(HttpServletResponse response,Integer hid) throws Exception{
+    public @ResponseBody String listWalls(HttpServletResponse response,Integer rsid) throws Exception{
         response.setHeader("Access-Control-Allow-Origin","*");
         List<RockWall> walls = null;
         try{
-            walls = rockService.ListWalls(hid);
+            walls = rockService.ListWalls(rsid);
         } catch (Exception e){
             e.printStackTrace();
             return objectMapper.writeValueAsString(new Status("","SystemError"));
@@ -75,7 +75,7 @@ public class RockController {
     }
 
     /**
-     * 创建岩壁
+     * 创建岩线
      * @param response
      * @param rockWall
      * @return
@@ -116,7 +116,7 @@ public class RockController {
     }
 
     /**
-     * 通过岩壁查询所有岩点
+     * 通过岩线查询所有岩点
      * @param response
      * @param wid
      * @return
@@ -132,7 +132,6 @@ public class RockController {
             e.printStackTrace();
             return objectMapper.writeValueAsString(new Status("","SystemError"));
         }
-
         return objectMapper.writeValueAsString(points);
     }
 
@@ -157,7 +156,7 @@ public class RockController {
     }
 
     /**
-     * 通过wid查询岩壁详细信息
+     * 通过wid查询岩线详细信息
      * @param response
      * @param wid
      * @return
@@ -176,4 +175,18 @@ public class RockController {
         return objectMapper.writeValueAsString(rockWall);
     }
 
+    /**
+     * 列出所有的系统岩壁
+     * @return
+     */
+    @RequestMapping(value = "/listAllWalls")
+    public @ResponseBody List<RockWallSys> listAllWalls(){
+        List<RockWallSys> walls = null;
+        try{
+            walls = rockService.listAllWalls();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return walls;
+    }
 }

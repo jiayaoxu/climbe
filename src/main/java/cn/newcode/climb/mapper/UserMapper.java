@@ -1,6 +1,7 @@
 package cn.newcode.climb.mapper;
 
 import cn.newcode.climb.po.User;
+import cn.newcode.climb.vo.PersonalInf;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User seletcByUsername(@Param("username") String username);
+
+    PersonalInf seletcPersonalInf(Integer id);
 }

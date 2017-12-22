@@ -1,9 +1,6 @@
 package cn.newcode.climb.service;
 
-import cn.newcode.climb.po.Rock;
-import cn.newcode.climb.po.RockHall;
-import cn.newcode.climb.po.RockPoint;
-import cn.newcode.climb.po.RockWall;
+import cn.newcode.climb.po.*;
 
 import java.util.List;
 
@@ -66,4 +63,11 @@ public interface RockService {
      * @throws Exception
      */
     RockWall seletcRockWallById(Integer wid) throws Exception;
+
+    /**
+     * 列出所有的系统岩壁
+     * @return
+     * @throws Exception
+     */
+    List<RockWallSys> listAllWalls() throws Exception;
 }

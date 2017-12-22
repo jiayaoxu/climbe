@@ -74,4 +74,30 @@
       password = #{password,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="seletcPersonalInf" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.PersonalInf">
+    SELECT user.username,
+      user_inf.head_img  imgPath ,
+      user_inf.nickName nickname,
+      user_inf.gender gender,
+      user_mood.mood mood ,
+      rank_record.integral record,
+      rank_medal.gold_medal,
+      rank_medal.silver_medal,
+      rank_medal.bronze_medal,
+      rank_teacher.point teach,
+      user_fans.attention,
+      user_fans.fens,
+      t.order
+    FROM `user`,user_inf,user_mood,rank_record,rank_medal ,rank_teacher,user_fans,
+      (SELECT COUNT(flover)  AS `order`
+        FROM rank_wall ,rockWall WHERE rockWall.id = rank_wall.wall AND rockWall.creater = #{id}) t
+    WHERE `user`.id = user_inf.uid
+    AND user.id = user_mood.uid
+    AND rank_record.uid = `user`.id
+    AND rank_medal.id = `user`.id
+    AND rank_teacher.teacher = `user`.id
+    AND `user`.id = #{id}
+    AND `user`.id = user_fans.uid
+
+  </select>
 </mapper>

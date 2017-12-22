@@ -190,5 +190,4 @@ public class RankController {
         }
         return medals;
     }
-
 }

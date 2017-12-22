@@ -1,8 +1,11 @@
 package cn.newcode.climb.controller;
 
+import cn.newcode.climb.mapper.UserMapper;
 import cn.newcode.climb.po.User;
+import cn.newcode.climb.po.User_fans;
 import cn.newcode.climb.po.User_inf;
 import cn.newcode.climb.service.UserService;
+import cn.newcode.climb.vo.PersonalInf;
 import cn.newcode.climb.vo.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -122,6 +125,38 @@ public class UserController {
         }
 
         return objectMapper.writeValueAsString(status);
+    }
+
+    /**
+     * 根据用户id查询用户信息
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectUserInfByUid")
+    public @ResponseBody PersonalInf selectUserInfByUid(Integer uid){
+        PersonalInf person = null;
+        try{
+            person = userService.seletcPersonalInf(uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return person;
+    }
+
+    /**
+     * 添加关注或者粉丝
+     * @param userFans
+     * @return
+     */
+    @RequestMapping(value = "/addPoint")
+    public @ResponseBody Status addPoint(User_fans userFans){
+        try{
+            userService.addPoint(userFans);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return  new Status("Success","");
     }
 
 }

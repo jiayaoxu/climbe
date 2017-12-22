@@ -1,9 +1,8 @@
 package cn.newcode.climb.service;
 
-import cn.newcode.climb.po.Match_inf;
-import cn.newcode.climb.po.Match_signup;
-import cn.newcode.climb.po.User;
-import cn.newcode.climb.po.User_inf;
+import cn.newcode.climb.po.*;
+import cn.newcode.climb.vo.PersonalInf;
+
 /**
  *@author:shine
  *@Description:用户信息service
@@ -36,6 +35,20 @@ public interface UserService {
      */
     Integer updateUserPassword(User user) throws Exception;
 
+    /**
+     * 通过用户id查询用户信息
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    PersonalInf seletcPersonalInf(Integer id) throws Exception;
+
+    /**
+     * 用户点赞/增粉操作
+     * @param user_fans
+     * @throws Exception
+     */
+    void addPoint(User_fans user_fans) throws Exception;
 
 
 }

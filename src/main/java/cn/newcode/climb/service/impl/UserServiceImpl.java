@@ -3,6 +3,7 @@ package cn.newcode.climb.service.impl;
 import cn.newcode.climb.mapper.*;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.UserService;
+import cn.newcode.climb.vo.PersonalInf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
@@ -38,6 +39,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private Rank_ageMapper rank_ageMapper;
 
+    @Autowired
+    private User_moodMapper user_moodMapper;
+
+    @Autowired
+    private User_fansMapper user_fansMapper;
 
     @Override
     //@Cacheable
@@ -67,6 +73,15 @@ public class UserServiceImpl implements UserService {
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
+    @Override
+    public PersonalInf seletcPersonalInf(Integer id) throws Exception {
+        return userMapper.seletcPersonalInf(id);
+    }
+
+    @Override
+    public void addPoint(User_fans user_fans) throws Exception {
+        user_fansMapper.updateByPrimaryKeySelective(user_fans);
+    }
 
 
     /**
@@ -94,6 +109,20 @@ public class UserServiceImpl implements UserService {
         userClass.setUid(uid);
         userClass.setOrder(1);
         user_classMapper.insertSelective(userClass);
+
+        //创建用户心情
+        User_mood userMood = new User_mood();
+        userMood.setUid(uid);
+        userMood.setMood("这家伙很懒,这里什么都没有留下");
+        user_moodMapper.insertSelective(userMood);
+
+        //创建用户粉丝
+        User_fans userFans = new User_fans();
+        userFans.setUid(uid);
+        userFans.setAttention(0);
+        userFans.setFens(0);
+        user_fansMapper.insertSelective(userFans);
+
 
         //插入创建用户时间
         //Date now = new Date();

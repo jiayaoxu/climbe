@@ -11,6 +11,16 @@ public class RockWall {
 
     private String createtime;
 
+    private Integer rsid;
+
+    public Integer getRsid() {
+        return rsid;
+    }
+
+    public void setRsid(Integer rsid) {
+        this.rsid = rsid;
+    }
+
     public Integer getId() {
         return id;
     }

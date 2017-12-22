@@ -1,13 +1,7 @@
 package cn.newcode.climb.service.impl;
 
-import cn.newcode.climb.mapper.RockHallMapper;
-import cn.newcode.climb.mapper.RockMapper;
-import cn.newcode.climb.mapper.RockPointMapper;
-import cn.newcode.climb.mapper.RockWallMapper;
-import cn.newcode.climb.po.Rock;
-import cn.newcode.climb.po.RockHall;
-import cn.newcode.climb.po.RockPoint;
-import cn.newcode.climb.po.RockWall;
+import cn.newcode.climb.mapper.*;
+import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.RockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,14 +29,17 @@ public class RockServiceImpl implements RockService {
     @Autowired
     private RockMapper rockMapper;
 
+    @Autowired
+    private RockWallSysMapper rockWallSysMapper;
+
     @Override
     public List<RockHall> ListHalls() throws Exception {
         return rockHallMapper.selectHalls();
     }
 
     @Override
-    public List<RockWall> ListWalls(Integer hid) throws Exception {
-        return rockWallMapper.selectWalls(hid);
+    public List<RockWall> ListWalls(Integer rsid) throws Exception {
+        return rockWallMapper.selectWalls(rsid);
     }
 
     @Override
@@ -73,5 +70,10 @@ public class RockServiceImpl implements RockService {
     @Override
     public RockWall seletcRockWallById(Integer wid) throws Exception {
         return rockWallMapper.selectByPrimaryKey(wid);
+    }
+
+    @Override
+    public List<RockWallSys> listAllWalls() throws Exception {
+        return rockWallSysMapper.selectAllWalls();
     }
 }
