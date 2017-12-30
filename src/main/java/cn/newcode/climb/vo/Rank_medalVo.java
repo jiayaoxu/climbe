@@ -9,6 +9,16 @@ package cn.newcode.climb.vo;
  * \
  */
 public class Rank_medalVo {
+    private Integer id;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     private String username;
     private Integer medal;
 

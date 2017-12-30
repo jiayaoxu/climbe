@@ -76,4 +76,42 @@
       attention = #{attention,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectFriends" resultType="cn.newcode.climb.vo.FriendsVo">
+    SELECT  id,any_value(gender) gender ,any_value(clubName) clubName,any_value(nickName) nickName,any_value(fens) fens,any_value(attention) attention FROM
+    (
+	SELECT  user_fans.attention id,user_inf.gender gender,club.name clubName, user_inf.nickName nickName,user_fans.attention attention,user_fans.fens fens
+	FROM user_fans,user_inf,club,club_member,user
+	WHERE user_fans.attention = user_inf.uid
+	AND user_fans.attention = club_member.member
+	AND club_member.cid = club.id
+	AND user_fans.uid = #{uid}
+    AND user.id = user_fans.attention
+	<if test="name!=null">
+     AND ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%'))
+    </if>
+	UNION all
+	SELECT  user_fans.fens id,user_inf.gender,club.name,user_inf.nickName,user_fans.attention attention,user_fans.fens fens
+	FROM user_fans,user_inf,club,club_member,user
+	WHERE user_fans.fens = user_inf.uid
+	AND user_fans.fens = club_member.member
+	AND club_member.cid = club.id
+	AND user_fans.uid = #{uid}
+    AND user.id = user_fans.fens
+    <if test="name!=null">
+      AND ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%'))
+    </if>
+    )a
+    GROUP BY a.id
+    LIMIT #{startPos},#{pageSize}
+  </select>
+  <select id="selectCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT COUNT(*)
+    FROM user_fans,user_inf,user
+    WHERE user_fans.uid = #{uid}
+    <if test="name!=null">
+      AND user_fans.fens = user_inf.uid OR user_fans.attention = user_inf.uid
+      AND user_inf.uid = user.id
+      AND ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%'))
+    </if>
+  </select>
 </mapper>

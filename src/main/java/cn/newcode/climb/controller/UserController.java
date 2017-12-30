@@ -5,6 +5,7 @@ import cn.newcode.climb.po.User;
 import cn.newcode.climb.po.User_fans;
 import cn.newcode.climb.po.User_inf;
 import cn.newcode.climb.service.UserService;
+import cn.newcode.climb.vo.IndexVo;
 import cn.newcode.climb.vo.PersonalInf;
 import cn.newcode.climb.vo.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -157,6 +158,22 @@ public class UserController {
             return new Status("","SystemError");
         }
         return  new Status("Success","");
+    }
+
+    /**
+     * 查询游戏首页需要的信息
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectIndex")
+    public @ResponseBody IndexVo selectIndex(Integer uid){
+        IndexVo index = null;
+        try{
+            index = userService.selectIndex(uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return index;
     }
 
 }

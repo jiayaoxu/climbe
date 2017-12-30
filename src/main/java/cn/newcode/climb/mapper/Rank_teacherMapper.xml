@@ -77,7 +77,7 @@
     ON DUPLICATE KEY UPDATE `point`=`point`+1;
   </update>
   <select id="seletcPaging" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.Rank_teacherVo">
-    SELECT username,`point`
+    SELECT username,`point`,user.id
     FROM rank_teacher,`user`
     WHERE `user`.id = rank_teacher.`teacher`
     ORDER BY point DESC

@@ -22,7 +22,7 @@ public class RankController {
 
     private Status status;
 
-    /*@RequestMapping("/addPoint")
+    @RequestMapping("/addPoint")
     public @ResponseBody Status addPoint(Integer teacher){
         try{
             rankService.addPoint(teacher);
@@ -30,7 +30,7 @@ public class RankController {
             return new Status(null,"SystemError");
         }
         return new Status("Success",null);
-    }*/
+    }
 
     @RequestMapping("/seletcRankTeacher")
     public @ResponseBody List<Rank_teacherVo> seletcRankTeacher(Integer pageNow){

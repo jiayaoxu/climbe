@@ -70,7 +70,7 @@
   </update>
   <!--分页查询年龄排行榜-->
   <select id="seletcAgeRank" resultType="cn.newcode.climb.vo.Rank_ageVo">
-    SELECT username,`year`
+    SELECT user.id,username,`year`
     FROM rank_age,`user`
     WHERE user.id = rank_age.uid
     ORDER BY rank_age.year

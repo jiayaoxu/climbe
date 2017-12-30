@@ -1,6 +1,7 @@
 package cn.newcode.climb.service;
 
 import cn.newcode.climb.po.*;
+import cn.newcode.climb.vo.routerClass;
 
 import java.util.List;
 
@@ -70,4 +71,33 @@ public interface RockService {
      * @throws Exception
      */
     List<RockWallSys> listAllWalls() throws Exception;
+
+    /**
+     * 列出岩馆下的所有所有岩线
+     * @param hid
+     * @return
+     * @throws Exception
+     */
+    List<routerClass> listWallsInHall(Integer hid) throws Exception;
+
+    /**
+     * 将线路添加到响应类库
+     * @param rock_wall_default
+     * @throws Exception
+     */
+    Boolean addClass(Rock_wall_default rock_wall_default) throws Exception;
+
+    /**
+     * 查询指定类别下的线路
+     * @param rock_wall_default
+     * @return
+     * @throws Exception
+     */
+    List<routerClass> listWallsInClass(Rock_wall_default rock_wall_default) throws Exception;
+
+    /**
+     * 移除响应类别下的线路
+     * @param id
+     */
+    void removeFromClass(Integer id);
 }

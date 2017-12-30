@@ -102,4 +102,13 @@
       createTime = #{createtime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectByName" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT id FROM  rockWall WHERE  name = #{name}
+  </select>
+  <select id="selectByHid" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.routerClass">
+    SELECT rockWall.id,rockWall.rsid bid,rockWall.name,user_inf.nickName creater,rockWall.createTime time
+    FROM rockWall,user_inf
+    WHERE rockWall.creater = user_inf.uid
+    AND rockWall.hid = #{hid}
+  </select>
 </mapper>

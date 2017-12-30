@@ -3,6 +3,7 @@ package cn.newcode.climb.service.impl;
 import cn.newcode.climb.mapper.*;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.RockService;
+import cn.newcode.climb.vo.routerClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,9 @@ public class RockServiceImpl implements RockService {
     @Autowired
     private RockWallSysMapper rockWallSysMapper;
 
+    @Autowired
+    private Rock_wall_defaultMapper rock_wall_defaultMapper;
+
     @Override
     public List<RockHall> ListHalls() throws Exception {
         return rockHallMapper.selectHalls();
@@ -44,7 +48,8 @@ public class RockServiceImpl implements RockService {
 
     @Override
     public Integer createWall(RockWall wall) throws Exception {
-        return rockWallMapper.insertSelective(wall);
+        rockWallMapper.insertSelective(wall);
+        return rockWallMapper.selectByName(wall.getName());
     }
 
     @Override
@@ -75,5 +80,42 @@ public class RockServiceImpl implements RockService {
     @Override
     public List<RockWallSys> listAllWalls() throws Exception {
         return rockWallSysMapper.selectAllWalls();
+    }
+
+    @Override
+    public List<routerClass> listWallsInHall(Integer hid) throws Exception {
+        return rockWallMapper.selectByHid(hid);
+    }
+
+    @Override
+    public Boolean addClass(Rock_wall_default rock_wall_default) throws Exception {
+        //判断一下库中是否有重复的
+        Boolean flag = false;
+
+        if(rock_wall_default.getCl()==1&&rock_wall_default.getType()!=null){
+            //比赛限制只有一条
+            Integer count = rock_wall_defaultMapper.selectCountContent(rock_wall_default);
+            if(count>=1){
+                rock_wall_defaultMapper.deleteByCl(rock_wall_default);
+            }
+        }
+
+        Integer id = rock_wall_defaultMapper.selectRe(rock_wall_default);
+        if(id==null){
+            rock_wall_defaultMapper.insertSelective(rock_wall_default);
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    @Override
+    public List<routerClass> listWallsInClass(Rock_wall_default rock_wall_default) throws Exception {
+        return rock_wall_defaultMapper.selectByClass(rock_wall_default);
+    }
+
+    @Override
+    public void removeFromClass(Integer id) {
+        rock_wall_defaultMapper.deleteByPrimaryKey(id);
     }
 }

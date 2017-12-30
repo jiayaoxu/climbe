@@ -1,6 +1,7 @@
 package cn.newcode.climb.mapper;
 
 import cn.newcode.climb.po.Match;
+import cn.newcode.climb.vo.MathVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,4 +28,7 @@ public interface MatchMapper {
     int updateByPrimaryKey(Match record);
 
     List<Match> selectMatchs(Boolean status);
+
+    //查询比赛
+    MathVo selectMatch();
 }

@@ -2,6 +2,7 @@ package cn.newcode.climb.service;
 
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.vo.Grade;
+import cn.newcode.climb.vo.MathVo;
 import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface MatchService {
      * @throws Exception
      * @return int
      */
-    int  insertSelective(Match match, Match_inf match_inf) throws Exception;
+    int  insertSelective(Match match, Match_inf match_inf,String date1,String date2,long timestamp) throws Exception;
 
     /**
      * 改变比赛状态(停止比赛)
@@ -100,5 +101,12 @@ public interface MatchService {
      * @return Boolean
      */
     Boolean getGradeRise(Match_grade matchGrade,Integer degree) throws Exception;
+
+    /**
+     * 初赛获取比赛信息
+     * @return
+     * @throws Exception
+     */
+    MathVo getMatchInfo() throws Exception;
 
 }

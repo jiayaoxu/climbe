@@ -14,6 +14,16 @@ public class Match_inf implements Serializable {
 
     private Date starttime;
 
+    private Date starttimeT;
+
+    public Date getStarttimeT() {
+        return starttimeT;
+    }
+
+    public void setStarttimeT(Date starttimeT) {
+        this.starttimeT = starttimeT;
+    }
+
     public Integer getId() {
         return id;
     }

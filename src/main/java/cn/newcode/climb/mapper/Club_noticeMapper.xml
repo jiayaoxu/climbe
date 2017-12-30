@@ -49,6 +49,7 @@
         #{notice,jdbcType=VARCHAR},
       </if>
     </trim>
+    ON DUPLICATE KEY UPDATE `notice`=#{notice,jdbcType=VARCHAR}
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.Club_notice" >
     update club_notice

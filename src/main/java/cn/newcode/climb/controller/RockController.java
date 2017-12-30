@@ -4,6 +4,7 @@ import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.RockService;
 import cn.newcode.climb.vo.Status;
 import cn.newcode.climb.vo.rock;
+import cn.newcode.climb.vo.routerClass;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
@@ -54,7 +55,7 @@ public class RockController {
     }
 
     /**
-     * 列出岩馆下的所有岩线
+     * 列出岩壁下的所有岩线
      * @param response
      * @param rsid
      * @return
@@ -84,14 +85,15 @@ public class RockController {
     @RequestMapping(value = "/createWall")
     public @ResponseBody String createWall(HttpServletResponse response,RockWall rockWall) throws Exception{
         response.setHeader("Access-Control-Allow-Origin","*");
+        Integer wid = null;
         try{
-            rockService.createWall(rockWall);
+            wid = rockService.createWall(rockWall);
         } catch (Exception e){
             e.printStackTrace();
             return objectMapper.writeValueAsString(new Status("","SystemError"));
         }
 
-        return objectMapper.writeValueAsString(new Status("Success",""));
+        return objectMapper.writeValueAsString(new Status(wid+"",""));
     }
 
     /**
@@ -188,5 +190,69 @@ public class RockController {
             e.printStackTrace();
         }
         return walls;
+    }
+
+    /**
+     * 列出岩馆下的所有岩线
+     * @param hid
+     * @return
+     */
+    @RequestMapping(value = "/selectWallsByHid")
+    public @ResponseBody List<routerClass> selectWallsByHid(Integer hid){
+        List<routerClass> walls = null;
+        try{
+            walls = rockService.listWallsInHall(hid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return walls;
+    }
+
+    /**
+     * 指定类库下添加岩线
+     * @param rock_wall_default
+     * @return
+     */
+    @RequestMapping(value = "/addClass")
+    public @ResponseBody Status addClass(Rock_wall_default rock_wall_default){
+        try{
+            if(!rockService.addClass(rock_wall_default))
+                return new Status("","R");
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
+    }
+
+    /**
+     * 查询指定类库下的岩线
+     * @param rock_wall_default
+     * @return
+     */
+    @RequestMapping(value = "/selectClass")
+    public @ResponseBody List<routerClass> selectClass(Rock_wall_default rock_wall_default){
+        List<routerClass> walls = null;
+        try{
+            walls = rockService.listWallsInClass(rock_wall_default);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return walls;
+    }
+
+    /**
+     * 在指定类库下移除线路
+     * @return
+     */
+    @RequestMapping(value = "/removeWall")
+    public @ResponseBody Status removeWall(Integer id){
+        try{
+            rockService.removeFromClass(id);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
     }
 }

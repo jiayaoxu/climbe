@@ -91,7 +91,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="seletcRank" parameterType="cn.newcode.climb.po.Rank_medal" resultType="cn.newcode.climb.vo.Rank_medalVo">
-      SELECT user.username,
+      SELECT user.username,user.id,
       <if test="Rank_medal.goldMedal!=null">
         rank_medal.gold_medal AS  `medal`
       </if>

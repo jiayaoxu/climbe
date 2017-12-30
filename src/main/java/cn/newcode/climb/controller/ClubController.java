@@ -5,13 +5,15 @@ import cn.newcode.climb.po.Club;
 import cn.newcode.climb.po.Club_member;
 import cn.newcode.climb.po.Club_notice;
 import cn.newcode.climb.service.ClubService;
+import cn.newcode.climb.vo.ClubMemberVo;
 import cn.newcode.climb.vo.FindClubVo;
-import cn.newcode.climb.vo.Rank_recordVo;
 import cn.newcode.climb.vo.Status;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import java.util.List;
 
@@ -23,8 +25,8 @@ import java.util.List;
  * \* Description:处理俱乐部
  * \
  */
-@Controller
 @RequestMapping("/club")
+@Controller
 public class ClubController {
 
     @Autowired
@@ -37,15 +39,19 @@ public class ClubController {
      * @return
      */
     @RequestMapping(value = "/createClub",produces = "text/json;charset=UTF-8")
-    public @ResponseBody Status createClub(Club club,Integer uid){
+    public @ResponseBody String createClub(Club club, Integer uid) throws Exception{
+        Status status = null;
+        ObjectMapper obj = new ObjectMapper();
         try{
+
             String clubName = club.getName();
             clubService.createClub(club,uid);
+            status = new Status("Success","");
         } catch (Exception e){
             e.printStackTrace();
-            return new Status("","SystemError");
+            return obj.writeValueAsString(new Status("","SystemError"));
         }
-        return new Status("Success","");
+        return obj.writeValueAsString(status);
     }
 
     /**
@@ -53,15 +59,16 @@ public class ClubController {
      * @param club_member
      * @return
      */
-    @RequestMapping(value = "/joinClub")
-    public @ResponseBody Status joinClub(Club_member club_member){
+    @RequestMapping(value = "/joinClub",produces = "text/json;charset=UTF-8")
+    public @ResponseBody String joinClub(Club_member club_member) throws Exception{
+        ObjectMapper obj = new ObjectMapper();
         try{
             clubService.joinClub(club_member);
         } catch (Exception e){
             e.printStackTrace();
-            return new Status("","SystemError");
+            return obj.writeValueAsString(new Status("","SystemError"));
         }
-        return new Status("Success","");
+        return obj.writeValueAsString(new Status("Success",""));
     }
 
     /**
@@ -70,14 +77,15 @@ public class ClubController {
      * @return
      */
     @RequestMapping(value = "/addNotice",produces = "text/json;charset=UTF-8")
-    public @ResponseBody Status addNotice(Club_notice notice){
+    public @ResponseBody String addNotice(Club_notice notice) throws Exception {
+        ObjectMapper obj = new ObjectMapper();
         try{
             clubService.addNotice(notice);
         } catch (Exception e){
             e.printStackTrace();
-            return new Status("","SystemError");
+            return obj.writeValueAsString(new Status("","SystemError"));
         }
-        return new Status("Success","");
+        return obj.writeValueAsString(new Status("Success",""));
     }
 
     /**
@@ -89,13 +97,19 @@ public class ClubController {
     public @ResponseBody String getNotice(Integer cid){
         String notice = null;
         try{
-            clubService.getNotice(cid);
+            notice = clubService.getNotice(cid);
         } catch (Exception e){
             e.printStackTrace();
         }
         return notice;
     }
 
+    /**
+     * 分页查询俱乐部成员
+     * @param pageNow
+     * @param clubName
+     * @return
+     */
     @RequestMapping(value = "/listClub")
     public @ResponseBody List<FindClubVo> listClub(Integer pageNow,String clubName){
         List<FindClubVo> clubs = null;
@@ -116,5 +130,35 @@ public class ClubController {
         }
 
         return clubs;
+    }
+
+    /**
+     * 分页查询俱乐部成员
+     * @param pageNow
+     * @param uid
+     * @param name
+     * @return
+     */
+    @RequestMapping("/selectMember")
+    public @ResponseBody List<ClubMemberVo> selectMember(Integer pageNow,Integer uid,String name){
+        List<ClubMemberVo> members = null;
+        int now = 1;
+
+        if(pageNow!=null){
+            now = pageNow;
+        }
+
+        Integer t = 0;
+
+
+        Integer total = (t = clubService.memberCount(uid, name))!=0?t:0;
+        pageBean page = new pageBean(now,total);
+        try{
+            members = clubService.listMamber(page.getStartPos(),page.getPageSize(),uid,name);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return members;
     }
 }

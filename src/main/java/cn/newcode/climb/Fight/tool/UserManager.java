@@ -93,25 +93,27 @@ public class UserManager {
 
     /**
      * 创建房间
-     * 需要提供密码
+     * 需要提供密码@房间名称
      * @param uid
      */
-   public void createRoom(Integer uid,String password){
+   public void createRoom(Integer uid,String password,String roomName){
       List<Integer> roomPlayers = new ArrayList<Integer>();
       roomPlayers.add(uid);
       roomMap.put(uid,roomPlayers);
-      roomPassword.put(uid,password);
+      String p = roomName+"@"+password;
+      roomPassword.put(uid,p);
    }
 
     /**
      * 创建观战房间
      * @param
      */
-    public void createWatchRoom(Integer uid,String password){
+    public void createWatchRoom(Integer uid,String password,String roomName){
         List<Integer> roomPlayers = new ArrayList<Integer>();
         roomPlayers.add(uid);
+        String p = roomName+"@"+password;
         watchRoomMap.put(uid,roomPlayers);
-        roomPassword.put(uid,password);
+        roomPassword.put(uid,p);
     }
 
     /**
@@ -183,5 +185,9 @@ public class UserManager {
     public void removeWatchRoom(Integer rid){
         watchRoomMap.remove(rid);
         roomPassword.remove(rid);
+    }
+
+    public Map<Integer, String> getRoomPassword() {
+        return roomPassword;
     }
 }

@@ -1,6 +1,7 @@
 package cn.newcode.climb.mapper;
 
 import cn.newcode.climb.po.RockWall;
+import cn.newcode.climb.vo.routerClass;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +31,18 @@ public interface RockWallMapper {
      * @return
      */
     List<RockWall> selectWalls(Integer hid);
+
+    /**
+     * 通过岩线名字查询id
+     * @param name
+     * @return
+     */
+    Integer selectByName(String name);
+
+    /**
+     * 通过岩馆查询馆下所有岩线
+     * @param hid
+     * @return
+     */
+    List<routerClass> selectByHid(Integer hid);
 }

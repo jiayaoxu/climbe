@@ -79,4 +79,28 @@
       position = #{position,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectMember" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.ClubMemberVo">
+    SELECT  club_member.position, user_inf.nickName username,user_inf.head_img headImg,user.id,user_inf.gender
+    From club_member ,`user`,user_inf
+    WHERE club_member.member = user.id
+    AND user.id = user_inf.uid
+    AND club_member.cid = #{cid}
+    <if test="name != null">
+      AND  (user_inf.nickName LIKE  concat(concat('%',#{name}),'%') OR user.username LIKE  concat(concat('%',#{name}),'%'))
+    </if>
+    LIMIT #{startPos},#{pageSize}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer">
+    SELECT  COUNT(*)
+    From club_member ,`user`,user_inf
+    WHERE club_member.member = user.id
+    AND user.id = user_inf.uid
+    AND club_member.cid = #{cid}
+    <if test="name != null">
+      AND  (user_inf.nickName LIKE  concat(concat('%',#{name}),'%') OR user.username LIKE  concat(concat('%',#{name}),'%'))
+    </if>
+  </select>
+  <select id="selectClub" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT cid FROM  club_member WHERE  member = #{id}
+  </select>
 </mapper>

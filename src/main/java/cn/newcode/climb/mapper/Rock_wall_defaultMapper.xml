@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.newcode.climb.mapper.Rock_wall_defaultMapper" >
+  <resultMap id="BaseResultMap" type="cn.newcode.climb.po.Rock_wall_default" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="wid" property="wid" jdbcType="INTEGER" />
+    <result column="cl" property="cl" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, wid, cl, type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rock_wall_default
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rock_wall_default
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.newcode.climb.po.Rock_wall_default" >
+    insert into rock_wall_default (id, wid, cl, 
+      type)
+    values (#{id,jdbcType=INTEGER}, #{wid,jdbcType=INTEGER}, #{cl,jdbcType=INTEGER}, 
+      #{type,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.newcode.climb.po.Rock_wall_default" >
+    insert into rock_wall_default
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="wid != null" >
+        wid,
+      </if>
+      <if test="cl != null" >
+        cl,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="wid != null" >
+        #{wid,jdbcType=INTEGER},
+      </if>
+      <if test="cl != null" >
+        #{cl,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.Rock_wall_default" >
+    update rock_wall_default
+    <set >
+      <if test="wid != null" >
+        wid = #{wid,jdbcType=INTEGER},
+      </if>
+      <if test="cl != null" >
+        cl = #{cl,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.Rock_wall_default" >
+    update rock_wall_default
+    set wid = #{wid,jdbcType=INTEGER},
+      cl = #{cl,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByClass" parameterType="cn.newcode.climb.po.Rock_wall_default" resultType="cn.newcode.climb.vo.routerClass">
+    SELECT  rock_wall_default.id,rockWall.`name`,rockWall.rsid bid,user_inf.nickName  creater,rockWall.createTime,rockWall.id wid
+    FROM    rock_wall_default,rockWall,user_inf
+    WHERE rock_wall_default.wid = rockWall.id
+    AND rockWall.creater = user_inf.uid
+    AND rock_wall_default.cl = #{cl}
+    AND rock_wall_default.type = #{type}
+    AND rockWall.hid = #{hid}
+  </select>
+  <select id="selectRe" parameterType="cn.newcode.climb.po.Rock_wall_default" resultType="java.lang.Integer">
+    SELECT id FROM rock_wall_default WHERE wid = #{wid} AND cl = #{cl} AND `type` = #{type}
+  </select>
+  <select id="selectCountContent" parameterType="cn.newcode.climb.po.Rock_wall_default" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM  rock_wall_default WHERE cl = #{cl} AND type = #{type}
+  </select>
+  <delete id="deleteByCl" parameterType="cn.newcode.climb.po.Rock_wall_default">
+    DELETE FROM rock_wall_default WHERE cl = #{cl} AND type = #{type}
+  </delete>
+</mapper>

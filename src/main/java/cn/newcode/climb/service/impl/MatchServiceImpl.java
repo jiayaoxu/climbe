@@ -1,15 +1,13 @@
 package cn.newcode.climb.service.impl;
 
-import cn.newcode.climb.mapper.MatchMapper;
-import cn.newcode.climb.mapper.Match_gradeMapper;
-import cn.newcode.climb.mapper.Match_infMapper;
-import cn.newcode.climb.mapper.Match_signupMapper;
+import cn.newcode.climb.mapper.*;
 import cn.newcode.climb.matchUtil.GetInMatch;
 import cn.newcode.climb.matchUtil.GradeManager;
 import cn.newcode.climb.matchUtil.timer;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.MatchService;
 import cn.newcode.climb.vo.Grade;
+import cn.newcode.climb.vo.MathVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
@@ -18,8 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @Description: 比赛service具体实现
@@ -43,6 +43,9 @@ public class MatchServiceImpl implements MatchService {
     @Autowired
     private Match_infMapper match_infMapper;
 
+    @Autowired
+    private Rock_wall_defaultMapper rock_wall_defaultMapper;
+
     @Override
     //@Cacheable
     public List<Match> selectMatchs(Boolean status) throws Exception {
@@ -57,19 +60,39 @@ public class MatchServiceImpl implements MatchService {
      */
     @Override
     //@CachePut
-    public int insertSelective(Match match, Match_inf match_inf) throws Exception {
+    public int insertSelective(Match match, Match_inf match_inf,String date1,String date2,long timestamp) throws Exception {
         matchMapper.insertSelective(match);
-
         //通过比赛名称查询刚插入的比赛id
-        int mid = matchMapper.selectBymatchName(match.getName());
+        final int mid = matchMapper.selectBymatchName(match.getName());
         match_inf.setMid(mid);
+        Integer hid = match_inf.getVenue();
+        Rock_wall_default r = new Rock_wall_default();
+        r.setCl(1);
+        r.setType(1);
+        r.setHid(hid);
+        Integer router = rock_wall_defaultMapper.selectByClass(r).get(0).getWid();
+        match_inf.setRoute(router);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d1 = simpleDateFormat.parse(date1);
+        match_inf.setStarttime(d1);
+        Date d2 = simpleDateFormat.parse(date2);
+        match_inf.setStarttimeT(d2);
         //添加比赛其他信息
         match_infMapper.insertSelective(match_inf);
-        //开启比赛计时器
-        timer timer = new timer(match_inf.getStarttime(),mid);
-        //进入线程
-        Thread thread = new Thread(timer);
-        thread.start();
+
+        //开启计时器,计算开始时间，到开始时间才能开始比赛
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                //开启比赛
+                Match m = new Match();
+                m.setId(mid);
+                m.setStatus(true);
+                matchMapper.updateByPrimaryKeySelective(m);
+            }
+        };
+        timer.schedule(task,d1);
         return 1;
     }
 
@@ -82,7 +105,6 @@ public class MatchServiceImpl implements MatchService {
     @Override
     //@CachePut
     public int updateByPrimaryKeySelective(Match match) throws Exception {
-
         return matchMapper.updateByPrimaryKeySelective(match);
     }
 
@@ -286,6 +308,11 @@ public class MatchServiceImpl implements MatchService {
         }
     }
 
+    @Override
+    public MathVo getMatchInfo() throws Exception {
+        return matchMapper.selectMatch();
+    }
+
     /**
      * 海选筛选
      * @param totalPlayer
@@ -348,4 +375,6 @@ public class MatchServiceImpl implements MatchService {
         List<Integer> grades = match_gradeMapper.selectRankList(get);
         gradeManager.addMathcRanking(mid,grades);
     }
+
+
 }

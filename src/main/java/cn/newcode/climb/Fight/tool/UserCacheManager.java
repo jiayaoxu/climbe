@@ -18,6 +18,4 @@ public class UserCacheManager {
         jedis = new RedisUtil().getJedis();
     }
 
-
-
 }

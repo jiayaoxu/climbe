@@ -3,6 +3,7 @@ package cn.newcode.climb.service;
 import cn.newcode.climb.po.Club;
 import cn.newcode.climb.po.Club_member;
 import cn.newcode.climb.po.Club_notice;
+import cn.newcode.climb.vo.ClubMemberVo;
 import cn.newcode.climb.vo.FindClubVo;
 
 import java.util.List;
@@ -55,4 +56,21 @@ public interface ClubService {
      * @return
      */
     Integer count(String clubName);
+
+    /**
+     * 分页查询俱乐部成员
+     * @param startPos
+     * @param pageSize
+     * @param uid
+     * @return
+     */
+    List<ClubMemberVo> listMamber(Integer startPos,Integer pageSize,Integer uid,String name);
+
+    /**
+     * 查询俱乐部成员人数
+     * @param uid
+     * @param name
+     * @return
+     */
+    Integer memberCount(Integer uid,String name);
 }

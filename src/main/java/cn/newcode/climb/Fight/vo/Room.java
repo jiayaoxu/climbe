@@ -11,6 +11,16 @@ public class Room {
 
     private String password;
 
+    private String roomName;
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
     public String getPassword() {
         return password;
     }

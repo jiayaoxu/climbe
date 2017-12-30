@@ -76,9 +76,9 @@
   </select>
   <!--查询排名-->
   <select id="selectRank" resultType="cn.newcode.climb.vo.Rank_wallVo">
-    SELECT `name`,username creater,COUNT(*) flover
-    FROM rank_wall,rockwall,`user`
-    WHERE rank_wall.wall = rockwall.id AND rockwall.`creater` = user.`id`
+    SELECT `name`,username creater,COUNT(*) flover,user.id
+    FROM rank_wall,rockWall,`user`
+    WHERE rank_wall.wall = rockWall.id AND rockWall.`creater` = user.`id`
     GROUP BY wall
     ORDER BY flover DESC
     LIMIT #{startPos},#{pageSize}

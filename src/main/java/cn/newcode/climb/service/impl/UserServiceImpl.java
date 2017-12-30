@@ -3,14 +3,18 @@ package cn.newcode.climb.service.impl;
 import cn.newcode.climb.mapper.*;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.UserService;
+import cn.newcode.climb.vo.FriendsVo;
+import cn.newcode.climb.vo.IndexVo;
 import cn.newcode.climb.vo.PersonalInf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *@author:shine
@@ -45,6 +49,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private User_fansMapper user_fansMapper;
 
+    @Autowired
+    private User_limitMapper user_limitMapper;
+
     @Override
     //@Cacheable
     public User selectByUsername(String username) throws Exception {
@@ -53,6 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     //@CachePut
+    @Transactional
     public void insertRegist(User user, User_inf userInf) throws Exception {
 
         //插入user
@@ -78,9 +86,33 @@ public class UserServiceImpl implements UserService {
         return userMapper.seletcPersonalInf(id);
     }
 
+    /**
+     * 关注操作，关注某人，数据库添加两条数据，关注者添加attention 被关注者添加fens
+     * @param user_fans
+     * @throws Exception
+     */
     @Override
     public void addPoint(User_fans user_fans) throws Exception {
-        user_fansMapper.updateByPrimaryKeySelective(user_fans);
+        user_fansMapper.insertSelective(user_fans);
+        User_fans fans = new User_fans();
+        fans.setUid(user_fans.getAttention());
+        fans.setFens(user_fans.getUid());
+        user_fansMapper.insertSelective(fans);
+    }
+
+    @Override
+    public IndexVo selectIndex(Integer uid) throws Exception {
+        return userMapper.selectIndex(uid);
+    }
+
+    @Override
+    public List<FriendsVo> selectFriends(Integer startPos, Integer pageSize, Integer uid,String name) throws Exception {
+        return user_fansMapper.selectFriends(startPos, pageSize, uid,name);
+    }
+
+    @Override
+    public Integer seletcFrinedCount(Integer uid,String name) throws Exception {
+        return user_fansMapper.selectCount(uid,name);
     }
 
 
@@ -116,20 +148,17 @@ public class UserServiceImpl implements UserService {
         userMood.setMood("这家伙很懒,这里什么都没有留下");
         user_moodMapper.insertSelective(userMood);
 
-        //创建用户粉丝
-        User_fans userFans = new User_fans();
-        userFans.setUid(uid);
-        userFans.setAttention(0);
-        userFans.setFens(0);
-        user_fansMapper.insertSelective(userFans);
-
-
         //插入创建用户时间
         //Date now = new Date();
         Rank_age rank_age = new Rank_age();
         rank_age.setUid(uid);
         rank_age.setYear(new Date().getTime());
         rank_ageMapper.insertSelective(rank_age);
-    }
 
+        //创建用户权限
+        User_limit user_limit = new User_limit();
+        user_limit.setUid(uid);
+        user_limit.setLimit("普");
+        user_limitMapper.insertSelective(user_limit);
+    }
 }

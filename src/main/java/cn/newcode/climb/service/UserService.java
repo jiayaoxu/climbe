@@ -1,7 +1,11 @@
 package cn.newcode.climb.service;
 
 import cn.newcode.climb.po.*;
+import cn.newcode.climb.vo.FriendsVo;
+import cn.newcode.climb.vo.IndexVo;
 import cn.newcode.climb.vo.PersonalInf;
+
+import java.util.List;
 
 /**
  *@author:shine
@@ -50,5 +54,30 @@ public interface UserService {
      */
     void addPoint(User_fans user_fans) throws Exception;
 
+    /**
+     * 查询游戏首页需要的信息
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    IndexVo selectIndex(Integer uid) throws Exception;
+
+    /**
+     * 分页查询好友
+     * @param startPos
+     * @param pageSize
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    List<FriendsVo> selectFriends(Integer startPos,Integer pageSize,Integer uid,String name) throws Exception;
+
+    /**
+     * 查询好友总数
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    Integer seletcFrinedCount(Integer uid,String name) throws Exception;
 
 }

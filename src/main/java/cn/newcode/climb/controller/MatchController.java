@@ -79,13 +79,11 @@ public class MatchController {
      */
     @RequestMapping(value = "/addMatch",produces = "text/json;charset=UTF-8")
     public @ResponseBody String addMatch(
-            HttpServletResponse response, HttpServletRequest request, Match match, Match_inf match_inf,String date) throws JsonProcessingException, ParseException {
+            HttpServletResponse response, HttpServletRequest request,
+            Match match, Match_inf match_inf,String date1,long timestamp,String date2) throws JsonProcessingException, ParseException {
         response.setHeader("Access-Control-Allow-Origin","*");
         statusMessage = new Status();
         String matchName = null;
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date startdate = df.parse(date);
-        match_inf.setStarttime(startdate);
         //字符串转码
         try{
             matchName = new String(
@@ -93,12 +91,12 @@ public class MatchController {
         } catch (Exception e){
             e.printStackTrace();
         }
-
         //转码后的字符串重新设置回po
         match.setName(matchName);
-
+        //新建的比赛默认关闭
+        match.setStatus(false);
         try {
-            int status = matchService.insertSelective(match,match_inf);
+            int status = matchService.insertSelective(match,match_inf,date1,date2,timestamp);
             statusMessage.setSuccess(""+status);
         } catch (Exception e) {
             e.printStackTrace();

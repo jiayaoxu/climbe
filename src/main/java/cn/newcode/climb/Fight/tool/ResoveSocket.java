@@ -77,6 +77,10 @@ public class ResoveSocket {
         if(head.equals("onlion")){
             //获取用户id
             User user = obj.readValue(body,User.class);
+            /**
+             *  登录校验:
+             *  检测该uid是否有用户登录,如果有，通知该用户被顶替,然后进行上线操作
+             */
             //用户id存入在线列表
             userManager.addPlayer(user.getId(),socket);
             //保存用户信息
@@ -88,8 +92,9 @@ public class ResoveSocket {
             out.write(addCache(response));
         }else if(head.equals("CreateRoom")){
             rid = uid;
+            Room room = obj.readValue(body,Room.class);
             //通过用户id创建房间，需要提供密码
-            userManager.createRoom(uid,body);
+            userManager.createRoom(uid,room.getPassword(),room.getRoomName());
             //DataOutputStream out  = new DataOutputStream(socket.getOutputStream());
             String response = "CreateRoom@Success";
             out.write(addCache(response));
@@ -106,7 +111,7 @@ public class ResoveSocket {
                 //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
                 String flag = "false@";
                 out.write(addCache(flag));
-            } if (!userManager.getRoomPassword(rid).equals(userJoinPass)){
+            } if (!userManager.getRoomPassword(rid).split("@")[1].equals(userJoinPass)){
                 //密码不正确
                 //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
                 String response = "JoinRoom@paswordError";
@@ -148,6 +153,7 @@ public class ResoveSocket {
         }else if(head.equals("roomList")){
             //查询房间列表
             Map<Integer,List<Integer>> mapList = userManager.getRoomList();
+            Map<Integer,String> passwordList = userManager.getRoomPassword();
             //获取用户socket
             //Socket client = userManager.getPlayer(uid);
             //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
@@ -157,6 +163,7 @@ public class ResoveSocket {
             for(Map.Entry<Integer,List<Integer>> entry: mapList.entrySet()){
                 Room r = new Room();
                 r.setRid(entry.getKey());
+                r.setRoomName(passwordList.get(entry.getKey()).split("@")[0]);
                 room.add(r);
             }
             //返回数据
@@ -211,8 +218,14 @@ public class ResoveSocket {
                 Room room = new Room();
                 room.setRid(rid);
                 String inviteMessage = "invite@"+obj.writeValueAsString(user)+"@"+obj.writeValueAsString(room);
+                //向好友发送邀请
                 FriendOut.write(addCache(inviteMessage));
+                //通知自己
+                inviteMessage = "invite@Success";
+                out.write(addCache(inviteMessage));
             }
+        }else if(head.equals("BeInvite")){
+
         }else if(head.equals("JoinWatchRoom")){
             //观战房间加入,观战房间最多三十个人
             //获取房间id,房间密码
@@ -226,7 +239,7 @@ public class ResoveSocket {
                 //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
                 String flag = "JoinWatchRoom@false";
                 out.write(addCache(flag));
-            }else if(!userManager.getRoomPassword(rid).equals(userJoinPass)){
+            }else if(!userManager.getRoomPassword(rid).split("@")[1].equals(userJoinPass)){
                 String response = "JoinWatchRoom@passwordError";
                 out.write(addCache(response));
             }else{
@@ -250,8 +263,9 @@ public class ResoveSocket {
             }
         }else if(head.equals("CreateWatchRoom")){
             rid = uid;
+            Room room = obj.readValue(body,Room.class);
             //通过用户id创建房间
-            userManager.createWatchRoom(uid,body);
+            userManager.createWatchRoom(uid,room.getPassword(),room.getRoomName());
             String response = "CreateWatchRoom@Success";
             out.write(addCache(response));
         }else if(head.equals("ExitWatchRoom")){
@@ -273,6 +287,7 @@ public class ResoveSocket {
         }else if(head.equals("WatchroomList")) {
             //查询房间列表
             Map<Integer, List<Integer>> mapList = userManager.getWatchRoomList();
+            Map<Integer,String> passwordList = userManager.getRoomPassword();
             //获取用户socket
             //Socket client = userManager.getPlayer(uid);
             //DataOutputStream out = new DataOutputStream(client.getOutputStream());
@@ -281,6 +296,7 @@ public class ResoveSocket {
             List<Room> room = new ArrayList<Room>();
             for (Map.Entry<Integer, List<Integer>> entry : mapList.entrySet()) {
                 Room r = new Room();
+                r.setRoomName(passwordList.get(entry.getKey()).split("@")[0]);
                 r.setRid(entry.getKey());
                 room.add(r);
             }

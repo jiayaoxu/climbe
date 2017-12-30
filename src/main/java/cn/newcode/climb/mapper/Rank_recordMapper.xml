@@ -76,7 +76,7 @@
     ON DUPLICATE KEY UPDATE `integral`=`integral`+1;
   </select>
   <select id="seletcRecordRank" resultType="cn.newcode.climb.vo.Rank_recordVo">
-     SELECT username,integral
+     SELECT username,integral,user.id
      FROM rank_record,`user`
      WHERE user.id = rank_record.`uid`
      ORDER BY integral DESC LIMIT #{startPos},#{pageSize}

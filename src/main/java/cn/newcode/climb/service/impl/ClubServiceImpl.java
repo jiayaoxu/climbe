@@ -7,6 +7,7 @@ import cn.newcode.climb.po.Club;
 import cn.newcode.climb.po.Club_member;
 import cn.newcode.climb.po.Club_notice;
 import cn.newcode.climb.service.ClubService;
+import cn.newcode.climb.vo.ClubMemberVo;
 import cn.newcode.climb.vo.FindClubVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,5 +73,17 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Integer count(String clubName) {
         return clubMapper.selectCount(clubName);
+    }
+
+    @Override
+    public List<ClubMemberVo> listMamber(Integer startPos, Integer pageSize, Integer uid,String name) {
+        Integer cid = club_memberMapper.selectClub(uid);
+        return club_memberMapper.selectMember(startPos, pageSize, cid,name);
+    }
+
+    @Override
+    public Integer memberCount(Integer uid, String name) {
+        Integer cid = club_memberMapper.selectClub(uid);
+        return club_memberMapper.selectCount(cid, name);
     }
 }
