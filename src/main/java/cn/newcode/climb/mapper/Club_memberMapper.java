@@ -26,7 +26,7 @@ public interface Club_memberMapper {
      * @return
      */
     List<ClubMemberVo> selectMember(@Param("startPos")Integer startPos, @Param("pageSize") Integer pageSize,
-                                    @Param("cid")Integer cid,@Param("name") String name);
+                                    @Param("cid")Integer cid,@Param("name") String name,@Param("uid")Integer uid);
 
     /**
      * 查询俱乐部成员总数
@@ -42,4 +42,9 @@ public interface Club_memberMapper {
      * @return
      */
     Integer selectClub(Integer id);
+
+    /**
+     * 退出俱乐部
+     */
+    void quiteClub(Integer uid);
 }

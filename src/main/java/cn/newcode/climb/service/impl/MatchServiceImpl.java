@@ -6,6 +6,7 @@ import cn.newcode.climb.matchUtil.GradeManager;
 import cn.newcode.climb.matchUtil.timer;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.MatchService;
+import cn.newcode.climb.vo.FinalsMatchVo;
 import cn.newcode.climb.vo.Grade;
 import cn.newcode.climb.vo.MathVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * @Description: 比赛service具体实现
@@ -60,7 +58,7 @@ public class MatchServiceImpl implements MatchService {
      */
     @Override
     //@CachePut
-    public int insertSelective(Match match, Match_inf match_inf,String date1,String date2,long timestamp) throws Exception {
+    public int insertSelective(Match match, Match_inf match_inf, String date1, String date2, final long timestamp) throws Exception {
         matchMapper.insertSelective(match);
         //通过比赛名称查询刚插入的比赛id
         final int mid = matchMapper.selectBymatchName(match.getName());
@@ -90,6 +88,49 @@ public class MatchServiceImpl implements MatchService {
                 m.setId(mid);
                 m.setStatus(true);
                 matchMapper.updateByPrimaryKeySelective(m);
+                Timer timer = new Timer();
+                //开启计时器，计算比赛结束,整理选手成绩
+                TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        //Match m = new Match();
+                        //m.setId(mid);
+                        //m.setStatus(false);
+                        //matchMapper.updateByPrimaryKeySelective(m);
+                        //初赛结束，存储进入决赛的人员
+                        Integer finalPlayer = 0;
+                        Integer count = match_gradeMapper.selectGradeCount(mid);
+                        if(count>=16){
+                            finalPlayer = 16;
+                        }else if(count>=8){
+                            finalPlayer = 8;
+                        }else if(count>=4){
+                            finalPlayer = 4;
+                        }else if(count>=2){
+                            finalPlayer = 2;
+                        }else if(count<2){
+                            finalPlayer = 1;
+                        }
+                        //查询进入决赛的成员
+                        GradeManager gradeManager = GradeManager.getInstance();
+                        Match_grade match_grade = new Match_grade();
+                        match_grade.setMid(mid);
+                        List<FinalsMatchVo> finalsMatchVosList = match_gradeMapper.selectFinal(finalPlayer,match_grade);
+                        //进入决赛的成员设进成绩管理器
+                        Map<Integer,List<Integer>> players = new HashMap<Integer, List<Integer>>();
+                        //排名设入排名管理器
+                        List<Integer> rank = new ArrayList<Integer>();
+                        for(FinalsMatchVo f : finalsMatchVosList){
+                            List<Integer> grade = new ArrayList<Integer>();
+                            grade.add(f.getGrade());
+                            players.put(f.getUid(),grade);
+                            rank.add(f.getUid());
+                        }
+                        gradeManager.setGrade(players);
+                        gradeManager.setRank(rank);
+                    }
+                };
+                timer.schedule(task,timestamp);
             }
         };
         timer.schedule(task,d1);
@@ -105,7 +146,8 @@ public class MatchServiceImpl implements MatchService {
     @Override
     //@CachePut
     public int updateByPrimaryKeySelective(Match match) throws Exception {
-        return matchMapper.updateByPrimaryKeySelective(match);
+        //return matchMapper.updateByPrimaryKeySelective(match);
+        return 0;
     }
 
     /**
@@ -131,10 +173,12 @@ public class MatchServiceImpl implements MatchService {
     @Override
     //@Cacheable
     public List<grade> seletcMatchList(Integer mid) throws Exception {
-        return match_gradeMapper.selectGrade(mid);
+        //return match_gradeMapper.selectGrade(mid);
+        return null;
     }
 
     /**
+     * 暂停不用
      * 海选用户报名比赛
      * @param recode
      * @return
@@ -147,7 +191,7 @@ public class MatchServiceImpl implements MatchService {
         return match_signupMapper.insertSelective(recode);
     }
 
-    /**
+    /**暂停不用
      * 用户请求开始比赛
      * @param signup
      * @return
@@ -175,7 +219,7 @@ public class MatchServiceImpl implements MatchService {
      */
     @Override
     public Grade getGrade(Match_grade matchGrade) throws Exception {
-        Integer mid = matchGrade.getMid();
+        /*Integer mid = matchGrade.getMid();
         Integer totalPlayer = match_signupMapper.selectMatched(mid);
         //设置系统耐心值
         int i = 0;
@@ -203,7 +247,8 @@ public class MatchServiceImpl implements MatchService {
 
         //内存中添加进入复赛的人选
         ruleMethod(mid,hs.getTotal());
-        return grade;
+        return grade;*/
+        return null;
     }
 
     /**
@@ -214,11 +259,18 @@ public class MatchServiceImpl implements MatchService {
      */
     @Override
     public Integer uploadGradeS(Match_grade matchGrade) throws Exception {
-        GradeManager gradeManager = GradeManager.getInstance();
+        /*GradeManager gradeManager = GradeManager.getInstance();
         //插入内存
         gradeManager.setPlayerGrade(matchGrade.getMid(),matchGrade);
         //插入数据库
         return match_gradeMapper.uploadGrade(matchGrade);
+    */
+        return null;
+    }
+
+    @Override
+    public void ruleMethod(Integer mid, Integer total) throws Exception {
+
     }
 
     /**
@@ -228,12 +280,12 @@ public class MatchServiceImpl implements MatchService {
      * 通过获取的排名获取对手uid
      * 通过对手uid获取这一次对手成绩
      * 对比这一次的成绩
-     * @param matchGrade
+     * @param
      * @throws Exception
      */
-    @Override
+
     public Boolean getGradeRise(Match_grade matchGrade,Integer degree) throws Exception {
-        //判断自己是否还有资格
+        /*//判断自己是否还有资格
         Boolean OwnFlag = false;
         Integer uid = matchGrade.getUid();
         Integer mid = matchGrade.getMid();
@@ -305,13 +357,125 @@ public class MatchServiceImpl implements MatchService {
             rank.remove(rank.size()-i-1);
             gradeManager.addMathcRanking(mid,rank);
             return true;
-        }
+        }*/
+        return null;
     }
 
+    /**
+     * 获取比赛信息
+     * @return
+     * @throws Exception
+     */
     @Override
     public MathVo getMatchInfo() throws Exception {
         return matchMapper.selectMatch();
     }
+
+    /**
+     * 查询选手的成绩排名
+     * @param match_grade
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Grade selectRank(Match_grade match_grade) throws Exception {
+        //Grade grade = new Grade();
+        Grade grade = match_gradeMapper.selectRank(match_grade);
+        Integer totalPlayer = match_gradeMapper.selectCountByMid(match_grade.getMid());
+        grade.setHasNext(hadNext(totalPlayer,grade.getRanking()).getIN());
+        return grade;
+    }
+
+    /**
+     * 查询晋级人员
+     * @param mid
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<FinalsMatchVo> selectFinal(Integer mid) throws Exception {
+        Integer count = match_gradeMapper.selectGradeCount(mid);
+        Match_grade match_grade = new Match_grade();
+        match_grade.setMid(mid);
+        int i = 0;
+        if(count>=16){
+            i=16;
+        }else if(count>=8){
+            i=8;
+        }else if(count>=4){
+            i=4;
+        }else if(count>=2){
+            i=2;
+        }else {
+            i=1;
+        }
+        return match_gradeMapper.selectFinal(i,match_grade);
+    }
+
+    /**
+     * 决赛提交成绩
+     * @param match_grade
+     * @throws Exception
+     */
+    @Override
+    public void submitGrade(Match_grade match_grade) throws Exception {
+        GradeManager gradeManager = GradeManager.getInstance();
+        Integer uid = match_grade.getUid();
+        //判断这是第几次提交成绩
+        List<Integer> gradeList = gradeManager.getGrade().get(uid);
+        Integer i = gradeList.size();
+        Integer grade = match_grade.getGrade();
+        if(i==2){
+            match_grade.setSgrade(grade);
+        }else if(i==3){
+            match_grade.setTgrade(grade);
+        }else if(i==4){
+            match_grade.setFgrade(grade);
+        }else if(i==5){
+            match_grade.setFigrade(grade);
+        }
+        gradeList.add(grade);
+        //添加到成绩管理器中
+        Map<Integer,List<Integer>> gManager = gradeManager.getGrade();
+        gManager.put(uid,gradeList);
+        gradeManager.setGrade(gManager);
+        match_grade.setGrade(null);
+        //成绩插入数据库
+        match_gradeMapper.insertSelective(match_grade);
+    }
+
+    @Override
+    public Boolean isWin(Integer uid) throws Exception {
+        GradeManager gradeManager = GradeManager.getInstance();
+        List<Integer> rank = gradeManager.getRank();
+        Map<Integer,List<Integer>> grades = gradeManager.getGrade();
+        int count = 0;
+        for(int i = 0;i<rank.size();i++){
+            count++;
+            if(rank.get(i)==uid){
+                break;
+            }
+        }
+        //获取对手的uid
+        Integer equal = rank.get(rank.size()-(count-1));
+        //判断是第几次成绩比较
+        Integer t = grades.get(uid).size();
+        Integer mg = grades.get(uid).get(t-1);
+        Integer yg = grades.get(equal).get(t-1);
+        Boolean flag = true;
+        if(yg==null){
+            flag = true;
+        } else if(mg==null){
+            flag = false;
+        }else if(mg>yg){
+            flag = true;
+        }else if(mg<yg){
+            flag = false;
+        }
+
+        return flag;
+    }
+
 
     /**
      * 海选筛选
@@ -366,15 +530,14 @@ public class MatchServiceImpl implements MatchService {
      * @param total
      * @throws Exception
      */
-    @Override
-    public void ruleMethod(Integer mid,Integer total) throws Exception {
+    /*public void ruleMethod(Integer mid,Integer total) throws Exception {
         GradeManager gradeManager = GradeManager.getInstance();
         GetInMatch get = new GetInMatch();
         get.setMid(mid);
         get.setTotal(total);
         List<Integer> grades = match_gradeMapper.selectRankList(get);
         gradeManager.addMathcRanking(mid,grades);
-    }
+    }*/
 
 
 }

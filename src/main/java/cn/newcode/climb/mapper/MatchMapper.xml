@@ -79,8 +79,8 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectMatch" resultType="cn.newcode.climb.vo.MathVo">
-    select  a.`name` MatchName, rockHall.`name` hall ,user_inf.nickName  creater,b.startTime,b.startTimeT,b.route route,rockWall.rsid rsid
-    FROM `match` as a ,match_inf as b,rockHall,rockWall,user_inf ,(select min(id)  id from `match` )  c
+    select  a.id mid ,a.`name` MatchName, rockHall.`name` hall ,user_inf.nickName  creater,b.startTime,b.startTimeT,b.route route,rockWall.rsid rsid
+    FROM `match` as a ,match_inf as b,rockHall,rockWall,user_inf ,(select max(id)  id from `match` )  c
     where  a.id = c.id
     AND a.id = b.mid
     AND b.venue = rockHall.id

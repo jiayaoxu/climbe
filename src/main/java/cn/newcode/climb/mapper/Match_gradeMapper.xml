@@ -166,10 +166,10 @@
     match_grade,
     (SELECT
     (@ranknum :=0) ) b
+    WHERE match_grade.mid = #{mid}
     ORDER BY
     grade )u
     WHERE u.rank = #{rank}
-    AND u.mid = #{mid}
   </select>
   <!--查询晋级的id 与 排名-->
   <select id="selectRankList" parameterType="cn.newcode.climb.matchUtil.GetInMatch" resultType="java.lang.Integer">
@@ -188,5 +188,15 @@ FROM
    ORDER BY
      grade )u
     LIMIT 0,#{total}
+  </select>
+  <select id="selectCountByMid" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM match_grade where mid=#{mid}
+  </select>
+  <select id="selectFinal"  resultType="cn.newcode.climb.vo.FinalsMatchVo">
+    SELECT  m.uid,m.grade,user_inf.nickName name,user_inf.gender,user_inf.head_img headImg,club.`name` clubname
+	FROM (match_grade m LEFT JOIN club_member on m.uid = club_member.member) LEFT JOIN club on club_member.cid = club.id,user_inf
+	WHERE mid = #{match.mid}
+	AND m.uid = user_inf.uid
+	ORDER BY m.grade LIMIT 0,#{finalPlayer}
   </select>
 </mapper>

@@ -79,9 +79,19 @@
       position = #{position,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectMember" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.ClubMemberVo">
-    SELECT  club_member.position, user_inf.nickName username,user_inf.head_img headImg,user.id,user_inf.gender
+  <!--SELECT  club_member.position, user_inf.nickName username,user_inf.head_img headImg,user.id,user_inf.gender
     From club_member ,`user`,user_inf
+    WHERE club_member.member = user.id
+    AND user.id = user_inf.uid
+    AND club_member.cid = #{cid}
+    <if test="name != null">
+      AND  (user_inf.nickName LIKE  concat(concat('%',#{name}),'%') OR user.username LIKE  concat(concat('%',#{name}),'%'))
+    </if>
+    LIMIT #{startPos},#{pageSize}-->
+  <select id="selectMember" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.ClubMemberVo">
+    SELECT  club_member.position, user_inf.nickName username,user_inf.head_img headImg,user.id,user_inf.gender,x.attention attention
+    FROM club_member ,`user`,(user_inf LEFT JOIN  (SELECT user_fans.`attention` attention FROM user_fans,club_member ,(SELECT cid FROM club_member WHERE member = #{uid}) c WHERE user_fans.uid = #{uid} AND user_fans.attention IS NOT  NULL AND club_member.cid = c.cid AND user_fans.`attention` = club_member.`member`
+    ) x ON user_inf.`uid` = x.attention)
     WHERE club_member.member = user.id
     AND user.id = user_inf.uid
     AND club_member.cid = #{cid}
@@ -103,4 +113,7 @@
   <select id="selectClub" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     SELECT cid FROM  club_member WHERE  member = #{id}
   </select>
+  <delete id="quiteClub" parameterType="java.lang.Integer">
+    DELETE FROM  club_member WHERE member = #{uid};
+  </delete>
 </mapper>

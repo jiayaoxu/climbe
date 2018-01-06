@@ -73,4 +73,10 @@ public interface ClubService {
      * @return
      */
     Integer memberCount(Integer uid,String name);
+
+    /**
+     * 退出俱乐部
+     * @param uid
+     */
+    void quiteClub(Integer uid);
 }

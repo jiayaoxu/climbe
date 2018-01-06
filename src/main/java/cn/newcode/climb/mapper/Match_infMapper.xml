@@ -45,6 +45,9 @@
       <if test="starttime != null" >
         startTime,
       </if>
+      <if test="starttimeT !=null">
+        startTimeT
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -61,6 +64,9 @@
       </if>
       <if test="starttime != null" >
         #{starttime,jdbcType=DATE},
+      </if>
+      <if test="starttimeT !=null" >
+        #{starttimeT}
       </if>
     </trim>
   </insert>

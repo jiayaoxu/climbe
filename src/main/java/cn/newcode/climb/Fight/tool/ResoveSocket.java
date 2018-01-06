@@ -7,7 +7,9 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import cn.newcode.climb.Fight.vo.Invite;
 import cn.newcode.climb.Fight.vo.Room;
+import cn.newcode.climb.mapper.UserMapper;
 import cn.newcode.climb.po.Rank_teacher;
 import cn.newcode.climb.po.User;
 import cn.newcode.climb.service.RankService;
@@ -224,8 +226,34 @@ public class ResoveSocket {
                 inviteMessage = "invite@Success";
                 out.write(addCache(inviteMessage));
             }
-        }else if(head.equals("BeInvite")){
-
+        }else if(head.equals("ReplayInvite")){
+            Invite i = obj.readValue(body,Invite.class);
+            Socket ss = userManager.getPlayer(i.getId());
+            DataOutputStream outputStream = new DataOutputStream(ss.getOutputStream());
+            Invite invite = new Invite();
+            invite.setId(uid);
+            String joinMessage = "";
+            if(i.getInvite()){
+                invite.setInvite(true);
+                //查找房间中的用户
+                List<Integer> players = userManager.getRoomMap(i.getRid());
+                if(players.size()>=2){
+                    joinMessage = "ReplayInvite@roomFull";
+                }else{
+                    //房间添加玩家
+                    players.add(uid);
+                    //房间信息重新设回
+                    userManager.playerJoinRoom(i.getRid(),players);
+                    joinMessage = "ReplayInvite@Success";
+                    rid = i.getRid();
+                }
+            }else{
+                invite.setInvite(false);
+                joinMessage = "ReplayInvite@Success";
+            }
+            String str = "ReplayInvite@"+obj.writeValueAsString(invite);
+            outputStream.write(addCache(str));
+            out.write(addCache(joinMessage));
         }else if(head.equals("JoinWatchRoom")){
             //观战房间加入,观战房间最多三十个人
             //获取房间id,房间密码

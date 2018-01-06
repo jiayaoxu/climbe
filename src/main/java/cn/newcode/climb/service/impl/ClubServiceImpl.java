@@ -78,12 +78,17 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public List<ClubMemberVo> listMamber(Integer startPos, Integer pageSize, Integer uid,String name) {
         Integer cid = club_memberMapper.selectClub(uid);
-        return club_memberMapper.selectMember(startPos, pageSize, cid,name);
+        return club_memberMapper.selectMember(startPos, pageSize, cid,name,uid);
     }
 
     @Override
     public Integer memberCount(Integer uid, String name) {
         Integer cid = club_memberMapper.selectClub(uid);
         return club_memberMapper.selectCount(cid, name);
+    }
+
+    @Override
+    public void quiteClub(Integer uid) {
+        club_memberMapper.quiteClub(uid);
     }
 }

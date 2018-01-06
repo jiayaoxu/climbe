@@ -6,7 +6,9 @@ import cn.newcode.climb.po.Match_grade;
 import cn.newcode.climb.po.Match_inf;
 import cn.newcode.climb.po.Match_signup;
 import cn.newcode.climb.service.MatchService;
+import cn.newcode.climb.vo.FinalsMatchVo;
 import cn.newcode.climb.vo.Grade;
+import cn.newcode.climb.vo.MathVo;
 import cn.newcode.climb.vo.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,34 +45,7 @@ public class MatchController {
 
     private Status statusMessage ;
 
-    /**
-     * 查找正在进行中比赛
-     * @param response
-     * @param status
-     * @return
-     * @throws JsonProcessingException
-     */
-    @RequestMapping(value = "/selectMatchStatus",method= RequestMethod.POST,
-            produces = "text/json;charset=UTF-8")
-    public @ResponseBody String selectMatchStatus(HttpServletResponse response,Boolean status) throws JsonProcessingException {
-        response.setHeader("Access-Control-Allow-Origin","*");
-        List<Match> matchList = null;
-        String matchs = "";
-        statusMessage = new Status();
-        try {
-            matchList = matchService.selectMatchs(status);
-        } catch (Exception e) {
-            e.printStackTrace();
-            statusMessage.setError("SystemError");
-            return objectMapper.writeValueAsString(statusMessage);
-        }
-
-        matchs = objectMapper.writeValueAsString(matchList);
-
-        return matchs;
-    }
-
-    /**
+    /** 1
      * 管理员添加比赛
      * @param response
      * @param match
@@ -83,16 +58,6 @@ public class MatchController {
             Match match, Match_inf match_inf,String date1,long timestamp,String date2) throws JsonProcessingException, ParseException {
         response.setHeader("Access-Control-Allow-Origin","*");
         statusMessage = new Status();
-        String matchName = null;
-        //字符串转码
-        try{
-            matchName = new String(
-                    match.getName().getBytes("ISO-8859-1"),"UTF-8");
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        //转码后的字符串重新设置回po
-        match.setName(matchName);
         //新建的比赛默认关闭
         match.setStatus(false);
         try {
@@ -106,6 +71,113 @@ public class MatchController {
         return objectMapper.writeValueAsString(statusMessage);
     }
 
+    /** 2
+     * 查找正在进行中比赛
+     * @param response
+     * @param status
+     * @return
+     * @throws JsonProcessingException
+     */
+    @RequestMapping(value = "/selectMatchStatus")
+    public @ResponseBody String selectMatchStatus(HttpServletResponse response, Boolean status) throws Exception{
+        response.setHeader("Access-Control-Allow-Origin","*");
+        MathVo mathVo = null;
+        try{
+            mathVo = matchService.getMatchInfo();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return objectMapper.writeValueAsString(mathVo);
+    }
+
+    /** 3.初赛
+     * 提交选手成绩
+     * @param response
+     * @param matchGrade
+     * @return grade
+     * @throws JsonProcessingException
+     */
+    @RequestMapping(value = "/commitGrade",produces = "text/json;charset=UTF-8")
+    public @ResponseBody String commitGrade(HttpServletResponse response, Match_grade matchGrade) throws JsonProcessingException {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        statusMessage = new Status();
+        try {
+            matchService.insertSelective(matchGrade);
+            statusMessage.setSuccess("Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            statusMessage.setError("SystemError");
+
+        }
+        return objectMapper.writeValueAsString(statusMessage);
+    }
+
+    /** 4.初赛
+     * 获取排名
+     * @param match_grade
+     * @return
+     */
+    @RequestMapping(value = "/getRank")
+    public @ResponseBody Grade getRank(Match_grade match_grade){
+        Grade grade=null;
+        try{
+            grade = matchService.selectRank(match_grade);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return grade;
+    }
+
+    /** 5.
+     * 查询晋级人员
+     * @param mid
+     * @return
+     */
+    @RequestMapping(value = "/selectFinal")
+    public @ResponseBody List<FinalsMatchVo> selectFinal(Integer mid){
+        List<FinalsMatchVo> finalsMatchVos = null;
+        try{
+            //finalsMatchVos = matchService.
+            finalsMatchVos = matchService.selectFinal(mid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return finalsMatchVos;
+    }
+
+    /**
+     * 6.决赛提交成绩
+     * @param match_grade
+     * @return
+     */
+    @RequestMapping(value = "/commitGradeT")
+    public @ResponseBody Status commitGradeT(Match_grade match_grade){
+        try{
+            matchService.submitGrade(match_grade);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
+    }
+
+    /**
+     * 7.决赛查询自己是否胜出
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectIsWin")
+    public @ResponseBody Boolean selectIsWin(Integer uid){
+        Boolean flag = false;
+        try {
+            flag = matchService.isWin(uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
     /**
      * 改变比赛状态(停止比赛)
      * @param response
@@ -113,7 +185,7 @@ public class MatchController {
      * @return status
      * @throws JsonProcessingException
      */
-    @RequestMapping(value = "/stopMatch")
+    /*@RequestMapping(value = "/stopMatch")
     public @ResponseBody String stopMatch(HttpServletResponse response,Match match) throws JsonProcessingException {
         response.setHeader("Access-Control-Allow-Origin","*");
         statusMessage = new Status();
@@ -126,36 +198,16 @@ public class MatchController {
         }
 
         return objectMapper.writeValueAsString(statusMessage);
-    }
+    }*/
 
-    /**
-     * 提交选手成绩
-     * @param response
-     * @param matchGrade
-     * @return grade
-     * @throws JsonProcessingException
-     */
-    @RequestMapping(value = "/commitGrade",produces = "text/json;charset=UTF-8")
-    public @ResponseBody String commitGrade(HttpServletResponse response, Match_grade matchGrade) throws JsonProcessingException {
-        response.setHeader("Access-Control-Allow-Origin","*");
-        statusMessage = new Status();
-        try {
-             matchService.insertSelective(matchGrade);
-            statusMessage.setSuccess("Success");
-        } catch (Exception e) {
-            e.printStackTrace();
-            statusMessage.setError("SystemError");
 
-        }
-        return objectMapper.writeValueAsString(statusMessage);
-    }
 
     /**
      * 请求开始比赛,返回赛场信息
      * @param response
      * @return
      */
-    @RequestMapping(value = "/requiedMatch",method = RequestMethod.POST)
+    /*@RequestMapping(value = "/requiedMatch",method = RequestMethod.POST)
     public @ResponseBody String requiedMatch(HttpServletResponse response,Match_signup signup) throws JsonProcessingException {
         response.setHeader("Access-Control-Allow-Origin","*");
         //查询是否报名,并将status置为true
@@ -167,7 +219,7 @@ public class MatchController {
             return "false";
         }
         return objectMapper.writeValueAsString(matchInf);
-    }
+    }*/
 
 
     /**
@@ -175,7 +227,7 @@ public class MatchController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/signUp",method = RequestMethod.POST)
+    /*@RequestMapping(value = "/signUp",method = RequestMethod.POST)
     public @ResponseBody String signUp(HttpServletResponse response, Match_signup signup) throws JsonProcessingException {
         response.setHeader("Access-Control-Allow-Origin","*");
         statusMessage = new Status();
@@ -188,7 +240,8 @@ public class MatchController {
         }
 
         return objectMapper.writeValueAsString(statusMessage);
-    }
+    }*/
+
 
     /**
      * 海选获取名次
@@ -220,7 +273,7 @@ public class MatchController {
      * @return
      * @throws JsonProcessingException
      */
-    @RequestMapping(value = "/uploadGrade",method = RequestMethod.POST)
+    /*@RequestMapping(value = "/uploadGrade",method = RequestMethod.POST)
     public @ResponseBody String uploadGradeS(HttpServletResponse response,Match_grade matchGrade) throws JsonProcessingException {
         response.setHeader("Access-Control-Allow-Origin","*");
         statusMessage = new Status();
@@ -232,7 +285,7 @@ public class MatchController {
             e.printStackTrace();
         }
         return objectMapper.writeValueAsString(statusMessage);
-    }
+    }*/
 
     /**
      * 查询自己是否进入下一场比赛
@@ -242,7 +295,7 @@ public class MatchController {
      * @return
      * @throws JsonProcessingException
      */
-    @RequestMapping(value = "/getGradeRise",method = RequestMethod.POST)
+    /*@RequestMapping(value = "/getGradeRise",method = RequestMethod.POST)
     public @ResponseBody String getGradeRise(HttpServletResponse response,Match_grade matchGrade,Integer degree) throws JsonProcessingException {
         response.setHeader("Access-Control-Allow-Origin","*");
         statusMessage = new Status();
@@ -255,26 +308,28 @@ public class MatchController {
         }
 
         return objectMapper.writeValueAsString(statusMessage);
-    }
+    }*/
 
-    /**
-     * 启动对战模块端口
-     * @param response
-     */
-    @RequestMapping(value = "/startFight")
-    public void startFight(HttpServletResponse response) throws Exception {
-        response.setHeader("Access-Control-Allow-Origin","*");
-        SocketServlet socketServlet = new SocketServlet();
-        statusMessage = new Status();
-        PrintWriter writer = response.getWriter();
-        try {
-            statusMessage.setSuccess("Staring Fighting....");
-            writer.write(objectMapper.writeValueAsString(statusMessage));
-            socketServlet.init();
-        } catch (Exception e) {
-            statusMessage.setError("SystemError");
-            writer.write(objectMapper.writeValueAsString(statusMessage));
-            e.printStackTrace();
-        }
-    }
+//    /**
+//     * 启动对战模块端口
+//     * @param response
+//     */
+//    @RequestMapping(value = "/startFight")
+//    public void startFight(HttpServletResponse response) throws Exception {
+//        response.setHeader("Access-Control-Allow-Origin","*");
+//        SocketServlet socketServlet = new SocketServlet();
+//        statusMessage = new Status();
+//        PrintWriter writer = response.getWriter();
+//        try {
+//            statusMessage.setSuccess("Staring Fighting....");
+//            writer.write(objectMapper.writeValueAsString(statusMessage));
+//            socketServlet.init();
+//        } catch (Exception e) {
+//            statusMessage.setError("SystemError");
+//            writer.write(objectMapper.writeValueAsString(statusMessage));
+//            e.printStackTrace();
+//        }
+//    }
+
+
 }

@@ -14,6 +14,15 @@ public class ClubMemberVo {
     private String username;
     private String headImg;
     private Boolean gender;
+    private Integer attention;
+
+    public Integer getAttention() {
+        return attention;
+    }
+
+    public void setAttention(Integer attention) {
+        this.attention = attention;
+    }
 
     public Boolean getGender() {
         return gender;

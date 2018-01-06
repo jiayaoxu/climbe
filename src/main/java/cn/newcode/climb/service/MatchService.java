@@ -1,6 +1,7 @@
 package cn.newcode.climb.service;
 
 import cn.newcode.climb.po.*;
+import cn.newcode.climb.vo.FinalsMatchVo;
 import cn.newcode.climb.vo.Grade;
 import cn.newcode.climb.vo.MathVo;
 import com.fasterxml.jackson.databind.deser.DataFormatReaders;
@@ -108,5 +109,35 @@ public interface MatchService {
      * @throws Exception
      */
     MathVo getMatchInfo() throws Exception;
+
+    /**
+     * 查询初赛排名
+     * @param match_grade
+     * @return
+     * @throws Exception
+     */
+    Grade  selectRank(Match_grade match_grade)throws Exception;
+
+    /**
+     * 查询复赛晋级人员
+     * @param mid
+     * @return
+     * @throws Exception
+     */
+    List<FinalsMatchVo> selectFinal(Integer mid)throws Exception;
+
+    /**
+     * 决赛提交成绩
+     * @param match_grade
+     * @throws Exception
+     */
+    void submitGrade(Match_grade match_grade)throws Exception;
+
+    /**
+     * 查询自己是否胜出
+     * @param uid
+     * @throws Exception
+     */
+    Boolean isWin(Integer uid)throws Exception;
 
 }

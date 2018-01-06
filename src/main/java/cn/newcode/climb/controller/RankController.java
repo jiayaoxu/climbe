@@ -32,6 +32,11 @@ public class RankController {
         return new Status("Success",null);
     }
 
+    /**
+     * 查询名师榜排名
+     * @param pageNow
+     * @return
+     */
     @RequestMapping("/seletcRankTeacher")
     public @ResponseBody List<Rank_teacherVo> seletcRankTeacher(Integer pageNow){
         int now = 1;

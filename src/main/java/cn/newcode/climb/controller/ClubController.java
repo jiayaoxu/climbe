@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -160,5 +161,21 @@ public class ClubController {
         }
 
         return members;
+    }
+
+    /**
+     * 退出俱乐部
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/quiteClub")
+    public @ResponseBody Status quiteClub(Integer uid){
+        try{
+            clubService.quiteClub(uid);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
     }
 }

@@ -9,6 +9,16 @@ package cn.newcode.climb.vo;
  * \
  */
 public class MathVo {
+    private Integer mid;
+
+    public Integer getMid() {
+        return mid;
+    }
+
+    public void setMid(Integer mid) {
+        this.mid = mid;
+    }
+
     private String MatchName;
     private String hall;
     private String creater;

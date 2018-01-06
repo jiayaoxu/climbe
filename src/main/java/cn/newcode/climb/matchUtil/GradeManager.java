@@ -15,14 +15,20 @@ import java.util.*;
 public class GradeManager {
 
     /**
-     * 存储排名
-     */
-    private Map<Integer,List<Integer>> grade = new HashMap<Integer, List<Integer>>();
+     * 比赛成员成绩存储器
 
-    /**
-     * 存储对比成绩
      */
-    private Map<Integer,Map<Integer,Match_grade>> playerGrade = new HashMap<Integer, Map<Integer, Match_grade>>();
+    Map<Integer,List<Integer>> grade = new HashMap<Integer, List<Integer>>();
+
+    List<Integer> rank = new ArrayList<Integer>();
+
+    public List<Integer> getRank() {
+        return rank;
+    }
+
+    public void setRank(List<Integer> rank) {
+        this.rank = rank;
+    }
 
     /**
      * 实例化内部类
@@ -33,52 +39,20 @@ public class GradeManager {
 
     private GradeManager(){}
 
+    public Map<Integer, List<Integer>> getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Map<Integer, List<Integer>> grade) {
+        this.grade = grade;
+    }
+
     /**
+
      * 获取实例化
      * @return
      */
     public static GradeManager getInstance(){
         return Instance.gradeManager;
     }
-
-    /**
-     * 添加比赛排名
-     * @param mid
-     * @param ranking
-     */
-    public void addMathcRanking(Integer mid,List<Integer> ranking){
-        grade.put(mid,ranking);
-    }
-
-    /**
-     * 获取比赛排名
-     * @param mid
-     * @return
-     */
-    public List<Integer> getMatchList(Integer mid){
-        return grade.get(mid);
-    }
-
-    /**
-     * 添加对比成绩
-     *
-     * @param mid
-     * @param matchGrade
-     */
-    public void setPlayerGrade(Integer mid,Match_grade matchGrade){
-        Map<Integer,Match_grade> map = playerGrade.get(mid)==null?new HashMap<Integer, Match_grade>():playerGrade.get(mid);
-        map.put(matchGrade.getUid(),matchGrade);
-        playerGrade.put(mid,map);
-    }
-
-    /**
-     * 获取对应赛事的对应玩家的成绩
-     * @param mid
-     * @param uid
-     * @return
-     */
-    public Match_grade completeGrade(Integer mid,Integer uid){
-        return  playerGrade.get(mid).get(uid);
-    }
-
 }

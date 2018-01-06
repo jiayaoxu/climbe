@@ -4,7 +4,9 @@ import cn.newcode.climb.matchUtil.GetInMatch;
 import cn.newcode.climb.po.Match_grade;
 import cn.newcode.climb.po.grade;
 import cn.newcode.climb.po.rank;
+import cn.newcode.climb.vo.FinalsMatchVo;
 import cn.newcode.climb.vo.Grade;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -41,4 +43,8 @@ public interface Match_gradeMapper {
     Integer selectUserByRanking(rank r);
 
     List<Integer> selectRankList(GetInMatch getInMatch);
+
+    Integer selectCountByMid(Integer mid);
+
+    List<FinalsMatchVo> selectFinal(@Param("finalPlayer")Integer finalPalyer, @Param("match")Match_grade match_grade);
 }
