@@ -117,4 +117,36 @@ public interface RankService {
      * @return
      */
     Integer selectMedalCount(String medal);
+
+    /**
+     * 查询自己的排名
+     */
+
+    /**
+     * 查询自己的奖牌排名
+     * @param rank_medal
+     * @return
+     */
+    Integer selectMyMedalRank(Rank_medal rank_medal);
+
+    /**
+     * 查询自己的攀龄榜
+     * @param uid
+     * @return
+     */
+    Integer selectMyAgeRank(Integer uid);
+
+    /**
+     * 查询自己的积分榜
+     * @param uid
+     * @return
+     */
+    Integer selectMyRecordRank(Integer uid);
+
+    /**
+     * 查询自己的名师榜
+     * @param uid
+     * @return
+     */
+    Integer selectMyTeacherRank(Integer uid);
 }

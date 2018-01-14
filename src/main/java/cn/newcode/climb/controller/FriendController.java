@@ -39,13 +39,29 @@ public class FriendController {
             now = pageNow;
         }
         try{
-            Integer t = 0;
+            /*Integer t = 0;
             Integer total = (t=userService.seletcFrinedCount(uid,name))!=0?t:0;
-            pageBean page = new pageBean(now,total);
-            friends = userService.selectFriends(page.getStartPos(),page.getPageSize(),uid,name);
+            pageBean page = new pageBean(now,total);*/
+            friends = userService.selectFriends(uid,name);
         } catch (Exception e){
             e.printStackTrace();
         }
         return friends;
+    }
+
+    /**
+     * 查询好用用来对战邀请
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectFriendsWithFight")
+    public @ResponseBody List<FriendsVo> selectFriendsByName(Integer uid){
+        List<FriendsVo> friendsVos = null;
+        try{
+           friendsVos = userService.selectFriendsWithFight(uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return friendsVos;
     }
 }

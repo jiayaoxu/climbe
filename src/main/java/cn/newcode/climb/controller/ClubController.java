@@ -1,5 +1,6 @@
 package cn.newcode.climb.controller;
 
+import cn.newcode.climb.LoginCheck.net.UserRegister;
 import cn.newcode.climb.page.pageBean;
 import cn.newcode.climb.po.Club;
 import cn.newcode.climb.po.Club_member;
@@ -7,6 +8,7 @@ import cn.newcode.climb.po.Club_notice;
 import cn.newcode.climb.service.ClubService;
 import cn.newcode.climb.vo.ClubMemberVo;
 import cn.newcode.climb.vo.FindClubVo;
+import cn.newcode.climb.vo.OnlionMember;
 import cn.newcode.climb.vo.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +108,7 @@ public class ClubController {
     }
 
     /**
-     * 分页查询俱乐部成员
+     * 分页查询俱乐部
      * @param pageNow
      * @param clubName
      * @return
@@ -177,5 +179,39 @@ public class ClubController {
             return new Status("","SystemError");
         }
         return new Status("Success","");
+    }
+
+    /**
+     * 查询俱乐部成员在线人数
+     * @param cid
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectOnlionMember")
+    public @ResponseBody OnlionMember selectOnlionMember(Integer cid,Integer uid){
+        OnlionMember onlionMember = new OnlionMember();
+        try {
+            onlionMember.setTotal(clubService.memberCount(uid,null));
+            onlionMember.setOnlion(UserRegister.getInstance().getClub().get(cid));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return onlionMember;
+    }
+
+    /**
+     * 通过uid查询cid
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectCidByUid")
+    public @ResponseBody Integer selectCidByUid(Integer uid){
+        Integer cid = null;
+        try{
+            cid = clubService.selectCidByUid(uid);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return cid;
     }
 }

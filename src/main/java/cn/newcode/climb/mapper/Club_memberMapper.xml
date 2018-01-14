@@ -116,4 +116,7 @@
   <delete id="quiteClub" parameterType="java.lang.Integer">
     DELETE FROM  club_member WHERE member = #{uid};
   </delete>
+  <select id="selectBelong" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT cid FROM club_member WHERE member = #{uid}
+  </select>
 </mapper>

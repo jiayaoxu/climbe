@@ -91,4 +91,14 @@ public class ClubServiceImpl implements ClubService {
     public void quiteClub(Integer uid) {
         club_memberMapper.quiteClub(uid);
     }
+
+    @Override
+    public Integer selectBelong(Integer uid) {
+        return club_memberMapper.selectBelong(uid);
+    }
+
+    @Override
+    public Integer selectCidByUid(Integer uid) {
+        return club_memberMapper.selectClub(uid);
+    }
 }

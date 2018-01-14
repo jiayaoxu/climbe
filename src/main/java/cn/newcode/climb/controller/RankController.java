@@ -195,4 +195,72 @@ public class RankController {
         }
         return medals;
     }
+
+    /**
+     * 查询本人排名
+     */
+
+    /**
+     * 查询我的攀龄榜
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectMyAgeRank")
+    public @ResponseBody  Integer selectMyAgeRank(Integer uid){
+        Integer rank = 0;
+        try{
+            rank = rankService.selectMyAgeRank(uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return rank;
+    }
+
+    /**
+     * 查询我的奖牌排行榜
+     * @param rank_medal
+     * @return
+     */
+    @RequestMapping(value = "/selectMyMedalRank")
+    public @ResponseBody  Integer selectMyMedalRank(Rank_medal rank_medal){
+        Integer rank = 0;
+        try{
+            rank = rankService.selectMyMedalRank(rank_medal);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return rank;
+    }
+
+    /**
+     * 查询我的记录排行榜
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectMyRecordRank")
+    public @ResponseBody  Integer selectMyRecordRank(Integer uid){
+        Integer rank = 0;
+        try{
+            rank = rankService.selectMyRecordRank(uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return rank;
+    }
+
+    /**
+     * 查询我的名师排行榜
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectMyTeacherRank")
+    public @ResponseBody  Integer selectMyTeacherRank(Integer uid){
+        Integer rank = 0;
+        try{
+            rank = rankService.selectMyTeacherRank(uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return rank;
+    }
 }

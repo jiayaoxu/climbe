@@ -101,4 +101,16 @@
     FROM   ( (user_inf LEFT JOIN user_limit ON user_inf.uid = user_limit.uid) LEFT JOIN club_member ON club_member.member = user_inf.uid) LEFT JOIN club ON club.id = club_member.cid
     WHERE user_inf.uid = #{uid}
   </select>
+  <select id="selectAddFriends" resultType="cn.newcode.climb.vo.FriendsVo">
+    SELECT user_inf.`nickName`,user_inf.`gender`,user_inf.`uid` id,club.name clubName,user_fans.`attention`
+    FROM ((user_inf LEFT JOIN club_member ON user_inf.`uid` = club_member.`member`) LEFT JOIN club ON club_member.`cid` = club.`id` LEFT JOIN user_fans ON user_inf.`uid` = user_fans.`attention` AND user_fans.`uid`= #{uid})
+    ,`user`
+    WHERE user_inf.`uid` = user.`id`
+    AND ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%'))
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM  user_inf,`user` WHERE user_inf.uid = user.id
+    AND
+    ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%') )
+  </select>
 </mapper>

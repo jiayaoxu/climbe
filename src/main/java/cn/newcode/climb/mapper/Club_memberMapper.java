@@ -3,10 +3,11 @@ package cn.newcode.climb.mapper;
 import cn.newcode.climb.po.Club_member;
 import cn.newcode.climb.vo.ClubMemberVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
+@Repository
 public interface Club_memberMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -47,4 +48,11 @@ public interface Club_memberMapper {
      * 退出俱乐部
      */
     void quiteClub(Integer uid);
+
+    /**
+     * 查询自己属于哪个俱乐部
+     * @param uid
+     * @return
+     */
+    Integer selectBelong(Integer uid);
 }

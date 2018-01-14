@@ -119,4 +119,29 @@
   <select id="selectCount" parameterType="java.lang.String" resultType="java.lang.Integer">
     SELECT count(#{medal}) FROM rank_medal
   </select>
+  <select id="selectMyRank" parameterType="cn.newcode.climb.po.Rank_medal" resultType="java.lang.Integer">
+    SELECT
+    u.rank ranking
+    FROM
+     (SELECT
+      id,uid,(@ranknum:=@ranknum+1)
+      AS
+      rank
+      FROM
+      rank_medal,
+      (SELECT
+       (@ranknum :=0) ) b
+        ORDER BY
+        <if test="Rank_medal.goldMedal!=null">
+          rank_medal.gold_medal
+        </if>
+        <if test="Rank_medal.silverMedal!=null">
+          rank_medal.silver_medal
+        </if>
+        <if test="Rank_medal.bronzeMedal!=null">
+          rank_medal.bronze_medal
+        </if>
+        )u
+        WHERE u.uid = #{Rank_medal.uid}
+  </select>
 </mapper>

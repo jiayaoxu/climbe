@@ -79,4 +79,18 @@ public interface ClubService {
      * @param uid
      */
     void quiteClub(Integer uid);
+
+    /**
+     * 查询自己属于哪个俱乐部
+     * @param uid
+     * @return
+     */
+    Integer selectBelong(Integer uid);
+
+    /**
+     * 通过uid查询cid
+     * @param uid
+     * @return
+     */
+    Integer selectCidByUid(Integer uid);
 }

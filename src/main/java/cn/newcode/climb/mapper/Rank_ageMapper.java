@@ -24,4 +24,11 @@ public interface Rank_ageMapper {
     List<Rank_ageVo> seletcAgeRank(@Param("startPos") Integer startPos,@Param("pageSize") Integer pageSize);
 
     Integer selectCount();
+
+    /**
+     * 查询我的排名
+     * @param uid
+     * @return
+     */
+    Integer selectMyRank(Integer uid);
 }

@@ -82,7 +82,7 @@ public class RockController {
      * @return
      * @throws Exception
      */
-    /*@RequestMapping(value = "/createWall")
+    @RequestMapping(value = "/createWall")
     public @ResponseBody String createWall(HttpServletResponse response,RockWall rockWall) throws Exception{
         response.setHeader("Access-Control-Allow-Origin","*");
         Integer wid = null;
@@ -94,7 +94,7 @@ public class RockController {
         }
 
         return objectMapper.writeValueAsString(new Status(wid+"",""));
-    }*/
+    }
 
     /**
      * 添加岩点
@@ -103,7 +103,7 @@ public class RockController {
      * @return
      * @throws Exception
      */
-    /*@RequestMapping(value = "/addPoint")
+    @RequestMapping(value = "/addPoint")
     public @ResponseBody String addPoint(HttpServletResponse response, String points) throws Exception{
         response.setHeader("Access-Control-Allow-Origin","*");
         rock r = objectMapper.readValue(points,rock.class);
@@ -115,7 +115,7 @@ public class RockController {
             return objectMapper.writeValueAsString(new Status("","SystemError"));
         }
         return objectMapper.writeValueAsString(new Status("Success",""));
-    }*/
+    }
 
     /**
      * 通过岩线查询所有岩点
@@ -143,7 +143,7 @@ public class RockController {
      * @return
      * @throws Exception
      */
-    /*@RequestMapping("/listRocks")
+    @RequestMapping("/listRocks")
     public @ResponseBody String listRocks(HttpServletResponse response) throws Exception{
         response.setHeader("Access-Control-Allow-Origin","*");
         List<Rock> rocks = null;
@@ -155,7 +155,7 @@ public class RockController {
         }
 
         return objectMapper.writeValueAsString(rocks);
-    }*/
+    }
 
     /**
      * 通过wid查询岩线详细信息
@@ -164,7 +164,7 @@ public class RockController {
      * @return
      * @throws Exception
      */
-    /*@RequestMapping(value = "/selectWallInf",method = RequestMethod.POST)
+    @RequestMapping(value = "/selectWallInf",method = RequestMethod.POST)
     public @ResponseBody String selectWallInf(HttpServletResponse response,Integer wid) throws Exception{
         response.setHeader("Access-Control-Allow_Origin","*");
         RockWall rockWall = null;
@@ -175,13 +175,13 @@ public class RockController {
             return objectMapper.writeValueAsString(new Status("","SystemError"));
         }
         return objectMapper.writeValueAsString(rockWall);
-    }*/
+    }
 
     /**
      * 列出所有的系统岩壁
      * @return
      */
-    /*@RequestMapping(value = "/listAllWalls")
+    @RequestMapping(value = "/listAllWalls")
     public @ResponseBody List<RockWallSys> listAllWalls(){
         List<RockWallSys> walls = null;
         try{
@@ -190,14 +190,14 @@ public class RockController {
             e.printStackTrace();
         }
         return walls;
-    }*/
+    }
 
     /**
      * 列出岩馆下的所有岩线
      * @param hid
      * @return
      */
-    /*@RequestMapping(value = "/selectWallsByHid")
+    @RequestMapping(value = "/selectWallsByHid")
     public @ResponseBody List<routerClass> selectWallsByHid(Integer hid){
         List<routerClass> walls = null;
         try{
@@ -206,14 +206,14 @@ public class RockController {
             e.printStackTrace();
         }
         return walls;
-    }*/
+    }
 
     /**
      * 指定类库下添加岩线
      * @param rock_wall_default
      * @return
      */
-    /*@RequestMapping(value = "/addClass")
+    @RequestMapping(value = "/addClass")
     public @ResponseBody Status addClass(Rock_wall_default rock_wall_default){
         try{
             if(!rockService.addClass(rock_wall_default))
@@ -223,7 +223,7 @@ public class RockController {
             return new Status("","SystemError");
         }
         return new Status("Success","");
-    }*/
+    }
 
     /**
      * 查询指定类库下的岩线

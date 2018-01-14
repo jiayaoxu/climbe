@@ -1,11 +1,13 @@
 package cn.newcode.climb.service.impl;
 
 import cn.newcode.climb.mapper.*;
+import cn.newcode.climb.page.pageBean;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.UserService;
 import cn.newcode.climb.vo.FriendsVo;
 import cn.newcode.climb.vo.IndexVo;
 import cn.newcode.climb.vo.PersonalInf;
+import cn.newcode.climb.vo.UserLimitVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
@@ -13,6 +15,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -83,7 +86,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PersonalInf seletcPersonalInf(Integer id) throws Exception {
-        return userMapper.seletcPersonalInf(id);
+        PersonalInf p = userMapper.seletcPersonalInf(id);
+        //查询用户是否允许显示电话号码
+        String i = user_identityMapper.selectByPrimaryKey(id).getIdentity();
+        if(!i.equals("1")){
+            p.setUsername("***");
+        }
+        return p;
     }
 
     /**
@@ -92,12 +101,48 @@ public class UserServiceImpl implements UserService {
      * @throws Exception
      */
     @Override
-    public void addPoint(User_fans user_fans) throws Exception {
-        user_fansMapper.insertSelective(user_fans);
-        User_fans fans = new User_fans();
-        fans.setUid(user_fans.getAttention());
-        fans.setFens(user_fans.getUid());
-        user_fansMapper.insertSelective(fans);
+    @Transactional
+    public Boolean addPoint(User_fans user_fans) throws Exception {
+        //此处校验本用户是否已经关注此用户,如果没有关注，就进行关注并返回true否则返回false
+        Integer v = user_fansMapper.verify(user_fans);
+        //关注者
+        Integer user = user_fans.getUid();
+        //被关注者
+        Integer BeUser =user_fans.getAttention();
+
+        if(v==null){
+            //这里查询我要关注的用户是否关注过我(查询我是否有该粉丝)，如果关注过，直接修改该记录，否则插入记录
+            User_fans f1 = new User_fans();
+            f1.setUid(user);
+            f1.setFens(BeUser);
+            Integer a = user_fansMapper.selectCondition(f1);
+            if(a!=null){
+                user_fans.setId(a);
+                user_fansMapper.updateByPrimaryKeySelective(user_fans);
+            }else {
+                user_fansMapper.insertSelective(user_fans);
+            }
+            //此处添加被关注用户a的粉丝，查询a是否关注过自己，如果关注过直接修改该条记录否则插入一条新的记录
+            User_fans f2 = new User_fans();
+            f2.setUid(BeUser);
+            f2.setAttention(user);
+
+            User_fans fans = new User_fans();
+            fans.setUid(BeUser);
+            fans.setFens(user);
+
+            Integer f = user_fansMapper.selectCondition(f2);
+
+            if(f!=null){
+                fans.setId(f);
+                user_fansMapper.updateByPrimaryKeySelective(fans);
+            }else {
+                user_fansMapper.insertSelective(fans);
+            }
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -106,13 +151,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<FriendsVo> selectFriends(Integer startPos, Integer pageSize, Integer uid,String name) throws Exception {
-        return user_fansMapper.selectFriends(startPos, pageSize, uid,name);
+    public List<FriendsVo> selectFriends(Integer uid,String name) throws Exception {
+        List<FriendsVo> friends = new ArrayList<FriendsVo>();
+        //判断name中是否有东西,有就查询所有人，没有就查询好友列表
+        Integer total = 0;
+        /*Integer t = 0;
+          Integer total = (t=userService.seletcFrinedCount(uid,name))!=0?t:0;
+          pageBean page = new pageBean(now,total);*/
+        if (name != null) {
+           friends =  userMapper.selectAddFriends(name,uid);
+        }else {
+
+            friends = user_fansMapper.selectFriends(uid,name);
+        }
+        return friends;
     }
 
     @Override
     public Integer seletcFrinedCount(Integer uid,String name) throws Exception {
         return user_fansMapper.selectCount(uid,name);
+    }
+
+    @Override
+    public List<FriendsVo> selectFriendsWithFight(Integer uid) throws Exception {
+        return user_fansMapper.selectFriendsWithFight(uid);
+    }
+
+    @Override
+    public Boolean updateUserMood(User_mood user_mood) throws Exception {
+       user_moodMapper.updateByPrimaryKeySelective(user_mood);
+        return true;
+    }
+
+    @Override
+    public Boolean setIdentity(User_identity user_identity) throws Exception {
+        user_identityMapper.updateByPrimaryKeySelective(user_identity);
+        return true;
+    }
+
+    @Override
+    public List<UserLimitVo> selectUserLimit(String name) throws Exception {
+        return user_limitMapper.selectLimit(name);
     }
 
 
@@ -133,7 +212,7 @@ public class UserServiceImpl implements UserService {
         //创建角色身份
         User_identity userIdentity = new User_identity();
         userIdentity.setUid(uid);
-        userIdentity.setIdentity("平民");
+        userIdentity.setIdentity("1");
         user_identityMapper.insertSelective(userIdentity);
 
         //创建角色等级

@@ -3,9 +3,11 @@ package cn.newcode.climb.mapper;
 import cn.newcode.climb.po.Club;
 import cn.newcode.climb.vo.FindClubVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ClubMapper {
     int deleteByPrimaryKey(Integer id);
 

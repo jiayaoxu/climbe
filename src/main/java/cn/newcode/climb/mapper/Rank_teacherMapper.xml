@@ -87,4 +87,20 @@
     SELECT COUNT(*)
     FROM rank_teacher
   </select>
+  <select id="selectMyRank" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+    u.rank ranking
+    FROM
+     (SELECT
+      id,teacher,(@ranknum:=@ranknum+1)
+      AS
+      rank
+      FROM
+      rank_teacher,
+      (SELECT
+       (@ranknum :=0) ) b
+        ORDER BY
+        `point` )u
+        WHERE u.teacher = #{uid}
+  </select>
 </mapper>

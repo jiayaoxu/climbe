@@ -61,13 +61,13 @@
     update user_fans
     <set >
       <if test="fens != null" >
-        fens = fens+1,
+        fens = #{fens},
       </if>
       <if test="attention != null" >
-        attention = attention+1,
+        attention = #{attention},
       </if>
     </set>
-    where uid = #{uid,jdbcType=INTEGER}
+    where id = #{id}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.User_fans" >
     update user_fans
@@ -102,7 +102,6 @@
     </if>
     )a
     GROUP BY a.id
-    LIMIT #{startPos},#{pageSize}
   </select>
   <select id="selectCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     SELECT COUNT(*)
@@ -112,6 +111,39 @@
       AND user_fans.fens = user_inf.uid OR user_fans.attention = user_inf.uid
       AND user_inf.uid = user.id
       AND ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%'))
+    </if>
+  </select>
+  <select id="selectFriendsWithFight" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.FriendsVo">
+    SELECT  id,any_value(gender) gender ,any_value(clubName) clubName,any_value(nickName) nickName,any_value(fens) fens,any_value(attention) attention FROM
+    (
+    SELECT  user_fans.attention id,user_inf.gender gender,club.name clubName, user_inf.nickName nickName,user_fans.attention attention,user_fans.fens fens
+    FROM user_fans,user_inf,club,club_member,user
+    WHERE user_fans.attention = user_inf.uid
+    AND user_fans.attention = club_member.member
+    AND club_member.cid = club.id
+    AND user_fans.uid = #{uid}
+    AND user.id = user_fans.attention
+    UNION all
+    SELECT  user_fans.fens id,user_inf.gender,club.name,user_inf.nickName,user_fans.attention attention,user_fans.fens fens
+    FROM user_fans,user_inf,club,club_member,user
+    WHERE user_fans.fens = user_inf.uid
+    AND user_fans.fens = club_member.member
+    AND club_member.cid = club.id
+    AND user_fans.uid = #{uid}
+    AND user.id = user_fans.fens
+    )a
+    GROUP BY a.id
+  </select>
+  <select id="verify" parameterType="cn.newcode.climb.po.User_fans" resultType="java.lang.Integer">
+     SELECT id FROM  user_fans WHERE  uid = #{uid} AND attention = #{attention}
+  </select>
+  <select id="selectCondition" parameterType="cn.newcode.climb.po.User_fans" resultType="java.lang.Integer">
+    SELECT id FROM user_fans WHERE
+    <if test="fens!=null">
+        uid = #{uid} AND fens = #{fens}
+    </if>
+    <if test="attention!=null">
+        uid = #{uid} AND attention = #{attention}
     </if>
   </select>
 </mapper>

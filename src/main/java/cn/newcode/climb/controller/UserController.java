@@ -1,9 +1,7 @@
 package cn.newcode.climb.controller;
 
 import cn.newcode.climb.mapper.UserMapper;
-import cn.newcode.climb.po.User;
-import cn.newcode.climb.po.User_fans;
-import cn.newcode.climb.po.User_inf;
+import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.UserService;
 import cn.newcode.climb.vo.IndexVo;
 import cn.newcode.climb.vo.PersonalInf;
@@ -151,13 +149,14 @@ public class UserController {
      */
     @RequestMapping(value = "/addPoint")
     public @ResponseBody Status addPoint(User_fans userFans){
+        Boolean flag = false;
         try{
-            userService.addPoint(userFans);
+            flag  = userService.addPoint(userFans);
         } catch (Exception e){
             e.printStackTrace();
             return new Status("","SystemError");
         }
-        return  new Status("Success","");
+        return  new Status(flag+"","");
     }
 
     /**
@@ -176,4 +175,35 @@ public class UserController {
         return index;
     }
 
+    /**
+     * 修改用户心情接口
+     * @param user_mood
+     * @return
+     */
+    @RequestMapping("/updateUserMood")
+    public @ResponseBody Status updateUserMood(User_mood user_mood){
+        try{
+            userService.updateUserMood(user_mood);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
+    }
+
+    /**
+     * 用户设置是否显示用户电话号码是否显示
+     * @param user_identity
+     * @return
+     */
+    @RequestMapping("/setIdentity")
+    public @ResponseBody Status setIdentity(User_identity user_identity){
+        try {
+            userService.setIdentity(user_identity);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
+    }
 }

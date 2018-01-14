@@ -25,4 +25,11 @@ public interface Rank_medalMapper {
                                   @Param("pageSize") Integer pageSize,@Param("Rank_medal") Rank_medal rank_medal);
 
     Integer selectCount(String medal);
+
+    /**
+     * 查询我的排名
+     * @param rank_medal
+     * @return
+     */
+    Integer selectMyRank(@Param("Rank_medal") Rank_medal rank_medal);
 }

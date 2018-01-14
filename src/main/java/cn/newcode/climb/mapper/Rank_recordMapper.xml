@@ -84,4 +84,20 @@
   <select id="selectCount" resultType="java.lang.Integer">
     SELECT COUNT(*) FROM rank_record
   </select>
+  <select id="selectMyRank" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+    u.rank ranking
+    FROM
+     (SELECT
+      id,uid,(@ranknum:=@ranknum+1)
+      AS
+      rank
+      FROM
+      rank_record,
+      (SELECT
+       (@ranknum :=0) ) b
+        ORDER BY
+        integral )u
+        WHERE u.uid = #{uid}
+  </select>
 </mapper>

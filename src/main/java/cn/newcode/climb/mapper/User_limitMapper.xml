@@ -68,4 +68,12 @@
       limit = #{limit,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectLimit" resultType="cn.newcode.climb.vo.UserLimitVo">
+    SELECT user_inf.uid id,user_inf.head_img headImg,user_inf.nickName,user_inf.gender,club.`name` clubName,user_limit.`limit`
+    FROM (user_inf LEFT JOIN club_member ON user_inf.uid = club_member.member) LEFT JOIN club ON club_member.cid = club.id,user_limit,`user`
+    WHERE user_inf.uid = user_limit.uid AND user_inf.uid = user.id
+    <if test="name !=null">
+      AND ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%'))
+    </if>
+  </select>
 </mapper>

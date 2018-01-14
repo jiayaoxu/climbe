@@ -26,4 +26,11 @@ public interface Rank_teacherMapper {
     List<Rank_teacherVo> seletcPaging(@Param("startPos")Integer startPos, @Param("pageSize")Integer pageSize);
 
     Integer selectCount();
+
+    /**
+     * 查询我的排名
+     * @param uid
+     * @return
+     */
+    Integer selectMyRank(Integer uid);
 }

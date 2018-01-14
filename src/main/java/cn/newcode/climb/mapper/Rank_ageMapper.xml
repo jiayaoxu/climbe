@@ -79,4 +79,20 @@
   <select id="selectCount" resultType="java.lang.Integer">
     SELECT COUNT(*) from rank_age
   </select>
+  <select id="selectMyRank" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+    u.rank ranking
+    FROM
+     (SELECT
+      id,uid,(@ranknum:=@ranknum+1)
+      AS
+      rank
+      FROM
+      rank_age,
+      (SELECT
+       (@ranknum :=0) ) b
+        ORDER BY
+        `year` )u
+        WHERE u.uid = #{uid}
+  </select>
 </mapper>

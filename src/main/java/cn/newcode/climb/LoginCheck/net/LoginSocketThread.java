@@ -1,6 +1,9 @@
 package cn.newcode.climb.LoginCheck.net;
 
 
+import cn.newcode.climb.service.ClubService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,6 +15,9 @@ import java.net.Socket;
 public class LoginSocketThread implements Runnable {
 
     private Socket socket;
+
+    @Autowired
+    private ClubService clubService;
 
     public LoginSocketThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -38,6 +44,11 @@ public class LoginSocketThread implements Runnable {
                     }
                     //添加用户
                     UserRegister.getInstance().addUser(uid,socket);
+                    //查询属于哪个俱乐部
+                    Integer cid = clubService.selectBelong(uid);
+                    if(cid!=null){
+                        UserRegister.getInstance().addonlion(cid);
+                    }
                 } catch (IOException e){
                     //socket断开链接抛出异常
                     UserRegister.getInstance().removeUser(uid);

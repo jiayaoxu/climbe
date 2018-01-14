@@ -106,4 +106,24 @@ public class RankServiceImpl implements RankService {
     public Integer selectMedalCount(String medal) {
         return rank_medalMapper.selectCount(medal);
     }
+
+    @Override
+    public Integer selectMyMedalRank(Rank_medal rank_medal) {
+        return rank_medalMapper.selectMyRank(rank_medal);
+    }
+
+    @Override
+    public Integer selectMyAgeRank(Integer uid) {
+        return rank_ageMapper.selectMyRank(uid);
+    }
+
+    @Override
+    public Integer selectMyRecordRank(Integer uid) {
+        return rank_recordMapper.selectMyRank(uid);
+    }
+
+    @Override
+    public Integer selectMyTeacherRank(Integer uid) {
+        return rank_teacherMapper.selectMyRank(uid);
+    }
 }

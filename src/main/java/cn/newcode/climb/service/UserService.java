@@ -4,6 +4,7 @@ import cn.newcode.climb.po.*;
 import cn.newcode.climb.vo.FriendsVo;
 import cn.newcode.climb.vo.IndexVo;
 import cn.newcode.climb.vo.PersonalInf;
+import cn.newcode.climb.vo.UserLimitVo;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ public interface UserService {
      * @param user_fans
      * @throws Exception
      */
-    void addPoint(User_fans user_fans) throws Exception;
+    Boolean addPoint(User_fans user_fans) throws Exception;
 
     /**
      * 查询游戏首页需要的信息
@@ -64,13 +65,11 @@ public interface UserService {
 
     /**
      * 分页查询好友
-     * @param startPos
-     * @param pageSize
      * @param uid
      * @return
      * @throws Exception
      */
-    List<FriendsVo> selectFriends(Integer startPos,Integer pageSize,Integer uid,String name) throws Exception;
+    List<FriendsVo> selectFriends(Integer uid,String name) throws Exception;
 
     /**
      * 查询好友总数
@@ -80,4 +79,32 @@ public interface UserService {
      */
     Integer seletcFrinedCount(Integer uid,String name) throws Exception;
 
+    /**
+     * 查询好友用来进行对战邀请
+     */
+    List<FriendsVo> selectFriendsWithFight(Integer uid) throws Exception;
+
+    /**
+     * 修改用户心情
+     * @param user_mood
+     * @return
+     * @throws Exception
+     */
+    Boolean updateUserMood(User_mood user_mood) throws Exception;
+
+    /**
+     * 设置电话隐藏
+     * @param user_identity
+     * @return
+     * @throws Exception
+     */
+    Boolean setIdentity(User_identity user_identity) throws Exception;
+
+    /**
+     * 查询用户权限
+     * @param name
+     * @return
+     * @throws Exception
+     */
+    List<UserLimitVo> selectUserLimit(String name) throws Exception;
 }
