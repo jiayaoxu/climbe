@@ -1,10 +1,8 @@
 package cn.newcode.climb.controller;
 
-import cn.newcode.climb.Fight.SocketServlet;
 import cn.newcode.climb.po.Match;
 import cn.newcode.climb.po.Match_grade;
 import cn.newcode.climb.po.Match_inf;
-import cn.newcode.climb.po.Match_signup;
 import cn.newcode.climb.service.MatchService;
 import cn.newcode.climb.vo.FinalsMatchVo;
 import cn.newcode.climb.vo.Grade;
@@ -13,19 +11,14 @@ import cn.newcode.climb.vo.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -317,7 +310,7 @@ public class MatchController {
 //    @RequestMapping(value = "/startFight")
 //    public void startFight(HttpServletResponse response) throws Exception {
 //        response.setHeader("Access-Control-Allow-Origin","*");
-//        SocketServlet socketServlet = new SocketServlet();
+//
 //        statusMessage = new Status();
 //        PrintWriter writer = response.getWriter();
 //        try {

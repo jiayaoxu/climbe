@@ -66,6 +66,16 @@ public class PersonalInf {
      */
     private Integer fens;
 
+    private Boolean attented;
+
+    public Boolean getAttented() {
+        return attented;
+    }
+
+    public void setAttented(Boolean attented) {
+        this.attented = attented;
+    }
+
     public String getImgPath() {
         return imgPath;
     }

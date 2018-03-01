@@ -88,6 +88,11 @@ public class RockServiceImpl implements RockService {
     }
 
     @Override
+    public List<routerClass> listWallsInHallNoAccess(Integer hid) throws Exception {
+        return rockWallMapper.selectByHidNoAccess(hid);
+    }
+
+    @Override
     public Boolean addClass(Rock_wall_default rock_wall_default) throws Exception {
         //判断一下库中是否有重复的
         Boolean flag = false;
@@ -117,5 +122,23 @@ public class RockServiceImpl implements RockService {
     @Override
     public void removeFromClass(Integer id) {
         rock_wall_defaultMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public void accessRockWall(Integer wid, Integer access) {
+        RockWall rockWall = new RockWall();
+        rockWall.setId(wid);
+        rockWall.setAccess(access);
+        rockWallMapper.updateByPrimaryKeySelective(rockWall);
+    }
+
+    @Override
+    public List<routerClass> selectMyRockWall(Integer hid, Integer uid) {
+        return rockWallMapper.selectMyRockWall(hid, uid);
+    }
+
+    @Override
+    public void deleteRockWall(Integer id) {
+        rockWallMapper.deleteByPrimaryKey(id);
     }
 }

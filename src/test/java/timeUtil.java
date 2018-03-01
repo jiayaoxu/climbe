@@ -13,10 +13,10 @@ import java.util.Date;
 public class timeUtil {
     @Test
     public void test(){
-        Date date = new Date(2015,1,1);
-        Date date2 = new Date(2016,1,1);
+        //Date date = new Date(2015,1,1);
+        //Date date2 = new Date(2016,1,1);
 //        System.out.println(date.toString());
-        System.out.println("2016年"+date2.getTime());
-        System.out.println("2015年"+date.getTime());
+        /*System.out.println("2016年"+date2.getTime());
+        System.out.println("2015年"+date.getTime());*/
     }
 }

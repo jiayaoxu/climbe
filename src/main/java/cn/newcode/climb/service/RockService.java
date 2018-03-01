@@ -81,6 +81,14 @@ public interface RockService {
     List<routerClass> listWallsInHall(Integer hid) throws Exception;
 
     /**
+     * 列出岩馆下的所有所有岩线(待审核)
+     * @param hid
+     * @return
+     * @throws Exception
+     */
+    List<routerClass> listWallsInHallNoAccess(Integer hid) throws Exception;
+
+    /**
      * 将线路添加到响应类库
      * @param rock_wall_default
      * @throws Exception
@@ -100,4 +108,25 @@ public interface RockService {
      * @param id
      */
     void removeFromClass(Integer id);
+
+    /**
+     * 审核带批线路
+     * @param wid
+     * @param access
+     */
+    void accessRockWall(Integer wid,Integer access);
+
+    /**
+     * 查询我的线路总库
+     * @param hid
+     * @param uid
+     * @return
+     */
+    List<routerClass> selectMyRockWall(Integer hid,Integer uid);
+
+    /**
+     * 删除线路
+     * @param id
+     */
+    void deleteRockWall(Integer id);
 }

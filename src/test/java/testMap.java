@@ -1,15 +1,3 @@
-import cn.newcode.climb.po.Match;
-import cn.newcode.climb.po.User;
-import cn.newcode.climb.service.MatchService;
-import cn.newcode.climb.service.impl.MatchServiceImpl;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @Description: map测试
  * @author: shine
@@ -18,7 +6,7 @@ import java.util.Map;
  */
 public class testMap {
 
-    @Test
+   /* @Test
     public void testMap() {
         Map map = new HashMap();
         map.put(1,1);
@@ -67,7 +55,7 @@ public class testMap {
         for(String s : strs){
             System.out.println(s);
         }
-    }
+    }*/
 
 
 }

@@ -58,7 +58,7 @@ public class FriendController {
     public @ResponseBody List<FriendsVo> selectFriendsByName(Integer uid){
         List<FriendsVo> friendsVos = null;
         try{
-           friendsVos = userService.selectFriendsWithFight(uid);
+           friendsVos = userService.selectFriends(uid,null);
         } catch (Exception e){
             e.printStackTrace();
         }

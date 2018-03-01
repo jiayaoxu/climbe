@@ -53,14 +53,11 @@
   <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.User_limit" >
     update user_limit
     <set >
-      <if test="uid != null" >
-        uid = #{uid,jdbcType=INTEGER},
-      </if>
       <if test="limit != null" >
-        limit = #{limit,jdbcType=VARCHAR},
+        `limit` = #{limit,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where uid = #{uid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.User_limit" >
     update user_limit
@@ -75,5 +72,8 @@
     <if test="name !=null">
       AND ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%'))
     </if>
+  </select>
+  <select id="isGm" parameterType="java.lang.Integer" resultType="java.lang.String">
+    SELECT `limit` FROM  user_limit WHERE uid = #{uid}
   </select>
 </mapper>

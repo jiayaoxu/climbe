@@ -132,10 +132,10 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/selectUserInfByUid")
-    public @ResponseBody PersonalInf selectUserInfByUid(Integer uid){
+    public @ResponseBody PersonalInf selectUserInfByUid(Integer uid,Integer p){
         PersonalInf person = null;
         try{
-            person = userService.seletcPersonalInf(uid);
+            person = userService.seletcPersonalInf(uid,p);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -199,6 +199,8 @@ public class UserController {
     @RequestMapping("/setIdentity")
     public @ResponseBody Status setIdentity(User_identity user_identity){
         try {
+            if(user_identity.getUid()==null)
+                return new Status("","NullPointer");
             userService.setIdentity(user_identity);
         } catch (Exception e){
             e.printStackTrace();

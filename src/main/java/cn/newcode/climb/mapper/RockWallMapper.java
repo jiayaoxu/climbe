@@ -2,6 +2,7 @@ package cn.newcode.climb.mapper;
 
 import cn.newcode.climb.po.RockWall;
 import cn.newcode.climb.vo.routerClass;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public interface RockWallMapper {
     int updateByPrimaryKey(RockWall record);
 
     /**
-     * 通过岩馆id查询所有岩壁
+     * 通过岩馆id查询所有岩线
      * @param hid
      * @return
      */
@@ -40,9 +41,24 @@ public interface RockWallMapper {
     Integer selectByName(String name);
 
     /**
-     * 通过岩馆查询馆下所有岩线
+     * 通过岩馆查询馆下所有岩线(已经通过审核)
      * @param hid
      * @return
      */
     List<routerClass> selectByHid(Integer hid);
+
+    /**
+     * 通过岩馆查询馆下所有岩线(待审核)
+     * @param hid
+     * @return
+     */
+    List<routerClass> selectByHidNoAccess(Integer hid);
+
+    /**
+     * 查询自己的线路
+     * @param hid
+     * @param uid
+     * @return
+     */
+    List<routerClass> selectMyRockWall(@Param("hid")Integer hid,@Param("uid")Integer uid);
 }

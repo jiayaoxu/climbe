@@ -2,9 +2,11 @@ package cn.newcode.climb.mapper;
 
 import cn.newcode.climb.po.Rock_wall_default;
 import cn.newcode.climb.vo.routerClass;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface Rock_wall_defaultMapper {
     int deleteByPrimaryKey(Integer id);
 

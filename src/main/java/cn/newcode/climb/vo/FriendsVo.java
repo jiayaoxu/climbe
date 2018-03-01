@@ -15,6 +15,34 @@ public class FriendsVo {
     private String clubName;
     private Integer fens;
     private Integer attention;
+    private String limit;
+    private String headImg;
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
+    }
+
+    public String getLimit() {
+        return limit;
+    }
+
+    public void setLimit(String limit) {
+        this.limit = limit;
+    }
+
+    public Boolean getOnlion() {
+        return onlion;
+    }
+
+    public void setOnlion(Boolean onlion) {
+        this.onlion = onlion;
+    }
+
+    private Boolean onlion;
 
     public String getNickName() {
         return nickName;

@@ -32,6 +32,9 @@ public class RockController {
     @Autowired
     private RockService rockService;
 
+    /**
+     * 操作json
+     */
     private ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -209,6 +212,22 @@ public class RockController {
     }
 
     /**
+     * 列出岩馆下的所有岩线(待审核)
+     * @param hid
+     * @return
+     */
+    @RequestMapping(value = "/selectWallsByHidNoAccess")
+    public @ResponseBody List<routerClass> selectWallsByHidNoAccess(Integer hid){
+        List<routerClass> walls = null;
+        try{
+            walls = rockService.listWallsInHallNoAccess(hid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return walls;
+    }
+
+    /**
      * 指定类库下添加岩线
      * @param rock_wall_default
      * @return
@@ -254,5 +273,55 @@ public class RockController {
             return new Status("","SystemError");
         }
         return new Status("Success","");
+    }
+
+    /**
+     * 审核带批线路
+     * @param id
+     * @param access
+     * @return
+     */
+    @RequestMapping(value = "/accessRockWall")
+    public @ResponseBody Status accessRockWall(Integer id,Integer access){
+        try{
+            rockService.accessRockWall(id,access);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
+    }
+
+    /**
+     * 删除线路
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/deleteRockWall")
+    public @ResponseBody Status deleteRockWall(Integer id){
+        try{
+            rockService.deleteRockWall(id);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
+    }
+
+    /**
+     * 查询我的线路总库
+     * @param hid
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectMyRockWall")
+    public @ResponseBody List<routerClass> selectMyRockWall(Integer hid,Integer uid){
+        List<routerClass> routers = null;
+        try{
+            routers = rockService.selectMyRockWall(hid, uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return routers;
     }
 }

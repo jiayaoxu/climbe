@@ -1,6 +1,7 @@
 package cn.newcode.climb.mapper;
 
 import cn.newcode.climb.po.User;
+import cn.newcode.climb.po.Version;
 import cn.newcode.climb.vo.FriendsVo;
 import cn.newcode.climb.vo.IndexVo;
 import cn.newcode.climb.vo.PersonalInf;
@@ -36,4 +37,10 @@ public interface UserMapper {
     List<FriendsVo> selectAddFriends(@Param("name") String name,@Param("uid")Integer uid);
 
     Integer selectCount(@Param("name") String name);
+
+    /**
+     * 查询版本号
+     * @return
+     */
+    Version selectVersion();
 }

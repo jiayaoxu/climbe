@@ -22,4 +22,6 @@ public interface User_limitMapper {
     int updateByPrimaryKey(User_limit record);
 
     List<UserLimitVo> selectLimit(@Param("name") String name);
+
+    String isGm(Integer uid);
 }

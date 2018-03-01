@@ -54,6 +54,9 @@
       <if test="rsid != null" >
         rsid,
       </if>
+      <if test="type != null" >
+        type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -74,13 +77,16 @@
       <if test="rsid != null" >
         #{rsid},
       </if>
+      <if test="type != null" >
+        #{type},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.RockWall" >
     update rockWall
     <set >
       <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
+        `name` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="hid != null" >
         hid = #{hid,jdbcType=INTEGER},
@@ -90,6 +96,9 @@
       </if>
       <if test="createtime != null" >
         createTime = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="access != null" >
+        access = #{access,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -106,9 +115,24 @@
     SELECT id FROM  rockWall WHERE  name = #{name}
   </select>
   <select id="selectByHid" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.routerClass">
-    SELECT rockWall.id,rockWall.rsid bid,rockWall.name,user_inf.nickName creater,rockWall.createTime time
+    SELECT rockWall.id,rockWall.rsid bid,rockWall.name,user_inf.nickName creater,rockWall.createTime time,rockWall.type
     FROM rockWall,user_inf
     WHERE rockWall.creater = user_inf.uid
     AND rockWall.hid = #{hid}
+    AND access = 1;
+  </select>
+  <select id="selectByHidNoAccess" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.routerClass">
+    SELECT rockWall.id,rockWall.rsid bid,rockWall.name,user_inf.nickName creater,rockWall.createTime time,rockWall.type
+    FROM rockWall,user_inf
+    WHERE rockWall.creater = user_inf.uid
+    AND rockWall.hid = #{hid}
+    AND access = 0;
+  </select>
+  <select id="selectMyRockWall" resultType="cn.newcode.climb.vo.routerClass">
+    SELECT rockWall.id,rockWall.rsid bid,rockWall.name,user_inf.nickName creater,rockWall.createTime time,rockWall.type
+    FROM rockWall,user_inf
+    WHERE rockWall.creater = user_inf.uid
+    AND rockWall.hid = #{hid}
+    AND user_inf.uid = #{uid}
   </select>
 </mapper>

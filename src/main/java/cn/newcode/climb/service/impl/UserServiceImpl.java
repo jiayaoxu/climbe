@@ -1,5 +1,6 @@
 package cn.newcode.climb.service.impl;
 
+import cn.newcode.climb.Fight.tool.UserManager;
 import cn.newcode.climb.mapper.*;
 import cn.newcode.climb.page.pageBean;
 import cn.newcode.climb.po.*;
@@ -85,13 +86,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PersonalInf seletcPersonalInf(Integer id) throws Exception {
+    public PersonalInf seletcPersonalInf(Integer id,Integer pp) throws Exception {
         PersonalInf p = userMapper.seletcPersonalInf(id);
         //查询用户是否允许显示电话号码
         String i = user_identityMapper.selectByPrimaryKey(id).getIdentity();
         if(!i.equals("1")){
             p.setUsername("***");
         }
+        //查询自己是否关注此人
+        User_fans user_fans = new User_fans();
+        user_fans.setUid(pp);
+        user_fans.setAttention(id);
+        Boolean flag = user_fansMapper.selectCondition(user_fans)==null?false:true;
+        p.setAttented(flag);
         return p;
     }
 
@@ -161,8 +168,13 @@ public class UserServiceImpl implements UserService {
         if (name != null) {
            friends =  userMapper.selectAddFriends(name,uid);
         }else {
-
             friends = user_fansMapper.selectFriends(uid,name);
+        }
+
+        //判断好友是否在线
+        for(FriendsVo f : friends){
+            Boolean flag = UserManager.getInstance().getPlayer(f.getId())==null?false:true;
+            f.setOnlion(flag);
         }
         return friends;
     }
@@ -192,6 +204,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserLimitVo> selectUserLimit(String name) throws Exception {
         return user_limitMapper.selectLimit(name);
+    }
+
+    @Override
+    public Boolean setUserLimit(User_limit user_limit,Integer p) throws Exception {
+        //查询是否为GM权限
+        String limit = user_limitMapper.isGm(p);
+        if(!limit.equals("GM"))
+            return false;
+        user_limitMapper.updateByPrimaryKeySelective(user_limit);
+        return true;
     }
 
 

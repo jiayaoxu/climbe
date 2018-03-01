@@ -153,7 +153,6 @@ public class ClubController {
 
         Integer t = 0;
 
-
         Integer total = (t = clubService.memberCount(uid, name))!=0?t:0;
         pageBean page = new pageBean(now,total);
         try{

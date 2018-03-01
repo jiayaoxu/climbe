@@ -108,10 +108,10 @@ public class UserManager {
      * 创建观战房间
      * @param
      */
-    public void createWatchRoom(Integer uid,String password,String roomName){
+    public void createWatchRoom(Integer uid,String password,String roomName,String wid,String roid){
         List<Integer> roomPlayers = new ArrayList<Integer>();
         roomPlayers.add(uid);
-        String p = roomName+"@"+password;
+        String p = roomName+"@"+password+"@"+wid+"@"+roid;
         watchRoomMap.put(uid,roomPlayers);
         roomPassword.put(uid,p);
     }

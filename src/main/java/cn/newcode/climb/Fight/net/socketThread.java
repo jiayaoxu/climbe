@@ -62,8 +62,7 @@ public class socketThread implements Runnable {
                     MLogger.info("resove:"+str);
                     resove.resove(str);
                 }
-
-            } catch (Exception e) {
+            } catch (IOException e) {
                 connected = false;
                 MLogger.info("player unlioning...." + uid);
                 MLogger.error(e);
@@ -84,6 +83,8 @@ public class socketThread implements Runnable {
                                 out = new DataOutputStream(socket.getOutputStream());
                                 String message = "roomDestroied@";
                                 out.write(message.getBytes());
+                                //移除用户
+                                room.remove(userId);
                             }
                         } catch (Exception ee) {
                             MLogger.error(ee);
@@ -106,6 +107,7 @@ public class socketThread implements Runnable {
                                 out = new DataOutputStream(socket.getOutputStream());
                                 String message = "WatchroomDestroied@";
                                 out.write(message.getBytes());
+                                Watchroom.remove(userId);
                             }
                         } catch (Exception eee){
                             MLogger.error(eee);

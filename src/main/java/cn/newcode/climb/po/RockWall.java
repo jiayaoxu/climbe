@@ -13,6 +13,26 @@ public class RockWall {
 
     private Integer rsid;
 
+    private Integer access;
+
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Integer getAccess() {
+        return access;
+    }
+
+    public void setAccess(Integer access) {
+        this.access = access;
+    }
+
     public Integer getRsid() {
         return rsid;
     }

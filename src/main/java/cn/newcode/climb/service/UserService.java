@@ -46,7 +46,7 @@ public interface UserService {
      * @return
      * @throws Exception
      */
-    PersonalInf seletcPersonalInf(Integer id) throws Exception;
+    PersonalInf seletcPersonalInf(Integer id,Integer p) throws Exception;
 
     /**
      * 用户点赞/增粉操作
@@ -107,4 +107,12 @@ public interface UserService {
      * @throws Exception
      */
     List<UserLimitVo> selectUserLimit(String name) throws Exception;
+
+    /**
+     * 设置用户权限
+     * @param user_limit
+     * @return
+     * @throws Exception
+     */
+    Boolean setUserLimit(User_limit user_limit,Integer p) throws Exception;
 }

@@ -1,6 +1,8 @@
 package cn.newcode.climb.controller;
 
+import cn.newcode.climb.po.User_limit;
 import cn.newcode.climb.service.UserService;
+import cn.newcode.climb.vo.Status;
 import cn.newcode.climb.vo.UserLimitVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +40,27 @@ public class PermissionController {
             e.printStackTrace();
         }
         return users;
+    }
+
+    /**
+     * GM设定权限
+     * @param user_limit
+     * @return
+     */
+    @RequestMapping(value = "/setLimit")
+    public @ResponseBody Status setLimit(User_limit user_limit,Integer p){
+        try{
+            if(user_limit.getUid()==null){
+                return new Status("","NullPointer");
+            }
+            if(!userService.setUserLimit(user_limit,p)){
+                return new Status("","NotGM");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
     }
 
 }

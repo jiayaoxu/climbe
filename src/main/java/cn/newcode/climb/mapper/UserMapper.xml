@@ -113,4 +113,7 @@
     AND
     ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%') )
   </select>
+  <select id="selectVersion" resultType="cn.newcode.climb.po.Version">
+    SELECT * FROM Sys_version
+  </select>
 </mapper>

@@ -16,6 +16,15 @@ public class routerClass {
     private String creater;
     private String time;
     private Integer wid;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public Integer getWid() {
         return wid;
