@@ -24,4 +24,9 @@ public class SysServiceImpl implements SysService {
     public Version getVersion() {
         return userMapper.selectVersion();
     }
+
+    @Override
+    public void updateVersion(String version) {
+        userMapper.updateVersion(version);
+    }
 }

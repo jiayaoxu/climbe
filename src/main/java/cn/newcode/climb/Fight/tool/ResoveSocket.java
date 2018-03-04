@@ -8,11 +8,16 @@ import java.util.*;
 import cn.newcode.climb.Fight.vo.Invite;
 import cn.newcode.climb.Fight.vo.Room;
 import cn.newcode.climb.Fight.vo.UserCustom;
+import cn.newcode.climb.mapper.UserMapper;
 import cn.newcode.climb.po.User;
 import cn.newcode.climb.service.RankService;
+import cn.newcode.climb.service.UserService;
+import cn.newcode.climb.vo.PersonalInf;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.apache.shiro.web.filter.mgt.DefaultFilter.user;
 
 /**
  * @Description: 解析socket中的信息
@@ -37,6 +42,8 @@ public class ResoveSocket {
      */
     private Socket socket;
 
+    private ObjectMapper obj = new ObjectMapper();
+
     /**
      * 输出流
      */
@@ -44,6 +51,9 @@ public class ResoveSocket {
 
     @Autowired
     private RankService rankService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 初始化  接收socket 输入流
@@ -62,7 +72,6 @@ public class ResoveSocket {
      * @throws IOException
      */
     public  void resove(String s) throws IOException {
-        ObjectMapper obj = new ObjectMapper();
         obj.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         UserManager userManager = UserManager.getInstance();
         String [] message = s.split("@");
@@ -326,6 +335,7 @@ public class ResoveSocket {
                 players.add(uid);
                 //房间信息重新设回
                 userManager.WatchplayerJoinRoom(room.getRid(),players);
+                annon();
             }
         }else if(head.equals("CreateWatchRoom")){
             rid = uid;
@@ -456,9 +466,39 @@ public class ResoveSocket {
                 userManager.WatchplayerJoinRoom(joinRoom,players);
                 String flag = "ReplayWatchInvite@Success";
                 out.write(addCache(flag));
+                //告诉房间里的人有人加入
+                annon();
             }
         }
     }
+
+    /**
+     * 有人加入通知房间里所有人
+     * @throws IOException
+     */
+    private void annon() throws IOException{
+        UserManager userManager = UserManager.getInstance();
+        List<Integer> players = userManager.getRoomMap(rid);
+        for(Integer p : players){
+            Socket s = userManager.getPlayer(p);
+            DataOutputStream outputStream = null;
+            String message = null;
+            try{
+                PersonalInf personalInf = userService.seletcPersonalInf(p,p);
+                message = obj.writeValueAsString(personalInf);
+            } catch (Exception e){
+                out.write(addCache("error:SystemError"));
+            }
+            try {
+                outputStream = new DataOutputStream(s.getOutputStream());
+                outputStream.write(addCache("newJoin@"+message));
+            } catch (IOException e){
+                e.printStackTrace();
+                out.write(addCache("error:annonError"));
+            }
+        }
+    }
+
 
     /**
      * 将字符串封装入缓存数组中

@@ -12,4 +12,6 @@ public interface SysService {
 
     Version getVersion();
 
+    void updateVersion(String version);
+
 }

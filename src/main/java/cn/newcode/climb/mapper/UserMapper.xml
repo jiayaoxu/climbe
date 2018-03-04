@@ -113,7 +113,11 @@
     AND
     ( user_inf.nickName LIKE concat(concat('%',#{name}),'%') OR user.username LIKE concat(concat('%',#{name}),'%') )
   </select>
+  <!--查询系统版本号-->
   <select id="selectVersion" resultType="cn.newcode.climb.po.Version">
     SELECT * FROM Sys_version
   </select>
+  <update id="updateVersion" parameterType="java.lang.String">
+    UPDATE Sys_version set version = #{version}
+  </update>
 </mapper>

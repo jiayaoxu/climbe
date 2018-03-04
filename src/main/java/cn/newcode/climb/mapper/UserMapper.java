@@ -43,4 +43,10 @@ public interface UserMapper {
      * @return
      */
     Version selectVersion();
+
+    /**
+     * 升级版本号
+     * @param version
+     */
+    void updateVersion(String version);
 }

@@ -1,6 +1,5 @@
 package cn.newcode.climb.controller;
 
-import cn.newcode.climb.mapper.UserMapper;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.UserService;
 import cn.newcode.climb.vo.IndexVo;
