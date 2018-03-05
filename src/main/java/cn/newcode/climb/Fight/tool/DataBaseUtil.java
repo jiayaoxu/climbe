@@ -13,7 +13,7 @@ import javax.annotation.PostConstruct;
  * \* Date: 2018/3/4 0004
  * \* Time: 22:29
  * \* Description:
- * \
+ * \    针对在socket传输中无法使用mapper而创建的类
  */
 @Component
 public class DataBaseUtil {
