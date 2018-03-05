@@ -1,23 +1,23 @@
 package cn.newcode.climb.Fight.tool;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.util.*;
-
 import cn.newcode.climb.Fight.vo.Invite;
 import cn.newcode.climb.Fight.vo.Room;
 import cn.newcode.climb.Fight.vo.UserCustom;
-import cn.newcode.climb.mapper.UserMapper;
+import cn.newcode.climb.LogUtil.MLogger;
 import cn.newcode.climb.po.User;
 import cn.newcode.climb.service.RankService;
-import cn.newcode.climb.service.UserService;
 import cn.newcode.climb.vo.PersonalInf;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.apache.shiro.web.filter.mgt.DefaultFilter.user;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 解析socket中的信息
@@ -52,8 +52,7 @@ public class ResoveSocket {
     @Autowired
     private RankService rankService;
 
-    @Autowired
-    private UserService userService;
+
 
     /**
      * 初始化  接收socket 输入流
@@ -63,6 +62,9 @@ public class ResoveSocket {
     public ResoveSocket(Socket socket) throws IOException{
         this.socket = socket;
         out = new DataOutputStream(socket.getOutputStream());
+        /*ApplicationContext context = new ClassPathXmlApplicationContext("classpath:springmvc-servlet.xml");
+        userService = (UserService) context.getBean("userService");*/
+
     }
 
     /**
@@ -438,6 +440,7 @@ public class ResoveSocket {
             } catch (NumberFormatException e) {
                 out.write(addCache("error@NumberFormatException"));
             }
+            rid = joinRoom;
             //同意才回复邀请,不同意直接屏蔽即可 回复房间号
             String ReplayMessage = "ReplayWatchInvite@"+uid;
             DataOutputStream roomHolder = null;
@@ -478,20 +481,25 @@ public class ResoveSocket {
      */
     private void annon() throws IOException{
         UserManager userManager = UserManager.getInstance();
-        List<Integer> players = userManager.getRoomMap(rid);
+        List<Integer> players = userManager.getWatchRoomMap(rid);
+        List<PersonalInf> persons = new ArrayList<PersonalInf>();
+        //查询本房间所有人的信息
+        for(Integer p : players){
+            try {
+                PersonalInf personalInf = DataBaseUtil.dataBaseUtil.userService.seletcPersonalInf(p,p);
+                persons.add(personalInf);
+                MLogger.info(personalInf.toString());
+            } catch (Exception e) {
+                out.write(addCache("error:annonError"));
+            }
+        }
+        //依次发送给所有用户
         for(Integer p : players){
             Socket s = userManager.getPlayer(p);
             DataOutputStream outputStream = null;
-            String message = null;
-            try{
-                PersonalInf personalInf = userService.seletcPersonalInf(p,p);
-                message = obj.writeValueAsString(personalInf);
-            } catch (Exception e){
-                out.write(addCache("error:SystemError"));
-            }
             try {
                 outputStream = new DataOutputStream(s.getOutputStream());
-                outputStream.write(addCache("newJoin@"+message));
+                outputStream.write(addCache("newJoin@"+obj.writeValueAsString(persons)));
             } catch (IOException e){
                 e.printStackTrace();
                 out.write(addCache("error:annonError"));

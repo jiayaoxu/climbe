@@ -1,5 +1,6 @@
 package cn.newcode.climb.controller;
 
+import cn.newcode.climb.Fight.tool.DataBaseUtil;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.UserService;
 import cn.newcode.climb.vo.IndexVo;
@@ -207,4 +208,12 @@ public class UserController {
         }
         return new Status("Success","");
     }
+
+    @RequestMapping("/test")
+    public @ResponseBody Status test() throws Exception{
+        PersonalInf p = DataBaseUtil.dataBaseUtil.userService.seletcPersonalInf(1,1);
+        System.out.println(p.getAttention());
+        return new Status("","");
+    }
+
 }

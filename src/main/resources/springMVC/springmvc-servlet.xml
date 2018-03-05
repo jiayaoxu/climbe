@@ -19,7 +19,7 @@
 
     <!-- 处理器，处理器映射器，处理器适配器，视图解析器,注解扫描 -->
     <!-- 扫描controller -->
-    <context:component-scan base-package="cn.newcode.climb.controller"></context:component-scan>
+    <context:component-scan base-package="cn.newcode.climb"></context:component-scan>
 
     <!-- 注解映射器 注入校验器 ,使用此映射器不用配置json conversion-service="conversionService"
         validator="validator" -->
@@ -66,6 +66,7 @@
         </property>
     </bean>
 
+   <!-- <bean id="testUtils" class="这里写utils类的包全路径名" init-method="init"></bean>-->
 
     <!--拦截器 -->
     <!-- <mvc:interceptors> <mvc:interceptor> <mvc:mapping path="/admin/**"

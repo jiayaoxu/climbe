@@ -187,4 +187,25 @@ public class PersonalInf {
     public void setFens(Integer fens) {
         this.fens = fens;
     }
+
+    @Override
+    public String toString() {
+        return "PersonalInf{" +
+                "imgPath='" + imgPath + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", gender=" + gender +
+                ", username='" + username + '\'' +
+                ", club='" + club + '\'' +
+                ", mood='" + mood + '\'' +
+                ", order=" + order +
+                ", teach=" + teach +
+                ", record=" + record +
+                ", gold_medal=" + gold_medal +
+                ", silver_medal=" + silver_medal +
+                ", bronze_medal=" + bronze_medal +
+                ", attention=" + attention +
+                ", fens=" + fens +
+                ", attented=" + attented +
+                '}';
+    }
 }
