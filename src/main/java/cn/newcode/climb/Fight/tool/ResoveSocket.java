@@ -1,6 +1,7 @@
 package cn.newcode.climb.Fight.tool;
 
 import cn.newcode.climb.Fight.vo.Invite;
+import cn.newcode.climb.Fight.vo.Persons;
 import cn.newcode.climb.Fight.vo.Room;
 import cn.newcode.climb.Fight.vo.UserCustom;
 import cn.newcode.climb.LogUtil.MLogger;
@@ -482,13 +483,16 @@ public class ResoveSocket {
     private void annon() throws IOException{
         UserManager userManager = UserManager.getInstance();
         List<Integer> players = userManager.getWatchRoomMap(rid);
-        List<PersonalInf> persons = new ArrayList<PersonalInf>();
+        List<Persons> persons = new ArrayList<Persons>();
         //查询本房间所有人的信息
         for(Integer p : players){
             try {
-                PersonalInf personalInf = DataBaseUtil.dataBaseUtil.userService.seletcPersonalInf(p,p);
-                persons.add(personalInf);
-                MLogger.info(personalInf.toString());
+                Persons per = new Persons();
+                per.setUid(p);
+                persons.add(per);
+//                PersonalInf personalInf = DataBaseUtil.dataBaseUtil.userService.seletcPersonalInf(p,p);
+//                persons.add(personalInf);
+//                MLogger.info(personalInf.toString());
             } catch (Exception e) {
                 out.write(addCache("error:annonError"));
             }

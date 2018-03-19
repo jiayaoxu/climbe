@@ -115,4 +115,19 @@ public interface UserService {
      * @throws Exception
      */
     Boolean setUserLimit(User_limit user_limit,Integer p) throws Exception;
+
+    /**
+     * 修改用户信息
+     * @param user_inf
+     * @throws Exception
+     */
+    void updateUserRockHall(User_inf user_inf) throws Exception;
+
+    /**
+     * 查询房间内学生信息
+     * @param stus
+     * @return
+     * @throws Exception
+     */
+    String selectStuInf(String stus) throws Exception;
 }

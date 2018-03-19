@@ -209,6 +209,38 @@ public class UserController {
         return new Status("Success","");
     }
 
+    /**
+     * 更改用户信息
+     * @param user_inf
+     * @return
+     */
+    @RequestMapping("/updateUserInf")
+    public @ResponseBody Status updateUserInf(User_inf user_inf){
+        try{
+            userService.updateUserRockHall(user_inf);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
+    }
+
+    /**
+     * 查询房间内学生信息
+     * @param stus
+     * @return
+     */
+    @RequestMapping("/selectStuInf")
+    public @ResponseBody String selectStuInf(String stus){
+        String str = null;
+        try{
+            str = userService.selectStuInf(stus);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return str;
+    }
+
     @RequestMapping("/test")
     public @ResponseBody Status test() throws Exception{
         PersonalInf p = DataBaseUtil.dataBaseUtil.userService.seletcPersonalInf(1,1);

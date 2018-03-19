@@ -324,4 +324,21 @@ public class RockController {
         }
         return routers;
     }
+
+    /**
+     * 通过岩馆和岩壁查询岩线
+     * @param hid
+     * @param rsid
+     * @return
+     */
+    @RequestMapping(value = "/selectMyRockWallByHidAndWallSys")
+    public @ResponseBody List<routerClass> selectMyRockWallByHidAndWallSys(Integer hid,Integer rsid){
+        List<routerClass> routers = null;
+        try{
+            routers = rockService.selectMyRockWallByHidAndWallSys(rsid,hid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return routers;
+    }
 }

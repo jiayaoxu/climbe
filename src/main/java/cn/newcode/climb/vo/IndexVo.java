@@ -14,6 +14,15 @@ public class IndexVo {
     private String nickName;
     private String clubName;
     private String limit;
+    private Integer hid;
+
+    public Integer getHid() {
+        return hid;
+    }
+
+    public void setHid(Integer hid) {
+        this.hid = hid;
+    }
 
     public String getImgPath() {
         return imgPath;

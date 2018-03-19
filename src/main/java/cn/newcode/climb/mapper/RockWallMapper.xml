@@ -135,4 +135,12 @@
     AND rockWall.hid = #{hid}
     AND user_inf.uid = #{uid}
   </select>
+  <select id="selectMyRockWallByHidAndWallSys" resultType="cn.newcode.climb.vo.routerClass">
+    SELECT rockWall.id,rockWall.rsid bid,rockWall.name,user_inf.nickName creater,rockWall.createTime time,rockWall.type
+    FROM rockWall,user_inf,rockWallSys
+    WHERE rockWall.creater = user_inf.uid
+    AND rockWall.rsid = rockWallSys.id
+    AND rockWall.hid = #{hid}
+    AND rockWallSys.id = #{rsid}
+  </select>
 </mapper>

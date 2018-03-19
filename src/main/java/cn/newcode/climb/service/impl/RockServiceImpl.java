@@ -141,4 +141,9 @@ public class RockServiceImpl implements RockService {
     public void deleteRockWall(Integer id) {
         rockWallMapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public List<routerClass> selectMyRockWallByHidAndWallSys(Integer rsid, Integer hid) {
+        return rockWallMapper.selectMyRockWallByHidAndWallSys(hid,rsid);
+    }
 }

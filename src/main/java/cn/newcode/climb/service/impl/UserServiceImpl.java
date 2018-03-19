@@ -1,6 +1,7 @@
 package cn.newcode.climb.service.impl;
 
 import cn.newcode.climb.Fight.tool.UserManager;
+import cn.newcode.climb.Fight.vo.Persons;
 import cn.newcode.climb.mapper.*;
 import cn.newcode.climb.page.pageBean;
 import cn.newcode.climb.po.*;
@@ -9,6 +10,8 @@ import cn.newcode.climb.vo.FriendsVo;
 import cn.newcode.climb.vo.IndexVo;
 import cn.newcode.climb.vo.PersonalInf;
 import cn.newcode.climb.vo.UserLimitVo;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
@@ -216,6 +219,28 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @Override
+    public void updateUserRockHall(User_inf user_inf) throws Exception {
+        user_infMapper.updateByPrimaryKeySelective(user_inf);
+    }
+
+    @Override
+    public String selectStuInf(String stus) throws Exception {
+        ObjectMapper obj = new ObjectMapper();
+        JavaType type = getCollectionType(obj,ArrayList.class,Persons.class);
+        List<Persons> per = obj.readValue(stus,type);
+        List<IndexVo> userInf = new ArrayList<IndexVo>();
+        for(Persons p : per){
+            IndexVo index = userMapper.selectIndex(p.getUid());
+            userInf.add(index);
+        }
+        String json = obj.writeValueAsString(userInf);
+        return json;
+    }
+
+    public static JavaType getCollectionType(ObjectMapper obj,Class<?> collectionClass, Class<?>... elementClasses) {
+        return obj.getTypeFactory().constructParametricType(collectionClass, elementClasses);
+    }
 
     /**
      * 创建角色时创角色钱包、角色身份、角色等级 支持事物回滚

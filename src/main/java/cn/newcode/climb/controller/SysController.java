@@ -2,7 +2,13 @@ package cn.newcode.climb.controller;
 
 import cn.newcode.climb.po.Version;
 import cn.newcode.climb.service.SysService;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +24,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -38,6 +47,10 @@ public class SysController {
     @Value("/opt/pic/app")
     private String path;
 
+    /**
+     * 获取apk版本号
+     * @return
+     */
     @RequestMapping("/getVersion")
     public @ResponseBody Version getVersion(){
         Version v = null;
@@ -49,6 +62,12 @@ public class SysController {
         return v;
     }
 
+    /**
+     * 下载apk
+     * @param filename
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/download")
     public ResponseEntity<byte[]> download(@RequestParam("filename") String filename)throws Exception{
         File file = new File(path+filename);
@@ -61,9 +80,22 @@ public class SysController {
                 headers, HttpStatus.CREATED);
     }
 
+    /**
+     * 上传apk
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/upload",method = RequestMethod.POST)
-    public String upload(HttpServletRequest request, @Param("version") String version, @Param("file") MultipartFile file)throws Exception{
-        if(file.isEmpty()){
+    public String upload(@RequestParam("file")MultipartFile file, HttpServletRequest request,
+                         HttpServletResponse response,@Param("version")String version)throws Exception{
+//        , @Param("version") String version, @Param("file") MultipartFile file
+        sysService.upload(file, request, response);
+        System.out.println(version);
+        sysService.updateVersion(version);
+        return "success";
+
+        /*if(file.isEmpty()){
             return "error";
         }
         String filename = "climbe.apk";
@@ -73,6 +105,21 @@ public class SysController {
         }
         file.transferTo(filepath);
         sysService.updateVersion(version);
-        return "success";
+        return "success";*/
+    }
+
+    /**
+     * 修改版本号
+     * @param version
+     * @return
+     */
+    @RequestMapping(value = "/updateVersion")
+    public @ResponseBody  String updateVersion(String version){
+        try{
+            sysService.updateVersion(version);
+            return "success";
+        } catch (Exception e){
+            return "false";
+        }
     }
 }

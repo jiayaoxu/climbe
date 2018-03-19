@@ -129,4 +129,12 @@ public interface RockService {
      * @param id
      */
     void deleteRockWall(Integer id);
+
+    /**
+     * 通过岩馆和岩壁查询岩线
+     * @param rsid
+     * @param hid
+     * @return
+     */
+    List<routerClass> selectMyRockWallByHidAndWallSys(Integer rsid,Integer hid);
 }

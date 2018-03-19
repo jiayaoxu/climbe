@@ -61,4 +61,12 @@ public interface RockWallMapper {
      * @return
      */
     List<routerClass> selectMyRockWall(@Param("hid")Integer hid,@Param("uid")Integer uid);
+
+    /**
+     * 通过岩壁和岩馆查询岩线
+     * @param hid
+     * @param rsid
+     * @return
+     */
+    List<routerClass> selectMyRockWallByHidAndWallSys(@Param("hid")Integer hid,@Param("rsid") Integer rsid);
 }

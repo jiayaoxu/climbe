@@ -97,7 +97,7 @@
     AND `user`.id = #{id}
   </select>
   <select id="selectIndex" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.IndexVo">
-    SELECT user_inf.head_img imgPath,user_inf.nickName,club.`name` clubName,user_limit.`limit`
+    SELECT user_inf.head_img imgPath,user_inf.nickName,club.`name` clubName,user_limit.`limit`,user_inf.hid
     FROM   ( (user_inf LEFT JOIN user_limit ON user_inf.uid = user_limit.uid) LEFT JOIN club_member ON club_member.member = user_inf.uid) LEFT JOIN club ON club.id = club_member.cid
     WHERE user_inf.uid = #{uid}
   </select>

@@ -18,6 +18,16 @@ public class User_inf implements Serializable {
 
     private Integer uid;
 
+    private Integer hid;
+
+    public Integer getHid() {
+        return hid;
+    }
+
+    public void setHid(Integer hid) {
+        this.hid = hid;
+    }
+
     public Integer getId() {
         return id;
     }
