@@ -350,18 +350,22 @@ public class ResoveSocket {
         }else if(head.equals("ExitWatchRoom")){
             //列出房间信息
             List<Integer> room = userManager.getWatchRoomMap(rid);
-            //创建遍历对象
-            Iterator<Integer> it = room.iterator();
-            while(it.hasNext()){
-                Integer player = it.next();
-                if(player.equals(uid)){
-                    it.remove();
-                }
-            }
-            if(room.size()==0){
+            //房主退出销毁房间 学员退出 通知房间里的所有人更新列表
+            if(this.uid == this.rid){
                 userManager.removeWatchRoom(rid);
-            }else {
-                userManager.WatchplayerJoinRoom(rid,room);
+            }else{
+                //创建遍历对象
+                Iterator<Integer> it = room.iterator();
+                while(it.hasNext()){
+                    Integer player = it.next();
+                    if(player.equals(uid)){
+                        it.remove();
+                    }
+                }
+                userManager.addWatchRoomMap(room,rid);
+                annon();
+//                this.rid = null;
+                this.rid = null;
             }
         }else if(head.equals("WatchroomList")) {
             //查询房间列表

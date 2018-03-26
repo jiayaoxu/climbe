@@ -144,6 +144,15 @@ public class UserManager {
     }
 
     /**
+     *  观战房间信息设回
+     * @param room
+     * @param rid
+     */
+    public void addWatchRoomMap(List<Integer> room,Integer rid){
+        watchRoomMap.put(rid,room);
+    }
+
+    /**
      * 获取用户房间信息
      * @param rid
      * @return
@@ -151,6 +160,8 @@ public class UserManager {
    public List<Integer> getRoomMap(Integer rid){
       return roomMap.get(rid);
    }
+
+
 
     /**
      * 获取所有观战房间
