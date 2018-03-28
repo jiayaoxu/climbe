@@ -91,7 +91,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="seletcRank" parameterType="cn.newcode.climb.po.Rank_medal" resultType="cn.newcode.climb.vo.Rank_medalVo">
-      SELECT user.username,user.id,
+      SELECT user.username,user.id,user_inf.head_img imgPath,
       <if test="Rank_medal.goldMedal!=null">
         rank_medal.gold_medal AS  `medal`
       </if>
@@ -101,8 +101,8 @@
       <if test="Rank_medal.bronzeMedal!=null">
         rank_medal.bronze_medal AS  `medal`
       </if>
-    FROM `user`,rank_medal
-    WHERE user.id = rank_medal.uid
+    FROM `user`,rank_medal,user_inf
+    WHERE user.id = rank_medal.uid AND user_inf.uid = `user`.id
     ORDER BY
     <if test="Rank_medal.goldMedal!=null">
       rank_medal.gold_medal

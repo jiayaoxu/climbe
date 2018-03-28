@@ -126,4 +126,9 @@ public class RankServiceImpl implements RankService {
     public Integer selectMyTeacherRank(Integer uid) {
         return rank_teacherMapper.selectMyRank(uid);
     }
+
+    @Override
+    public List<Rank_wall> selectPoints(Integer uid) {
+        return rank_wallMapper.points(uid);
+    }
 }

@@ -76,9 +76,9 @@
   </select>
   <!--查询排名-->
   <select id="selectRank" resultType="cn.newcode.climb.vo.Rank_wallVo">
-    SELECT `name`,username creater,COUNT(*) flover,user.id
-    FROM rank_wall,rockWall,`user`
-    WHERE rank_wall.wall = rockWall.id AND rockWall.`creater` = user.`id`
+    SELECT `name`,username creater,COUNT(*) flover,user.id,user_inf.head_img imgPath
+    FROM rank_wall,rockWall,`user`,user_inf
+    WHERE rank_wall.wall = rockWall.id AND rockWall.`creater` = user.`id` AND user.id = user_inf.uid
     GROUP BY wall
     ORDER BY flover DESC
     LIMIT #{startPos},#{pageSize}
@@ -86,5 +86,8 @@
   <!--查询总数-->
   <select id="selectCount" resultType="java.lang.Integer">
     SELECT COUNT(*)  FROM rank_wall GROUP BY wall
+  </select>
+  <select id="points" parameterType="java.lang.Integer" resultType="cn.newcode.climb.po.Rank_wall">
+    SELECT wall,flover FROM rank_wall WHERE flover = #{uid}
   </select>
 </mapper>

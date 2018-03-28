@@ -149,4 +149,11 @@ public interface RankService {
      * @return
      */
     Integer selectMyTeacherRank(Integer uid);
+
+    /**
+     * 查询点赞过的线路
+     * @param uid
+     * @return
+     */
+    List<Rank_wall> selectPoints(Integer uid);
 }

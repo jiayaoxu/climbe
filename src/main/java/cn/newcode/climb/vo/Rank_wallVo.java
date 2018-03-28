@@ -3,6 +3,16 @@ package cn.newcode.climb.vo;
 public class Rank_wallVo {
     private Integer id;
 
+    private String imgPath;
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -26,4 +26,11 @@ public interface Rank_wallMapper {
     List<Rank_wallVo> selectRank(@Param("startPos")Integer startPos, @Param("pageSize")Integer pageSize);
 
     List<Integer> selectCount();
+
+    /**
+     * 查询点赞过的线路
+     * @param uid
+     * @return
+     */
+    List<Rank_wall> points(Integer uid);
 }

@@ -263,4 +263,20 @@ public class RankController {
         }
         return rank;
     }
+
+    /**
+     * 查询自己点赞过的线路
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/selectPoints")
+    public @ResponseBody List<Rank_wall> selectPoints(Integer uid){
+        List<Rank_wall> points = null;
+        try{
+            points = rankService.selectPoints(uid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return points;
+    }
 }

@@ -70,9 +70,9 @@
   </update>
   <!--分页查询年龄排行榜-->
   <select id="seletcAgeRank" resultType="cn.newcode.climb.vo.Rank_ageVo">
-    SELECT user.id,username,`year`
-    FROM rank_age,`user`
-    WHERE user.id = rank_age.uid
+    SELECT user.id,username,`year`,user_inf.head_img imgPath
+    FROM rank_age,`user`,user_inf
+    WHERE user.id = rank_age.uid AND user.id = user_inf.uid
     ORDER BY rank_age.year
     LIMIT #{startPos},#{pageSize}
   </select>
