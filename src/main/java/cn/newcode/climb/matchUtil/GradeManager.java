@@ -31,6 +31,30 @@ public class GradeManager {
     }
 
     /**
+     * 存储自己的对手是谁
+     */
+    Map<Integer,Integer> equls = new HashMap<Integer, Integer>();
+
+    public Integer getEquals(Integer uid){
+        return equls.get(uid);
+    }
+
+    public void setEquls(Integer uid,Integer e){
+        equls.put(uid,e);
+    }
+
+    /**
+     * 移除信息
+     * @param uid
+     */
+    public void removeEqual(Integer uid){
+        equls.remove(uid);
+    }
+
+    public Integer getEqualsSize(){
+        return equls.size();
+    }
+    /**
      * 实例化内部类
      */
     private static  class Instance{
@@ -55,4 +79,19 @@ public class GradeManager {
     public static GradeManager getInstance(){
         return Instance.gradeManager;
     }
+
+    private ArrayList<Integer> medalList = new ArrayList<Integer>();
+
+    public List<Integer> getMedalList(){
+        return medalList;
+    }
+
+    public void addMedalList(Integer uid){
+        medalList.add(uid);
+    }
+
+    public void clearMedalList(){
+        medalList = new ArrayList<Integer>();
+    }
+
 }

@@ -140,4 +140,17 @@ public interface MatchService {
      */
     Boolean isWin(Integer uid)throws Exception;
 
+    /**
+     * 比赛报名
+     * @param match_inf
+     */
+    void sign(Match_inf match_inf);
+
+    /**
+     * 查询成绩
+     * @param grade
+     * @return
+     */
+    Match_grade selectGrade(Match_grade grade);
+
 }

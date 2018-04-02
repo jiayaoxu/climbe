@@ -63,7 +63,7 @@
         #{venue,jdbcType=INTEGER},
       </if>
       <if test="starttime != null" >
-        #{starttime,jdbcType=DATE},
+        #{starttime},
       </if>
       <if test="starttimeT !=null" >
         #{starttimeT}
@@ -98,10 +98,19 @@
   </update>
   <select id="selectMatchInf" parameterType="java.lang.Integer" resultType="cn.newcode.climb.po.Match_inf">
     SELECT
-    route,venue
+    route,venue,`count`
     FROM
     match_inf
     WHERE
     `mid` = #{mid}
+  </select>
+  <update id="sign" parameterType="cn.newcode.climb.po.Match_inf">
+    update match_inf set count = count+1 where mid = #{mid};
+  </update>
+  <select id="selectCommitCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(*) from match_grade where mid = #{mid}
+  </select>
+  <select id="clear" parameterType="java.lang.Integer" resultType="cn.newcode.climb.vo.Clear">
+    SELECT mid,uid,grade FROM match_grade WHERE mid = #{mid} ORDER BY grade
   </select>
 </mapper>

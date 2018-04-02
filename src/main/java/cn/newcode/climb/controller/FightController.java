@@ -1,8 +1,11 @@
 package cn.newcode.climb.controller;
 
+import cn.newcode.climb.po.Rock_record;
 import cn.newcode.climb.recordUtil.Record;
 import cn.newcode.climb.recordUtil.calculationsRecord;
+import cn.newcode.climb.service.RecordService;
 import cn.newcode.climb.vo.Status;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class FightController {
 
+    @Autowired
+    private RecordService recordService;
+
     /**
      * 对战结束后提交成绩
      * @param wid
@@ -34,5 +40,21 @@ public class FightController {
             return new Status(null,"SystemError");
         }
         return new Status("sucess",null);
+    }
+
+    /**
+     * 查询线路的最高纪录
+     * @param wid
+     * @return
+     */
+    @RequestMapping("/getMaxRecord")
+    public @ResponseBody Rock_record getMaxRecord(Integer wid){
+        Rock_record rock_record = null;
+        try{
+            rock_record = recordService.selectMaxRecord(wid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return rock_record;
     }
 }

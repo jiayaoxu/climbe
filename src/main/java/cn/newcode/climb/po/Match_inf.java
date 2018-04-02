@@ -16,6 +16,16 @@ public class Match_inf implements Serializable {
 
     private Date starttimeT;
 
+    private Integer count;
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public Date getStarttimeT() {
         return starttimeT;
     }

@@ -1,10 +1,14 @@
 package cn.newcode.climb.recordUtil;
 
+import cn.newcode.climb.DataBaseUtil.DataBaseUtil;
 import cn.newcode.climb.LogUtil.MLogger;
+import cn.newcode.climb.po.Rock_record;
 import cn.newcode.climb.service.RankService;
+import cn.newcode.climb.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,12 +39,25 @@ public class calculationsRecord {
      * @param record
      */
     public void compareMaxRecord(Integer wid,Record record){
-        Record r = recordMap.get(wid);
-        if(r==null){
-            recordMap.put(wid,record);
-        }else{
-            r.equals(record);
+        RecordService recordService = DataBaseUtil.dataBaseUtil.recordService;
+        Rock_record rock_record = recordService.selectMaxRecord(wid);
+        //首先与数据库中本线路最高纪录比较,如果高于最该纪录就更新最高纪录
+        if(record.getMaxRecord()>rock_record.getMax()){
+            rock_record.setMax((double) record.getMaxRecord());
+            //然后与今天的最高成绩进行比较,如果高于今天的最高成绩就更新今天的最高成绩
+            if(record.getMaxRecord()>rock_record.getToday()){
+                rock_record.setToday((double) record.getMaxRecord());
+                rock_record.setPerson(record.getUid());
+            }
+            recordService.updateMaxRecord(rock_record);
         }
+//        Record r = recordMap.get(wid);
+//        if(r==null){
+//            recordMap.put(wid,record);
+//        }else{
+//            r.equals(record);
+//        }
+
     }
 
 
@@ -49,7 +66,17 @@ public class calculationsRecord {
      * @return
      */
     public void getMaxRecordUser() {
-        //遍历每条线路,给分数最高的玩家增加积分
+        try{
+            RecordService recordService = DataBaseUtil.dataBaseUtil.recordService;
+            RankService rankService = DataBaseUtil.dataBaseUtil.rankService;
+            List<Rock_record> records = recordService.selectMaxRecords();
+            for(Rock_record r : records){
+                rankService.addIntegral(r.getPerson());
+            }
+        } catch (Exception e){
+            MLogger.warn("add integral error");
+        }
+        /*//遍历每条线路,给分数最高的玩家增加积分
         for(Map.Entry<Integer,Record> it : recordMap.entrySet()){
             Integer uid = it.getValue().getUid();
             //调用service,给相应玩家增加积分
@@ -59,6 +86,6 @@ public class calculationsRecord {
                 MLogger.warn("-----------uid is null when add integral-----------");
         }
         //遍历完之后清空今天的Map
-        recordMap.clear();
+        recordMap.clear();*/
     }
 }

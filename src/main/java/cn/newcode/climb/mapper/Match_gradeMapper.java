@@ -47,4 +47,7 @@ public interface Match_gradeMapper {
     Integer selectCountByMid(Integer mid);
 
     List<FinalsMatchVo> selectFinal(@Param("finalPlayer")Integer finalPalyer, @Param("match")Match_grade match_grade);
+
+    Match_grade selectGrades(Match_grade grade);
+
 }

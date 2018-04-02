@@ -50,6 +50,18 @@
       <if test="grade != null" >
         grade,
       </if>
+      <if test="sgrade != null" >
+        sgrade,
+      </if>
+      <if test="tgrade != null" >
+        tgrade,
+      </if>
+      <if test="fgrade != null" >
+        fgrade,
+      </if>
+      <if test="figrade != null" >
+        figrade,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -63,6 +75,18 @@
       </if>
       <if test="grade != null" >
         #{grade},
+      </if>
+      <if test="sgrade != null" >
+        #{sgrade},
+      </if>
+      <if test="tgrade != null" >
+        #{tgrade},
+      </if>
+      <if test="fgrade != null" >
+        #{fgrade},
+      </if>
+      <if test="figrade != null" >
+        #{figrade},
       </if>
     </trim>
   </insert>
@@ -78,8 +102,20 @@
       <if test="grade != null" >
         grade = #{grade},
       </if>
+      <if test="sgrade != null" >
+        sgrade = #{sgrade},
+      </if>
+      <if test="tgrade != null" >
+        tgrade = #{tgrade},
+      </if>
+      <if test="fgrade != null" >
+        fgrade = #{fgrade},
+      </if>
+      <if test="figrade != null" >
+        figrade = #{figrade},
+      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where uid = #{uid,jdbcType=INTEGER} AND mid = #{mid}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.Match_grade" >
     update match_grade
@@ -198,5 +234,8 @@ FROM
 	WHERE mid = #{match.mid}
 	AND m.uid = user_inf.uid
 	ORDER BY m.grade LIMIT 0,#{finalPlayer}
+  </select>
+  <select id="selectGrades" parameterType="cn.newcode.climb.po.Match_grade" resultType="cn.newcode.climb.po.Match_grade">
+    SELECT * FROM match_grade WHERE uid = #{uid} AND mid = #{mid}
   </select>
 </mapper>

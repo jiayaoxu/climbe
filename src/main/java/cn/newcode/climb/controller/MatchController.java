@@ -1,5 +1,6 @@
 package cn.newcode.climb.controller;
 
+import cn.newcode.climb.matchUtil.GradeManager;
 import cn.newcode.climb.po.Match;
 import cn.newcode.climb.po.Match_grade;
 import cn.newcode.climb.po.Match_inf;
@@ -82,6 +83,24 @@ public class MatchController {
         }
 
         return objectMapper.writeValueAsString(mathVo);
+    }
+
+    /**
+     * 比赛报名
+     * @param mid
+     * @return
+     */
+    @RequestMapping(value = "/sign")
+    public @ResponseBody Status sign(Integer mid){
+        try{
+            Match_inf match_inf = new Match_inf();
+            match_inf.setMid(mid);
+            matchService.sign(match_inf);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
     }
 
     /** 3.初赛
@@ -324,5 +343,16 @@ public class MatchController {
 //        }
 //    }
 
+    /**
+     * 获取奖牌榜
+     * @return
+     */
+    @RequestMapping("/getMedalList")
+    public @ResponseBody List<Integer> getMedalList(){
+        GradeManager gradeManager = GradeManager.getInstance();
+        List<Integer> medals = gradeManager.getMedalList();
+        gradeManager.clearMedalList();
+        return medals;
+    }
 
 }

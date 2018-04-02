@@ -22,6 +22,11 @@ public class RankController {
 
     private Status status;
 
+    /**
+     * 为教师点赞
+     * @param teacher
+     * @return
+     */
     @RequestMapping("/addPoint")
     public @ResponseBody Status addPoint(Integer teacher){
         try{

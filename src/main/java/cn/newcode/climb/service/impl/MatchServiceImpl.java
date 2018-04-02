@@ -1,14 +1,18 @@
 package cn.newcode.climb.service.impl;
 
+import cn.newcode.climb.Fight.tool.UserManager;
 import cn.newcode.climb.mapper.*;
 import cn.newcode.climb.matchUtil.GetInMatch;
 import cn.newcode.climb.matchUtil.GradeManager;
+import cn.newcode.climb.matchUtil.MessageManagement;
 import cn.newcode.climb.matchUtil.timer;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.MatchService;
+import cn.newcode.climb.vo.Clear;
 import cn.newcode.climb.vo.FinalsMatchVo;
 import cn.newcode.climb.vo.Grade;
 import cn.newcode.climb.vo.MathVo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
@@ -16,6 +20,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -97,37 +104,42 @@ public class MatchServiceImpl implements MatchService {
                         //m.setId(mid);
                         //m.setStatus(false);
                         //matchMapper.updateByPrimaryKeySelective(m);
+                        try {
+                            clear(mid);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         //初赛结束，存储进入决赛的人员
-                        Integer finalPlayer = 0;
-                        Integer count = match_gradeMapper.selectGradeCount(mid);
-                        if(count>=16){
-                            finalPlayer = 16;
-                        }else if(count>=8){
-                            finalPlayer = 8;
-                        }else if(count>=4){
-                            finalPlayer = 4;
-                        }else if(count>=2){
-                            finalPlayer = 2;
-                        }else if(count<2){
-                            finalPlayer = 1;
-                        }
-                        //查询进入决赛的成员
-                        GradeManager gradeManager = GradeManager.getInstance();
-                        Match_grade match_grade = new Match_grade();
-                        match_grade.setMid(mid);
-                        List<FinalsMatchVo> finalsMatchVosList = match_gradeMapper.selectFinal(finalPlayer,match_grade);
-                        //进入决赛的成员设进成绩管理器
-                        Map<Integer,List<Integer>> players = new HashMap<Integer, List<Integer>>();
-                        //排名设入排名管理器
-                        List<Integer> rank = new ArrayList<Integer>();
-                        for(FinalsMatchVo f : finalsMatchVosList){
-                            List<Integer> grade = new ArrayList<Integer>();
-                            grade.add(f.getGrade());
-                            players.put(f.getUid(),grade);
-                            rank.add(f.getUid());
-                        }
-                        gradeManager.setGrade(players);
-                        gradeManager.setRank(rank);
+//                        Integer finalPlayer = 0;
+//                        Integer count = match_gradeMapper.selectGradeCount(mid);
+//                        if(count>=16){
+//                            finalPlayer = 16;
+//                        }else if(count>=8){
+//                            finalPlayer = 8;
+//                        }else if(count>=4){
+//                            finalPlayer = 4;
+//                        }else if(count>=2){
+//                            finalPlayer = 2;
+//                        }else if(count<2){
+//                            finalPlayer = 1;
+//                        }
+//                        //查询进入决赛的成员
+//                        GradeManager gradeManager = GradeManager.getInstance();
+//                        Match_grade match_grade = new Match_grade();
+//                        match_grade.setMid(mid);
+//                        List<FinalsMatchVo> finalsMatchVosList = match_gradeMapper.selectFinal(finalPlayer,match_grade);
+//                        //进入决赛的成员设进成绩管理器
+//                        Map<Integer,List<Integer>> players = new HashMap<Integer, List<Integer>>();
+//                        //排名设入排名管理器
+//                        List<Integer> rank = new ArrayList<Integer>();
+//                        for(FinalsMatchVo f : finalsMatchVosList){
+//                            List<Integer> grade = new ArrayList<Integer>();
+//                            grade.add(f.getGrade());
+//                            players.put(f.getUid(),grade);
+//                            rank.add(f.getUid());
+//                        }
+//                        gradeManager.setGrade(players);
+//                        gradeManager.setRank(rank);
                     }
                 };
                 timer.schedule(task,timestamp);
@@ -161,6 +173,12 @@ public class MatchServiceImpl implements MatchService {
     public Integer insertSelective(Match_grade matchGrade) throws Exception {
         //成绩插入数据库
         match_gradeMapper.insertSelective(matchGrade);
+        Integer count = match_infMapper.selectMatchInf(matchGrade.getMid()).getCount();
+        Integer nowCount = match_infMapper.selectCommitCount(matchGrade.getMid());
+        if(count == nowCount){
+            //向所有人分发成绩
+            clear(matchGrade.getMid());
+        }
         return 1;
     }
 
@@ -419,29 +437,44 @@ public class MatchServiceImpl implements MatchService {
      */
     @Override
     public void submitGrade(Match_grade match_grade) throws Exception {
-        GradeManager gradeManager = GradeManager.getInstance();
-        Integer uid = match_grade.getUid();
-        //判断这是第几次提交成绩
-        List<Integer> gradeList = gradeManager.getGrade().get(uid);
-        Integer i = gradeList.size();
-        Integer grade = match_grade.getGrade();
-        if(i==2){
-            match_grade.setSgrade(grade);
-        }else if(i==3){
-            match_grade.setTgrade(grade);
-        }else if(i==4){
-            match_grade.setFgrade(grade);
-        }else if(i==5){
-            match_grade.setFigrade(grade);
-        }
-        gradeList.add(grade);
-        //添加到成绩管理器中
-        Map<Integer,List<Integer>> gManager = gradeManager.getGrade();
-        gManager.put(uid,gradeList);
-        gradeManager.setGrade(gManager);
-        match_grade.setGrade(null);
+//        GradeManager gradeManager = GradeManager.getInstance();
+//        Integer uid = match_grade.getUid();
+//        //判断这是第几次提交成绩
+//        List<Integer> gradeList = gradeManager.getGrade().get(uid);
+//        Integer i = gradeList.size();
+//        Integer grade = match_grade.getGrade();
+//        if(i==2){
+//            match_grade.setSgrade(grade);
+//        }else if(i==3){
+//            match_grade.setTgrade(grade);
+//        }else if(i==4){
+//            match_grade.setFgrade(grade);
+//        }else if(i==5){
+//            match_grade.setFigrade(grade);
+//        }
+//        gradeList.add(grade);
+//        //添加到成绩管理器中
+//        Map<Integer,List<Integer>> gManager = gradeManager.getGrade();
+//        gManager.put(uid,gradeList);
+//        gradeManager.setGrade(gManager);
+//        match_grade.setGrade(null);
         //成绩插入数据库
-        match_gradeMapper.insertSelective(match_grade);
+        match_gradeMapper.updateByPrimaryKeySelective(match_grade);
+        String flag = "";
+        if(match_grade.getSgrade()!=null){
+            flag = "s";
+        }else if(match_grade.getTgrade()!=null){
+            flag = "t";
+        }else if(match_grade.getFgrade()!=null){
+            flag = "f";
+        }else if(match_grade.getFigrade()!=null){
+            flag = "fi";
+        }
+        //启动消息推送异步
+        MessageManagement management = new MessageManagement(
+                match_grade.getUid(),match_grade.getMid(),flag,match_grade.getGrade());
+        Thread thread =  new Thread(management);
+        thread.start();
     }
 
     @Override
@@ -524,12 +557,6 @@ public class MatchServiceImpl implements MatchService {
         return hs;
     }
 
-    /**
-     * 添加晋级人员
-     * @param mid
-     * @param total
-     * @throws Exception
-     */
     /*public void ruleMethod(Integer mid,Integer total) throws Exception {
         GradeManager gradeManager = GradeManager.getInstance();
         GetInMatch get = new GetInMatch();
@@ -538,6 +565,57 @@ public class MatchServiceImpl implements MatchService {
         List<Integer> grades = match_gradeMapper.selectRankList(get);
         gradeManager.addMathcRanking(mid,grades);
     }*/
+    public void sign(Match_inf match_inf){
+        match_infMapper.sign(match_inf);
+    }
 
+    @Override
+    public Match_grade selectGrade(Match_grade grade) {
+        return match_gradeMapper.selectGrades(grade);
+    }
 
+    public void clear(Integer mid) throws IOException {
+        ObjectMapper obj = new ObjectMapper();
+        List<Clear> clears = match_infMapper.clear(mid);
+        int count = clears.size();
+        Integer total = 0;
+        if(count>=16){
+            total=16;
+        }else if(count>=8){
+            total=8;
+        }else if(count>=4){
+            total=4;
+        }else if(count>=2){
+            total=2;
+        }else {
+            total=1;
+        }
+        for(int i = 0;i<clears.size();i++){
+            Integer uid = clears.get(i).getUid();
+            Grade grade = new Grade();
+            grade.setRanking(i+1);
+            //判断自己是否晋级
+            if(i<total){
+                Integer equal = clears.get(total-i-1).getUid();
+                grade.setEqual(equal);
+                grade.setHasNext(true);
+
+                //添加对手到成绩管理器
+                GradeManager g = GradeManager.getInstance();
+                g.setEquls(uid,equal);
+            }
+            grade.setTotalIn(total);
+            UserManager userManager = UserManager.getInstance();
+            Socket s = userManager.getPlayer(uid);
+            DataOutputStream out = new DataOutputStream(s.getOutputStream());
+            out.write(addCache("matchGrade@"+obj.writeValueAsString(grade)));
+        }
+    }
+
+    public static byte[] addCache(String value){
+        byte src [] = value.getBytes();
+        byte response [] = new byte[1024];
+        System.arraycopy(src,0,response,0,src.length);
+        return response;
+    }
 }

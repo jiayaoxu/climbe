@@ -1,6 +1,6 @@
 package cn.newcode.climb.controller;
 
-import cn.newcode.climb.Fight.tool.DataBaseUtil;
+import cn.newcode.climb.DataBaseUtil.DataBaseUtil;
 import cn.newcode.climb.po.*;
 import cn.newcode.climb.service.UserService;
 import cn.newcode.climb.vo.IndexVo;
