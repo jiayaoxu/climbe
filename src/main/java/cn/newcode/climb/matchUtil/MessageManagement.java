@@ -2,12 +2,16 @@ package cn.newcode.climb.matchUtil;
 
 import cn.newcode.climb.DataBaseUtil.DataBaseUtil;
 import cn.newcode.climb.Fight.tool.UserManager;
+import cn.newcode.climb.Fight.vo.Persons;
 import cn.newcode.climb.po.Match_grade;
 import cn.newcode.climb.service.MatchService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -123,6 +127,33 @@ public class MessageManagement implements Runnable {
                         g.addMedalList(uid);
                     }else{
                         g.addMedalList(equal);
+                    }
+                    //所有人比赛完成,推送给所有参加比赛的人成绩
+                    try{
+                        List<Integer> players = DataBaseUtil.dataBaseUtil.matchService.getAllPlayersInThisMatch(mid);
+                        ObjectMapper obj = new ObjectMapper();
+                        List<Persons> per = new ArrayList<Persons>();
+                        List<Integer> medalList = GradeManager.getInstance().getMedalList();
+                        for(Integer m : medalList){
+                            Persons persons = new Persons();
+                            persons.setUid(m);
+                            per.add(persons);
+                        }
+                        for(Integer p : players){
+                            Socket s = UserManager.getInstance().getPlayer(p);
+                            try {
+                                DataOutputStream out = new DataOutputStream(s.getOutputStream());
+
+                                out.write(addCache("matchList@"
+                                        +obj.writeValueAsString(per)));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } catch (Exception e){
+                      e.printStackTrace();
+                    }finally {
+                        GradeManager.getInstance().clearMedalList();
                     }
                 }
             }

@@ -50,4 +50,11 @@ public interface Match_gradeMapper {
 
     Match_grade selectGrades(Match_grade grade);
 
+    /**
+     * 查询参加这次比赛的所有成员
+     * @param mid
+     * @return
+     */
+    List<Integer> selectPlayersInThisMatch(Integer mid);
+
 }

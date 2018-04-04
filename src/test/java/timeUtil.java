@@ -1,11 +1,19 @@
+import cn.newcode.climb.DataBaseUtil.DataBaseUtil;
 import cn.newcode.climb.mapper.UserMapper;
+import cn.newcode.climb.service.MatchService;
 import cn.newcode.climb.service.UserService;
 import cn.newcode.climb.service.impl.UserServiceImpl;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+
+import java.util.List;
+
+import static cn.newcode.climb.DataBaseUtil.DataBaseUtil.dataBaseUtil;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -15,6 +23,7 @@ import javax.annotation.Resource;
  * \* Description:测试时间转换为long类型
  * \
  */
+@Component
 public class timeUtil {
 
     @Test
@@ -31,5 +40,14 @@ public class timeUtil {
         ApplicationContext context = new ClassPathXmlApplicationContext("classpath:springMVC/springmvc-servlet.xml");
         UserService userService = (UserServiceImpl) context.getBean("userService");
         userService.seletcPersonalInf(1,1);
+    }
+
+    @Autowired
+    private MatchService matchService;
+
+
+    @Test
+    public void testMapper(){
+        List<Integer> l = matchService.getAllPlayersInThisMatch(41);
     }
 }

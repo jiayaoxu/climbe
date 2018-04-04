@@ -153,4 +153,11 @@ public interface MatchService {
      */
     Match_grade selectGrade(Match_grade grade);
 
+    /**
+     * 查询参加这次比赛的所有人
+     * @param mid
+     * @return
+     */
+    List<Integer> getAllPlayersInThisMatch(Integer mid);
+
 }

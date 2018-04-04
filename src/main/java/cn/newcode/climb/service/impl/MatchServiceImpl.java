@@ -574,6 +574,11 @@ public class MatchServiceImpl implements MatchService {
         return match_gradeMapper.selectGrades(grade);
     }
 
+    @Override
+    public List<Integer> getAllPlayersInThisMatch(Integer mid) {
+        return match_gradeMapper.selectPlayersInThisMatch(mid);
+    }
+
     public void clear(Integer mid) throws IOException {
         ObjectMapper obj = new ObjectMapper();
         List<Clear> clears = match_infMapper.clear(mid);

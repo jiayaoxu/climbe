@@ -351,8 +351,13 @@ public class MatchController {
     public @ResponseBody List<Integer> getMedalList(){
         GradeManager gradeManager = GradeManager.getInstance();
         List<Integer> medals = gradeManager.getMedalList();
-        gradeManager.clearMedalList();
+//        gradeManager.clearMedalList();
         return medals;
+    }
+
+    @RequestMapping("/test")
+    public @ResponseBody List<Integer> test(){
+        return matchService.getAllPlayersInThisMatch(41);
     }
 
 }
