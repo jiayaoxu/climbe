@@ -18,6 +18,16 @@ public class UserCustom extends User {
 
     private Integer bid;
 
+    private Integer wid;
+
+    public Integer getWid() {
+        return wid;
+    }
+
+    public void setWid(Integer wid) {
+        this.wid = wid;
+    }
+
     public Integer getBid() {
         return bid;
     }

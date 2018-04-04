@@ -63,15 +63,31 @@ public class MessageManagement implements Runnable {
                     grades.setUid(equal);
                     Match_grade match_grade = matchService.selectGrade(grades);
 
-                    //通过成绩判断输赢
-                    if(flag.equals("s")){
-                        isWin = grade>match_grade.getSgrade()? true:false;
-                    }else if(flag.equals("t")){
-                        isWin = grade>match_grade.getTgrade()? true:false;
-                    }else if (flag.equals("f")){
-                        isWin = grade>match_grade.getFgrade()? true:false;
-                    } else if (flag.equals("fi")){
-                        isWin = grade>match_grade.getFigrade()? true:false;
+                    try {
+                        //通过成绩判断输赢
+                        if(flag.equals("s")){
+                            if(match_grade.getSgrade()!=null){
+                                isWin = grade>match_grade.getSgrade()? true:false;
+                            }else{
+                                isWin = true;
+                            }
+                        }else if(flag.equals("t")){
+                            if(match_grade.getTgrade()!=null)
+                                isWin = grade>match_grade.getTgrade()? true:false;
+                            else isWin = true;
+                        }else if (flag.equals("f")){
+                            if(match_grade.getFgrade()!=null)
+                                isWin = grade>match_grade.getFgrade()? true:false;
+                            else isWin = true;
+                        } else if (flag.equals("fi")){
+                            if(match_grade.getFigrade()!=null)
+                                isWin = grade>match_grade.getFigrade()? true:false;
+                            else
+                                isWin = true;
+                        }
+                    } catch (NullPointerException e){
+                        isWin = false;
+                        e.printStackTrace();
                     }
                 }
 

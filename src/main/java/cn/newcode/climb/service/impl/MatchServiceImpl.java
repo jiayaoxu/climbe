@@ -175,10 +175,10 @@ public class MatchServiceImpl implements MatchService {
         match_gradeMapper.insertSelective(matchGrade);
         Integer count = match_infMapper.selectMatchInf(matchGrade.getMid()).getCount();
         Integer nowCount = match_infMapper.selectCommitCount(matchGrade.getMid());
-        if(count == nowCount){
+        /*if(count == nowCount){
             //向所有人分发成绩
             clear(matchGrade.getMid());
-        }
+        }*/
         return 1;
     }
 

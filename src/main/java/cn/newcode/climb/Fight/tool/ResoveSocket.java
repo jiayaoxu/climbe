@@ -166,22 +166,26 @@ public class ResoveSocket {
                 userManager.playerJoinRoom(room.getRid(),players);
             }
         }else if(head.equals("fight")){
-            //查询本房间
-            List<Integer> RoomList =  userManager.getRoomMap(rid);
-            //遍历用户
-            for(Integer p : RoomList){
-                //将自己的位置信息发送给对手
-                try {
-                    if(!p.equals(uid)){
-                        Socket player = userManager.getPlayer(p);
-                        DataOutputStream out = new DataOutputStream(player.getOutputStream());
-                        String str = "fight@"+body;
-                        out.write(addCache(str));
-                        //out.writeUTF("fight@"+body);
+            try{
+                //查询本房间
+                List<Integer> RoomList =  userManager.getRoomMap(rid);
+                //遍历用户
+                for(Integer p : RoomList){
+                    //将自己的位置信息发送给对手
+                    try {
+                        if(!p.equals(uid)){
+                            Socket player = userManager.getPlayer(p);
+                            DataOutputStream out = new DataOutputStream(player.getOutputStream());
+                            String str = "fight@"+body;
+                            out.write(addCache(str));
+                            //out.writeUTF("fight@"+body);
+                        }
+                    } catch (IOException e) {
+                        out.write(addCache("error@noPlayerError"));
                     }
-                } catch (IOException e) {
-                    out.write(addCache("error@noPlayerError"));
                 }
+            } catch (Exception e){
+                out.write(addCache("error@noPlayerError"));
             }
         }else if(head.equals("roomList")){
             //查询房间列表
@@ -209,35 +213,42 @@ public class ResoveSocket {
             out.write(addCache(response));
             socket.close();
         }else if(head.equals("ExitRoom")){
-            //列出房间信息
-            List<Integer> room = userManager.getRoomMap(rid);
-            //创建遍历对象
-            Iterator<Integer> it = room.iterator();
-            while(it.hasNext()){
-                Integer player = it.next();
-                if(player.equals(uid)){
-                    it.remove();
-                }
-            }
-            //判断房间里是否还有人,没人直接销毁房间,有人通知销毁房间
-            if(room.size()==0){
-                userManager.removeRoom(rid);
-            }else {
-                for(Integer r :room){
-                    try {
-                        Socket roomUser = userManager.getPlayer(r);
-                        DataOutputStream roomOut = new DataOutputStream(roomUser.getOutputStream());
-                        String response = "room@roomDestried";
-                        roomOut.write(addCache(response));
-                    } catch (IOException e) {
-                        out.write(addCache("error@noPlayerError"));
+            try{
+                //列出房间信息
+                List<Integer> room = userManager.getRoomMap(rid);
+                //创建遍历对象
+                Iterator<Integer> it = room.iterator();
+                while(it.hasNext()){
+                    Integer player = it.next();
+                    if(player.equals(uid)){
+                        it.remove();
                     }
                 }
+                //判断房间里是否还有人,没人直接销毁房间,有人通知销毁房间
+                if(room.size()==0){
+
+                }else {
+                    for(Integer r :room){
+                        try {
+                            Socket roomUser = userManager.getPlayer(r);
+                            DataOutputStream roomOut = new DataOutputStream(roomUser.getOutputStream());
+                            String response = "room@roomDestried";
+                            roomOut.write(addCache(response));
+                        } catch (IOException e) {
+                            out.write(addCache("error@noPlayerError"));
+                        }
+                    }
+                    //userManager.removeRoom(rid);
+                }
+                if(rid==uid)
+                    userManager.removeRoom(rid);
+                //反馈成功信息
+                String response = "room@ExitedSuccess";
+                //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                out.write(addCache(response));
+            } catch (Exception e){
+                MLogger.error(e);
             }
-            //反馈成功信息
-            String response = "room@ExitedSuccess";
-            //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            out.write(addCache(response));
         }else if(head.equals("GameOver")){
             //游戏结束,提交对战数据
             /*SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -348,24 +359,29 @@ public class ResoveSocket {
             String response = "CreateWatchRoom@Success";
             out.write(addCache(response));
         }else if(head.equals("ExitWatchRoom")){
-            //列出房间信息
-            List<Integer> room = userManager.getWatchRoomMap(rid);
-            //房主退出销毁房间 学员退出 通知房间里的所有人更新列表
-            if(this.uid == this.rid){
-                userManager.removeWatchRoom(rid);
-            }else{
-                //创建遍历对象
-                Iterator<Integer> it = room.iterator();
-                while(it.hasNext()){
-                    Integer player = it.next();
-                    if(player.equals(uid)){
-                        it.remove();
+            try{
+                //列出房间信息
+                List<Integer> room = userManager.getWatchRoomMap(rid);
+                //房主退出销毁房间 学员退出 通知房间里的所有人更新列表
+                if(this.uid == this.rid){
+                    userManager.removeWatchRoom(rid);
+                    this.rid = null;
+                }else{
+                    //创建遍历对象
+                    Iterator<Integer> it = room.iterator();
+                    while(it.hasNext()){
+                        Integer player = it.next();
+                        if(player.equals(uid)){
+                            it.remove();
+                        }
                     }
-                }
-                userManager.addWatchRoomMap(room,rid);
-                annon();
+                    userManager.addWatchRoomMap(room,rid);
+                    annon();
 //                this.rid = null;
-                this.rid = null;
+                    this.rid = null;
+                }
+            } catch (Exception e){
+                MLogger.error(e);
             }
         }else if(head.equals("WatchroomList")) {
             //查询房间列表
