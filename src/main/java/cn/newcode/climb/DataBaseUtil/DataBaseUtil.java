@@ -1,9 +1,6 @@
 package cn.newcode.climb.DataBaseUtil;
 
-import cn.newcode.climb.service.MatchService;
-import cn.newcode.climb.service.RankService;
-import cn.newcode.climb.service.RecordService;
-import cn.newcode.climb.service.UserService;
+import cn.newcode.climb.service.*;
 import cn.newcode.climb.vo.PersonalInf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +30,9 @@ public class DataBaseUtil {
     @Autowired
     public MatchService matchService;
 
+    @Autowired
+    public ClubService clubService;
+
     public static DataBaseUtil dataBaseUtil;
 
     @PostConstruct
@@ -42,6 +42,7 @@ public class DataBaseUtil {
         dataBaseUtil.recordService = this.recordService;
         dataBaseUtil.rankService = this.rankService;
         dataBaseUtil.matchService = this.matchService;
+        dataBaseUtil.clubService = this.clubService;
     }
 
     public static void main(String [] args) throws Exception {

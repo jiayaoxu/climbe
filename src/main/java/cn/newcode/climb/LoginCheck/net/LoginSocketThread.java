@@ -1,6 +1,7 @@
 package cn.newcode.climb.LoginCheck.net;
 
 
+import cn.newcode.climb.DataBaseUtil.DataBaseUtil;
 import cn.newcode.climb.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,8 +17,8 @@ public class LoginSocketThread implements Runnable {
 
     private Socket socket;
 
-    @Autowired
-    private ClubService clubService;
+//    @Autowired
+//    private ClubService clubService;
 
     public LoginSocketThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -28,13 +29,14 @@ public class LoginSocketThread implements Runnable {
         try{
             Boolean connected = true;
             DataInputStream input = new DataInputStream(socket.getInputStream());
+            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
             while (connected) {
                 Integer uid = null;
                 try{
                     byte [] b = new byte[1024];
                     int len = input.read(b);
                     String login = new String(b,0,len);
-                    uid = Integer.parseInt(login);
+                    uid = Integer.parseInt(login.trim());
                     //检查用户是否上线过
                     Socket checkUser = UserRegister.getInstance().getUser(uid);
                     if(checkUser!=null){
@@ -45,7 +47,12 @@ public class LoginSocketThread implements Runnable {
                     //添加用户
                     UserRegister.getInstance().addUser(uid,socket);
                     //查询属于哪个俱乐部
-                    Integer cid = clubService.selectBelong(uid);
+                    Integer cid = 0;
+                    try{
+                        cid = DataBaseUtil.dataBaseUtil.clubService.selectBelong(uid);
+                    } catch (NullPointerException ee){
+                        ee.printStackTrace();
+                    }
                     if(cid!=null){
                         UserRegister.getInstance().addonlion(cid);
                     }
