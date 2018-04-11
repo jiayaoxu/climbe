@@ -17,6 +17,8 @@ public class LoginSocketThread implements Runnable {
 
     private Socket socket;
 
+    private Integer cid;
+
 //    @Autowired
 //    private ClubService clubService;
 
@@ -55,10 +57,13 @@ public class LoginSocketThread implements Runnable {
                     }
                     if(cid!=null){
                         UserRegister.getInstance().addonlion(cid);
+                        this.cid = cid;
                     }
                 } catch (IOException e){
                     //socket断开链接抛出异常
                     UserRegister.getInstance().removeUser(uid);
+                    UserRegister.getInstance().reduceOnline(cid);
+                    connected = false;
                 }
             }
         } catch (IOException e){

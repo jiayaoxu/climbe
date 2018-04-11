@@ -66,4 +66,13 @@ public class UserRegister {
             club.put(cid,1);
         }
     }
+
+    public void reduceOnline(Integer cid){
+        Integer i = club.get(cid);
+        if(i>1){
+            club.put(cid,i-1);
+        }else if(i<=1){
+            club.remove(cid);
+        }
+    }
 }

@@ -201,4 +201,13 @@ public class UserManager {
     public Map<Integer, String> getRoomPassword() {
         return roomPassword;
     }
+
+    /**
+     * 房间信息重新设回
+     * @param rid
+     * @param room
+     */
+    public void addRoom(Integer rid,List<Integer> room){
+        roomMap.put(rid, room);
+    }
 }

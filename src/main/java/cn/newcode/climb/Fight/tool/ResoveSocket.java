@@ -7,7 +7,6 @@ import cn.newcode.climb.Fight.vo.UserCustom;
 import cn.newcode.climb.LogUtil.MLogger;
 import cn.newcode.climb.po.User;
 import cn.newcode.climb.service.RankService;
-import cn.newcode.climb.vo.PersonalInf;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,32 +215,54 @@ public class ResoveSocket {
             try{
                 //列出房间信息
                 List<Integer> room = userManager.getRoomMap(rid);
-                //创建遍历对象
-                Iterator<Integer> it = room.iterator();
-                while(it.hasNext()){
-                    Integer player = it.next();
-                    if(player.equals(uid)){
-                        it.remove();
-                    }
-                }
-                //判断房间里是否还有人,没人直接销毁房间,有人通知销毁房间
-                if(room.size()==0){
-
-                }else {
-                    for(Integer r :room){
-                        try {
-                            Socket roomUser = userManager.getPlayer(r);
-                            DataOutputStream roomOut = new DataOutputStream(roomUser.getOutputStream());
-                            String response = "room@roomDestried";
-                            roomOut.write(addCache(response));
-                        } catch (IOException e) {
-                            out.write(addCache("error@noPlayerError"));
+//                //创建遍历对象
+//                Iterator<Integer> it = room.iterator();
+//                while(it.hasNext()){
+//                    Integer player = it.next();
+//                    if(player.equals(uid)){
+//                        it.remove();
+//                    }
+//                }
+//                //判断房间里是否还有人,没人直接销毁房间,有人通知销毁房间
+//                if(room.size()==0){
+//
+//                }else {
+//                    for(Integer r :room){
+//                        try {
+//                            Socket roomUser = userManager.getPlayer(r);
+//                            DataOutputStream roomOut = new DataOutputStream(roomUser.getOutputStream());
+//                            String response = "room@roomDestried";
+//                            roomOut.write(addCache(response));
+//                        } catch (IOException e) {
+//                            out.write(addCache("error@noPlayerError"));
+//                        }
+//                    }
+//                    //userManager.removeRoom(rid);
+//                }
+                //判断是房主，提醒对手退出房间,销毁房间
+//                if(rid==uid) {
+                    userManager.removeRoom(rid);
+                    for(Integer p : room){
+                        if(p!=this.uid){
+                            Socket pls = userManager.getPlayer(p);
+                            DataOutputStream outputStream = new DataOutputStream(pls.getOutputStream());
+                            outputStream.write(addCache("room@roomDestried"));
                         }
                     }
-                    //userManager.removeRoom(rid);
-                }
-                if(rid==uid)
-                    userManager.removeRoom(rid);
+//                }else{
+//                    //如果不是房主,玩家退出房间,提醒房主玩家退出
+//                    Iterator<Integer> it = room.iterator();
+//                    while(it.hasNext()){
+//                        Integer pl = it.next();
+//                        if(pl.equals(uid)){
+//                            it.remove();
+//                        }
+//                    }
+//                    Socket pls = userManager.getPlayer(this.rid);
+//                    DataOutputStream outputStream = new DataOutputStream(pls.getOutputStream());
+//                    outputStream.write(addCache("room@playerQuit"));
+//                }
+                this.rid = null;
                 //反馈成功信息
                 String response = "room@ExitedSuccess";
                 //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
@@ -366,6 +387,15 @@ public class ResoveSocket {
                 if(this.uid == this.rid){
                     userManager.removeWatchRoom(rid);
                     this.rid = null;
+                    //通知房间里的所有人房间销毁
+                    for(Integer player : room){
+                        if(player!=this.uid) {
+                            Socket socket = UserManager.getInstance().getPlayer(player);
+                            DataOutputStream playerOut = new DataOutputStream(socket.getOutputStream());
+                            String m = "room@roomDestried";
+                            playerOut.write(addCache(m));
+                        }
+                    }
                 }else{
                     //创建遍历对象
                     Iterator<Integer> it = room.iterator();
