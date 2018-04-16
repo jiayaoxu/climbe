@@ -55,4 +55,11 @@ public interface Club_memberMapper {
      * @return
      */
     Integer selectBelong(Integer uid);
+
+    /**
+     * 查询俱乐部成员
+     * @param cid
+     * @return
+     */
+    List<Club_member> selectClubMember(Integer cid);
 }

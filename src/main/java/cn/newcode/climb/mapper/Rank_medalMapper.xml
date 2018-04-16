@@ -54,33 +54,30 @@
         #{uid,jdbcType=INTEGER},
       </if>
       <if test="goldMedal != null" >
-        #{goldMedal,jdbcType=INTEGER},
+        gold_medal+1,
       </if>
       <if test="silverMedal != null" >
-        #{silverMedal,jdbcType=INTEGER},
+        silverMedal+1,
       </if>
       <if test="bronzeMedal != null" >
-        #{bronzeMedal,jdbcType=INTEGER},
+        bronzeMedal+1,
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.newcode.climb.po.Rank_medal" >
     update rank_medal
     <set >
-      <if test="uid != null" >
-        uid = #{uid,jdbcType=INTEGER},
-      </if>
       <if test="goldMedal != null" >
-        gold_medal = #{goldMedal,jdbcType=INTEGER},
+        gold_medal = gold_medal+1,
       </if>
       <if test="silverMedal != null" >
-        silver_medal = #{silverMedal,jdbcType=INTEGER},
+        silver_medal = silver_medal+1,
       </if>
       <if test="bronzeMedal != null" >
-        bronze_medal = #{bronzeMedal,jdbcType=INTEGER},
+        bronze_medal = bronze_medal+1,
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where uid = #{uid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.Rank_medal" >
     update rank_medal

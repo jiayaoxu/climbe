@@ -5,6 +5,7 @@ import cn.newcode.climb.po.Club_member;
 import cn.newcode.climb.po.Club_notice;
 import cn.newcode.climb.vo.ClubMemberVo;
 import cn.newcode.climb.vo.FindClubVo;
+import cn.newcode.climb.vo.OnlionMember;
 
 import java.util.List;
 
@@ -93,4 +94,11 @@ public interface ClubService {
      * @return
      */
     Integer selectCidByUid(Integer uid);
+
+    /**
+     * 查询俱乐部在线人数
+     * @param cid
+     * @return
+     */
+    OnlionMember selectOnlion(Integer cid);
 }

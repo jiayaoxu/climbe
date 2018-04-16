@@ -37,7 +37,7 @@ public class LoginSocketThread implements Runnable {
                 try{
                     byte [] b = new byte[1024];
                     int len = input.read(b);
-                    String login = new String(b,0,len);
+                    String login = new String(b);
                     uid = Integer.parseInt(login.trim());
                     //检查用户是否上线过
                     Socket checkUser = UserRegister.getInstance().getUser(uid);

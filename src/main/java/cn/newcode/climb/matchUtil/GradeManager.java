@@ -1,7 +1,11 @@
 package cn.newcode.climb.matchUtil;
 
+import cn.newcode.climb.DataBaseUtil.DataBaseUtil;
+import cn.newcode.climb.LogUtil.MLogger;
 import cn.newcode.climb.po.Match_grade;
+import cn.newcode.climb.po.Rank_medal;
 import cn.newcode.climb.po.grade;
+import cn.newcode.climb.service.RankService;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -91,7 +95,33 @@ public class GradeManager {
     }
 
     public void clearMedalList(){
-        medalList = new ArrayList<Integer>();
+        try{
+            int flag = 0;
+            for(Integer p : medalList){
+                flag++;
+                Rank_medal rank_medal = new Rank_medal();
+                if(flag<=3){
+                    rank_medal.setGoldMedal(1);
+                    rank_medal.setUid(p);
+                }else if(flag>3&&flag<=6){
+//                    Rank_medal rank_medal = new Rank_medal();
+                    rank_medal.setSilverMedal(1);
+                    rank_medal.setUid(p);
+                }else if(flag>6){
+//                    Rank_medal rank_medal = new Rank_medal();
+                    rank_medal.setBronzeMedal(1);
+                    rank_medal.setUid(p);
+                }
+                RankService rankService = DataBaseUtil.dataBaseUtil.rankService;
+                rankService.addMedal(rank_medal);
+            }
+
+        } catch (Exception e){
+//            e.printStackTrace();
+            MLogger.error(e);
+        }finally {
+            medalList.clear();
+        }
     }
 
 }

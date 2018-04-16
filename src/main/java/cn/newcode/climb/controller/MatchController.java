@@ -346,14 +346,14 @@ public class MatchController {
     /**
      * 获取奖牌榜
      * @return
-     */
+     *//*
     @RequestMapping("/getMedalList")
     public @ResponseBody List<Integer> getMedalList(){
         GradeManager gradeManager = GradeManager.getInstance();
         List<Integer> medals = gradeManager.getMedalList();
 //        gradeManager.clearMedalList();
         return medals;
-    }
+    }*/
 
     @RequestMapping("/test")
     public @ResponseBody List<Integer> test(){

@@ -119,4 +119,7 @@
   <select id="selectBelong" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     SELECT cid FROM club_member WHERE member = #{uid}
   </select>
+  <select id="selectClubMember" parameterType="java.lang.Integer" resultType="cn.newcode.climb.po.Club_member">
+    SELECT * FROM club_member WHERE cid = #{cid}
+  </select>
 </mapper>

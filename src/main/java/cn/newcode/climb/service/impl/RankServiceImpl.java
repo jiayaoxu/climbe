@@ -131,4 +131,9 @@ public class RankServiceImpl implements RankService {
     public List<Rank_wall> selectPoints(Integer uid) {
         return rank_wallMapper.points(uid);
     }
+
+    @Override
+    public void addMedal(Rank_medal rank_medal) {
+        rank_medalMapper.updateByPrimaryKeySelective(rank_medal);
+    }
 }

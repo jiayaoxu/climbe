@@ -156,4 +156,10 @@ public interface RankService {
      * @return
      */
     List<Rank_wall> selectPoints(Integer uid);
+
+    /**
+     * 添加奖牌
+     * @param rank_medal
+     */
+    void addMedal(Rank_medal rank_medal);
 }

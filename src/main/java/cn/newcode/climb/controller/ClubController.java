@@ -191,7 +191,9 @@ public class ClubController {
         OnlionMember onlionMember = new OnlionMember();
         try {
             onlionMember.setTotal(clubService.memberCount(uid,null));
-            onlionMember.setOnlion(UserRegister.getInstance().getClub().get(cid));
+//            onlionMember.setOnlion(UserRegister.getInstance().getClub().get(cid));
+            OnlionMember onlionMember1 = clubService.selectOnlion(cid);
+            onlionMember.setOnlion(onlionMember1.getOnlion());
         } catch (Exception e){
             e.printStackTrace();
         }

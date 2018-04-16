@@ -1,5 +1,6 @@
 package cn.newcode.climb.service.impl;
 
+import cn.newcode.climb.Fight.tool.UserManager;
 import cn.newcode.climb.mapper.ClubMapper;
 import cn.newcode.climb.mapper.Club_memberMapper;
 import cn.newcode.climb.mapper.Club_noticeMapper;
@@ -9,10 +10,12 @@ import cn.newcode.climb.po.Club_notice;
 import cn.newcode.climb.service.ClubService;
 import cn.newcode.climb.vo.ClubMemberVo;
 import cn.newcode.climb.vo.FindClubVo;
+import cn.newcode.climb.vo.OnlionMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.Socket;
 import java.util.List;
 
 /**
@@ -100,5 +103,20 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Integer selectCidByUid(Integer uid) {
         return club_memberMapper.selectClub(uid);
+    }
+
+    @Override
+    public OnlionMember selectOnlion(Integer cid) {
+        List<Club_member> members = club_memberMapper.selectClubMember(cid);
+        Integer total = 0;
+        UserManager userManager = UserManager.getInstance();
+        for(Club_member c : members){
+            Socket socket = userManager.getPlayer(c.getMember());
+            if(socket!=null)
+                total++;
+        }
+        OnlionMember onlionMember = new OnlionMember();
+        onlionMember.setOnlion(total);
+        return onlionMember;
     }
 }

@@ -523,6 +523,9 @@ public class ResoveSocket {
                 //告诉房间里的人有人加入
                 annon();
             }
+        }else if(head.equals("check")){
+            //心跳检测
+            out.write(addCache("check@"+body));
         }
     }
 

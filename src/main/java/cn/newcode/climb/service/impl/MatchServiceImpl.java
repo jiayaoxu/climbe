@@ -172,9 +172,13 @@ public class MatchServiceImpl implements MatchService {
     //@CachePut
     public Integer insertSelective(Match_grade matchGrade) throws Exception {
         //成绩插入数据库
+//        Match_grade match_grade = match_gradeMapper.selectReapet(matchGrade);
+//        if(match_grade.getId()!=null){
+//            return 0;
+//        }
         match_gradeMapper.insertSelective(matchGrade);
-        Integer count = match_infMapper.selectMatchInf(matchGrade.getMid()).getCount();
-        Integer nowCount = match_infMapper.selectCommitCount(matchGrade.getMid());
+//        Integer count = match_infMapper.selectMatchInf(matchGrade.getMid()).getCount();
+//        Integer nowCount = match_infMapper.selectCommitCount(matchGrade.getMid());
         /*if(count == nowCount){
             //向所有人分发成绩
             clear(matchGrade.getMid());

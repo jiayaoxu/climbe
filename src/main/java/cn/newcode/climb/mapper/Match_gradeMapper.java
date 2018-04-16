@@ -57,4 +57,11 @@ public interface Match_gradeMapper {
      */
     List<Integer> selectPlayersInThisMatch(Integer mid);
 
+    /**
+     * 查询重复成绩
+     * @param match_grade
+     * @return
+     */
+    Match_grade selectReapet(Match_grade match_grade);
+
 }
