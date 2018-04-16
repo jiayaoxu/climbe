@@ -355,9 +355,9 @@ public class MatchController {
         return medals;
     }*/
 
-    @RequestMapping("/test")
+    /*@RequestMapping("/test")
     public @ResponseBody List<Integer> test(){
         return matchService.getAllPlayersInThisMatch(41);
-    }
+    }*/
 
 }
