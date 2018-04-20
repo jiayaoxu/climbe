@@ -48,10 +48,10 @@ public class FightController {
      * @return
      */
     @RequestMapping("/getMaxRecord")
-    public @ResponseBody Rock_record getMaxRecord(Integer wid){
+    public @ResponseBody Rock_record getMaxRecord(Integer wid,String type){
         Rock_record rock_record = null;
         try{
-            rock_record = recordService.selectMaxRecord(wid);
+            rock_record = recordService.selectMaxRecord(wid,type);
         } catch (Exception e){
             e.printStackTrace();
         }

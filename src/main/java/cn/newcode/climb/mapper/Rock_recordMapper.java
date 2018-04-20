@@ -1,6 +1,7 @@
 package cn.newcode.climb.mapper;
 
 import cn.newcode.climb.po.Rock_record;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface Rock_recordMapper {
 
     int insertSelective(Rock_record record);
 
-    Rock_record selectByPrimaryKey(Integer id);
+    Rock_record selectByPrimaryKey(@Param("id") Integer id,@Param("type")String type);
 
     int updateByPrimaryKeySelective(Rock_record record);
 

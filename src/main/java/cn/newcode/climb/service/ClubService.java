@@ -101,4 +101,10 @@ public interface ClubService {
      * @return
      */
     OnlionMember selectOnlion(Integer cid);
+
+    /**
+     * 更新职务
+     * @param club_member
+     */
+    void updateJob(Club_member club_member);
 }

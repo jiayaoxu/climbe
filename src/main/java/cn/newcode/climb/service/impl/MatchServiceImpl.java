@@ -583,6 +583,14 @@ public class MatchServiceImpl implements MatchService {
         return match_gradeMapper.selectPlayersInThisMatch(mid);
     }
 
+    @Override
+    public Boolean isMatched(Match_grade match_grade) {
+        Integer id = match_gradeMapper.selectMatched(match_grade);
+        if(id!=null)
+            return true;
+        return false;
+    }
+
     public void clear(Integer mid) throws IOException {
         ObjectMapper obj = new ObjectMapper();
         List<Clear> clears = match_infMapper.clear(mid);

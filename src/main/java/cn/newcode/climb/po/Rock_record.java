@@ -11,6 +11,16 @@ public class Rock_record {
 
     private Integer person;
 
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Integer getId() {
         return id;
     }

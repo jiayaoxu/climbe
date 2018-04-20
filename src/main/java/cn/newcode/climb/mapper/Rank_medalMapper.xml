@@ -100,6 +100,16 @@
       </if>
     FROM `user`,rank_medal,user_inf
     WHERE user.id = rank_medal.uid AND user_inf.uid = `user`.id
+    AND
+    <if test="Rank_medal.goldMedal!=null">
+      rank_medal.gold_medal>0
+    </if>
+    <if test="Rank_medal.silverMedal!=null">
+      rank_medal.silver_medal>0
+    </if>
+    <if test="Rank_medal.bronzeMedal!=null">
+      rank_medal.bronze_medal>0
+    </if>
     ORDER BY
     <if test="Rank_medal.goldMedal!=null">
       rank_medal.gold_medal

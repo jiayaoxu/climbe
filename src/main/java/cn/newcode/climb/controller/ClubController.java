@@ -215,4 +215,20 @@ public class ClubController {
         }
         return cid;
     }
+
+    /**
+     * 更新俱乐部职务
+     * @param club_member
+     * @return
+     */
+    @RequestMapping(value = "/updateJob")
+    public @ResponseBody Status updateJob(Club_member club_member){
+        try{
+            clubService.updateJob(club_member);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Status("","SystemError");
+        }
+        return new Status("Success","");
+    }
 }

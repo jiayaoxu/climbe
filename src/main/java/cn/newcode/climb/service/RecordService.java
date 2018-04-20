@@ -17,7 +17,7 @@ public interface RecordService {
      * @param wid
      * @return
      */
-    Rock_record selectMaxRecord(Integer wid);
+    Rock_record selectMaxRecord(Integer wid,String type);
 
     /**
      * 更新高纪录
@@ -30,5 +30,11 @@ public interface RecordService {
      * @return
      */
     List<Rock_record> selectMaxRecords();
+
+    /**
+     * 插入成绩
+     * @param rock_record
+     */
+    void addRecord(Rock_record rock_record);
 
 }

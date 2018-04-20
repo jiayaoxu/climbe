@@ -119,4 +119,9 @@ public class ClubServiceImpl implements ClubService {
         onlionMember.setOnlion(total);
         return onlionMember;
     }
+
+    @Override
+    public void updateJob(Club_member club_member) {
+        club_memberMapper.setJob(club_member);
+    }
 }

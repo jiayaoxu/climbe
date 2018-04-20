@@ -10,6 +10,15 @@ package cn.newcode.climb.recordUtil;
 public class Record {
     private float MaxRecord = 0;
     private Integer uid;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public float getMaxRecord() {
         return MaxRecord;

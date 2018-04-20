@@ -7,15 +7,17 @@
     <result column="max" property="max" jdbcType="DOUBLE" />
     <result column="today" property="today" jdbcType="DOUBLE" />
     <result column="person" property="person" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, wid, max, today, person
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from rock_record
     where wid = #{id,jdbcType=INTEGER}
+    AND `type` = #{type}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from rock_record
@@ -37,13 +39,16 @@
         wid,
       </if>
       <if test="max != null" >
-        max,
+        `max`,
       </if>
       <if test="today != null" >
         today,
       </if>
       <if test="person != null" >
         person,
+      </if>
+      <if test="type != null" >
+        `type`,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -61,6 +66,9 @@
       </if>
       <if test="person != null" >
         #{person,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type},
       </if>
     </trim>
   </insert>
@@ -80,7 +88,7 @@
         person = #{person,jdbcType=INTEGER},
       </if>
     </set>
-    where wid = #{wid,jdbcType=INTEGER}
+    where wid = #{wid,jdbcType=INTEGER} AND `type` = #{type}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.newcode.climb.po.Rock_record" >
     update rock_record

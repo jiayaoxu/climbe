@@ -122,4 +122,7 @@
   <select id="selectClubMember" parameterType="java.lang.Integer" resultType="cn.newcode.climb.po.Club_member">
     SELECT * FROM club_member WHERE cid = #{cid}
   </select>
+  <update id="setJob" parameterType="cn.newcode.climb.po.Club_member">
+    UPDATE club_member SET `position`=#{position} WHERE member = #{member} AND cid = #{cid}
+  </update>
 </mapper>

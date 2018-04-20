@@ -244,4 +244,7 @@ FROM
   <select id="selectReapet" parameterType="cn.newcode.climb.po.Match_grade" resultType="cn.newcode.climb.po.Match_grade">
     SELECT * FROM  match_grade WHERE mid = #{mid} AND uid = #{uid}
   </select>
+  <select id="selectMatched" parameterType="cn.newcode.climb.po.Match_grade" resultType="java.lang.Integer">
+    SELECT id FROM  match_grade WHERE mid = #{mid} AND  uid = #{uid}
+  </select>
 </mapper>

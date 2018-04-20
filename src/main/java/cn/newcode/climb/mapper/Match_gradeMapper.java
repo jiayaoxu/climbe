@@ -64,4 +64,11 @@ public interface Match_gradeMapper {
      */
     Match_grade selectReapet(Match_grade match_grade);
 
+    /**
+     * 查询是否比过本场比赛
+     * @param match_grade
+     * @return
+     */
+    Integer selectMatched(Match_grade match_grade);
+
 }

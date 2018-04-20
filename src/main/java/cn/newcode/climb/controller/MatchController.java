@@ -360,4 +360,14 @@ public class MatchController {
         return matchService.getAllPlayersInThisMatch(41);
     }*/
 
+    /**
+     * 查询是否比过本场比赛
+     * @param match_grade
+     * @return
+     */
+    @RequestMapping(value = "/isMatched")
+    public @ResponseBody Boolean isMatched(Match_grade match_grade){
+        return matchService.isMatched(match_grade);
+    }
+
 }

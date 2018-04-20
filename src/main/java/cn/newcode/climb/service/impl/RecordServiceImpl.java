@@ -23,8 +23,8 @@ public class RecordServiceImpl implements RecordService {
     private Rock_recordMapper rock_recordMapper;
 
     @Override
-    public Rock_record selectMaxRecord(Integer wid) {
-        return rock_recordMapper.selectByPrimaryKey(wid);
+    public Rock_record selectMaxRecord(Integer wid,String type) {
+        return rock_recordMapper.selectByPrimaryKey(wid,type);
     }
 
     @Override
@@ -35,5 +35,10 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public List<Rock_record> selectMaxRecords() {
         return rock_recordMapper.selectMaxRecords();
+    }
+
+    @Override
+    public void addRecord(Rock_record rock_record) {
+        rock_recordMapper.insertSelective(rock_record);
     }
 }

@@ -160,4 +160,10 @@ public interface MatchService {
      */
     List<Integer> getAllPlayersInThisMatch(Integer mid);
 
+    /**
+     * 查询是否比过本场比赛
+     * @param match_grade
+     * @return
+     */
+    Boolean isMatched(Match_grade match_grade);
 }

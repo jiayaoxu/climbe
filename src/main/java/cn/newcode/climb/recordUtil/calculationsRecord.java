@@ -40,17 +40,51 @@ public class calculationsRecord {
      */
     public void compareMaxRecord(Integer wid,Record record){
         RecordService recordService = DataBaseUtil.dataBaseUtil.recordService;
-        Rock_record rock_record = recordService.selectMaxRecord(wid);
-        //首先与数据库中本线路最高纪录比较,如果高于最该纪录就更新最高纪录
-        if(record.getMaxRecord()>rock_record.getMax()){
-            rock_record.setMax((double) record.getMaxRecord());
-            //然后与今天的最高成绩进行比较,如果高于今天的最高成绩就更新今天的最高成绩
-            if(record.getMaxRecord()>rock_record.getToday()){
-                rock_record.setToday((double) record.getMaxRecord());
-                rock_record.setPerson(record.getUid());
+        Rock_record rock_record = null;
+        String type = record.getType();
+        try{
+            rock_record = recordService.selectMaxRecord(wid,record.getType());
+            //对于速度,如果成绩越小越大
+            if(type.equals("s")){
+                //首先与数据库中本线路最高纪录比较,如果高于最该纪录就更新最高纪录
+                if(record.getMaxRecord()<rock_record.getMax()){
+                    rock_record.setMax((double) record.getMaxRecord());
+                    //然后与今天的最高成绩进行比较,如果高于今天的最高成绩就更新今天的最高成绩
+                    if(record.getMaxRecord()<rock_record.getToday()){
+                        rock_record.setToday((double) record.getMaxRecord());
+                        rock_record.setPerson(record.getUid());
+                        rock_record.setType(record.getType());
+                    }
+                    recordService.updateMaxRecord(rock_record);
+                }
+                //对于难度,成绩越大越大
+            }else if(type.equals("n")){
+                //首先与数据库中本线路最高纪录比较,如果高于最该纪录就更新最高纪录
+                if(record.getMaxRecord()>rock_record.getMax()){
+                    rock_record.setMax((double) record.getMaxRecord());
+                    //然后与今天的最高成绩进行比较,如果高于今天的最高成绩就更新今天的最高成绩
+                    if(record.getMaxRecord()>rock_record.getToday()){
+                        rock_record.setToday((double) record.getMaxRecord());
+                        rock_record.setPerson(record.getUid());
+                        rock_record.setType(record.getType());
+                    }
+                    recordService.updateMaxRecord(rock_record);
+                }
             }
-            recordService.updateMaxRecord(rock_record);
+        } catch (Exception e){
+            MLogger.info("没有本条线路的成绩信息");
+            MLogger.error(e);
+            rock_record = new Rock_record();
+            rock_record.setWid(wid);
+            rock_record.setType(type);
+            rock_record.setPerson(record.getUid());
+            rock_record.setToday((double)record.getMaxRecord());
+            rock_record.setMax((double)record.getMaxRecord());
+            recordService.addRecord(rock_record);
         }
+
+
+
 //        Record r = recordMap.get(wid);
 //        if(r==null){
 //            recordMap.put(wid,record);

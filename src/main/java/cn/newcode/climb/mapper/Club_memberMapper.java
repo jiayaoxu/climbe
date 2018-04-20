@@ -62,4 +62,10 @@ public interface Club_memberMapper {
      * @return
      */
     List<Club_member> selectClubMember(Integer cid);
+
+    /**
+     * 设置职务
+     * @param club_member
+     */
+    void setJob(Club_member club_member);
 }
